@@ -1,16 +1,24 @@
-import sqlite3
+import os
 from datetime import datetime
 
-DB_PATH = "database/costodomestico.db"
+import psycopg2
+from psycopg2.extras import RealDictCursor
+
+
+DATABASE_URL = os.getenv("DATABASE_URL")
+
+
+def get_connessione():
+    return psycopg2.connect(DATABASE_URL)
 
 
 def crea_tabella_ordini():
-    conn = sqlite3.connect(DB_PATH)
+    conn = get_connessione()
     cursor = conn.cursor()
 
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS ordini (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            id SERIAL PRIMARY KEY,
             email_cliente TEXT,
             nome_cliente TEXT,
             cognome_cliente TEXT,
@@ -23,6 +31,7 @@ def crea_tabella_ordini():
     """)
 
     conn.commit()
+    cursor.close()
     conn.close()
 
 
@@ -35,7 +44,7 @@ def salva_ordine(
     stato: str,
     sessione_stripe: str
 ):
-    conn = sqlite3.connect(DB_PATH)
+    conn = get_connessione()
     cursor = conn.cursor()
 
     cursor.execute("""
@@ -49,7 +58,7 @@ def salva_ordine(
             sessione_stripe,
             data_ordine
         )
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+        VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
     """, (
         email_cliente,
         nome_cliente,
@@ -62,11 +71,12 @@ def salva_ordine(
     ))
 
     conn.commit()
+    cursor.close()
     conn.close()
 
 
 def leggi_ordini():
-    conn = sqlite3.connect(DB_PATH)
+    conn = get_connessione()
     cursor = conn.cursor()
 
     cursor.execute("""
@@ -86,25 +96,28 @@ def leggi_ordini():
 
     ordini = cursor.fetchall()
 
+    cursor.close()
     conn.close()
 
     return ordini
+
 
 def aggiorna_stato_ordine(
     sessione_stripe: str,
     stato: str
 ):
-    conn = sqlite3.connect(DB_PATH)
+    conn = get_connessione()
     cursor = conn.cursor()
 
     cursor.execute("""
         UPDATE ordini
-        SET stato = ?
-        WHERE sessione_stripe = ?
+        SET stato = %s
+        WHERE sessione_stripe = %s
     """, (
         stato,
         sessione_stripe
     ))
 
     conn.commit()
+    cursor.close()
     conn.close()
