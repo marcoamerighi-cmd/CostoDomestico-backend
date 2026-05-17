@@ -22,8 +22,7 @@
 
         .stats {
             display: grid;
-            grid-template-columns:
-                repeat(auto-fit, minmax(220px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
             gap: 18px;
             margin-bottom: 35px;
         }
@@ -66,6 +65,9 @@
 
         .actions {
             margin-bottom: 25px;
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
         }
 
         button {
@@ -114,7 +116,7 @@
 
 <body>
 
-   <script>
+<script>
     const tokenAdmin = localStorage.getItem("admin_token");
 
     if (tokenAdmin !== "admin_sessione_ok") {
@@ -125,7 +127,7 @@
         localStorage.removeItem("admin_token");
         window.location.href = "/login-admin";
     }
-</script> 
+</script>
 
 <h1>Dashboard Admin - CostoDomestico</h1>
 
@@ -153,18 +155,18 @@
     </div>
 
     <div class="card">
-    <strong>Ordini pagati</strong>
-    <span id="ordini_pagati">0</span>
+        <strong>Ordini pagati</strong>
+        <span id="ordini_pagati">0</span>
+    </div>
+
+    <div class="card">
+        <strong>Ultimo cliente</strong>
+        <span id="ultimo_cliente" style="font-size:16px;">-</span>
+    </div>
+
 </div>
 
-<div class="card">
-    <strong>Ultimo cliente</strong>
-    <span id="ultimo_cliente" style="font-size:16px;">-</span>
-</div>
-
-</div>
-
-<div class="actions" style="display:flex; gap:12px; flex-wrap:wrap;">
+<div class="actions">
     <button onclick="esportaCSV()">
         Esporta CSV
     </button>
@@ -187,38 +189,16 @@
         oninput="filtraOrdini()"
     >
 
-    <select
-        id="filtro_stato"
-        onchange="filtraOrdini()"
-    >
-        <option value="">
-            Tutti gli stati
-        </option>
-
-        <option value="checkout_creato">
-            Checkout creato
-        </option>
-
-        <option value="pagato">
-            Pagato
-        </option>
+    <select id="filtro_stato" onchange="filtraOrdini()">
+        <option value="">Tutti gli stati</option>
+        <option value="checkout_creato">Checkout creato</option>
+        <option value="pagato">Pagato</option>
     </select>
 
-    <select
-        id="filtro_prodotto"
-        onchange="filtraOrdini()"
-    >
-        <option value="">
-            Tutti i prodotti
-        </option>
-
-        <option value="Report Professionale TFR">
-            TFR
-        </option>
-
-        <option value="Costo Domestico">
-            Costo Domestico
-        </option>
+    <select id="filtro_prodotto" onchange="filtraOrdini()">
+        <option value="">Tutti i prodotti</option>
+        <option value="Report Professionale TFR">TFR</option>
+        <option value="Costo Domestico">Costo Domestico</option>
     </select>
 
 </div>
@@ -242,6 +222,24 @@
     <tbody id="tabella_ordini"></tbody>
 </table>
 
+<h2 style="margin-top:50px;">
+    Clienti Registrati
+</h2>
+
+<table>
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Email</th>
+            <th>Nome</th>
+            <th>Cognome</th>
+            <th>Data Creazione</th>
+        </tr>
+    </thead>
+
+    <tbody id="tabella-clienti"></tbody>
+</table>
+
 <h2 style="margin-top:40px;">
     Vendite
 </h2>
@@ -249,11 +247,10 @@
 <canvas id="graficoVendite"></canvas>
 
 <script>
-
     let tuttiOrdini = [];
+    let graficoVendite = null;
 
     function euro(valore) {
-
         return new Intl.NumberFormat(
             "it-IT",
             {
@@ -264,70 +261,75 @@
     }
 
     async function caricaDashboard() {
-
         const risposta = await fetch(
             "https://costodomestico-backend.onrender.com/storico-ordini"
         );
 
-        tuttiOrdini =
-            await risposta.json();
+        tuttiOrdini = await risposta.json();
 
         aggiornaDashboard(tuttiOrdini);
-
         creaGrafico(tuttiOrdini);
+        await caricaClienti();
+    }
+
+    async function caricaClienti() {
+        const rispostaClienti = await fetch(
+            "https://costodomestico-backend.onrender.com/clienti"
+        );
+
+        const clienti = await rispostaClienti.json();
+
+        let htmlClienti = "";
+
+        for (const cliente of clienti) {
+            htmlClienti += `
+                <tr>
+                    <td>${cliente.id}</td>
+                    <td>${cliente.email}</td>
+                    <td>${cliente.nome}</td>
+                    <td>${cliente.cognome}</td>
+                    <td>${cliente.data_creazione}</td>
+                </tr>
+            `;
+        }
+
+        document.getElementById("tabella-clienti").innerHTML = htmlClienti;
     }
 
     function aggiornaDashboard(ordini) {
+        document.getElementById("totale_ordini").textContent = ordini.length;
 
-        document.getElementById(
-            "totale_ordini"
-        ).textContent = ordini.length;
+        const incassoTotale = ordini.reduce(
+            (totale, ordine) => totale + Number(ordine.importo || 0),
+            0
+        );
 
-        const incassoTotale =
-            ordini.reduce(
-                (totale, ordine) =>
-                    totale + Number(ordine.importo || 0),
-                0
-            );
-
-        document.getElementById(
-            "incasso_totale"
-        ).textContent =
+        document.getElementById("incasso_totale").textContent =
             euro(incassoTotale);
 
-        document.getElementById(
-            "totale_prodotti"
-        ).textContent =
+        document.getElementById("totale_prodotti").textContent =
             ordini.length;
 
-const ordiniPagati = ordini.filter(
-    ordine => ordine.stato === "pagato"
-).length;
+        const ordiniPagati = ordini.filter(
+            ordine => ordine.stato === "pagato"
+        ).length;
 
-document.getElementById(
-    "ordini_pagati"
-).textContent =
-    ordiniPagati;
+        document.getElementById("ordini_pagati").textContent =
+            ordiniPagati;
 
-const ultimoCliente =
-    ordini.length > 0
-        ? ordini[0].email_cliente
-        : "-";
+        const ultimoCliente =
+            ordini.length > 0
+                ? ordini[0].email_cliente
+                : "-";
 
-document.getElementById(
-    "ultimo_cliente"
-).textContent =
-    ultimoCliente;
+        document.getElementById("ultimo_cliente").textContent =
+            ultimoCliente;
 
-        const tabella =
-            document.getElementById(
-                "tabella_ordini"
-            );
+        const tabella = document.getElementById("tabella_ordini");
 
         tabella.innerHTML = "";
 
         ordini.forEach(ordine => {
-
             tabella.innerHTML += `
                 <tr>
                     <td>${ordine.id}</td>
@@ -344,96 +346,59 @@ document.getElementById(
     }
 
     function filtraOrdini() {
+        const testo = document.getElementById("ricerca").value.toLowerCase();
+        const stato = document.getElementById("filtro_stato").value;
+        const prodotto = document.getElementById("filtro_prodotto").value;
 
-        const testo =
-            document.getElementById(
-                "ricerca"
-            ).value.toLowerCase();
+        const filtrati = tuttiOrdini.filter(ordine => {
+            const email = (ordine.email_cliente || "").toLowerCase();
+            const nome = (ordine.nome_cliente || "").toLowerCase();
+            const cognome = (ordine.cognome_cliente || "").toLowerCase();
 
-        const stato =
-            document.getElementById(
-                "filtro_stato"
-            ).value;
+            const matchTesto =
+                email.includes(testo) ||
+                nome.includes(testo) ||
+                cognome.includes(testo);
 
-        const prodotto =
-            document.getElementById(
-                "filtro_prodotto"
-            ).value;
+            const matchStato =
+                stato === "" || ordine.stato === stato;
 
-        const filtrati =
-            tuttiOrdini.filter(ordine => {
+            const matchProdotto =
+                prodotto === "" || ordine.prodotto === prodotto;
 
-                const matchTesto =
-                    ordine.email_cliente
-                        .toLowerCase()
-                        .includes(testo)
-                    ||
-                    ordine.nome_cliente
-                        .toLowerCase()
-                        .includes(testo)
-                    ||
-                    ordine.cognome_cliente
-                        .toLowerCase()
-                        .includes(testo);
-
-                const matchStato =
-                    stato === ""
-                    ||
-                    ordine.stato === stato;
-
-                const matchProdotto =
-                    prodotto === ""
-                    ||
-                    ordine.prodotto === prodotto;
-
-                return (
-                    matchTesto
-                    &&
-                    matchStato
-                    &&
-                    matchProdotto
-                );
-            });
+            return matchTesto && matchStato && matchProdotto;
+        });
 
         aggiornaDashboard(filtrati);
+        creaGrafico(filtrati);
     }
 
     function creaGrafico(ordini) {
-
         const venditePerData = {};
 
         ordini.forEach(ordine => {
-
-            const data =
-                ordine.data_ordine.split("T")[0];
+            const data = ordine.data_ordine.split("T")[0];
 
             if (!venditePerData[data]) {
                 venditePerData[data] = 0;
             }
 
-            venditePerData[data] +=
-                Number(ordine.importo || 0);
+            venditePerData[data] += Number(ordine.importo || 0);
         });
 
-        new Chart(
-            document.getElementById(
-                "graficoVendite"
-            ),
+        if (graficoVendite) {
+            graficoVendite.destroy();
+        }
+
+        graficoVendite = new Chart(
+            document.getElementById("graficoVendite"),
             {
                 type: "bar",
-
                 data: {
-
-                    labels:
-                        Object.keys(venditePerData),
-
+                    labels: Object.keys(venditePerData),
                     datasets: [{
                         label: "Vendite €",
-
-                        data:
-                            Object.values(
-                                venditePerData
-                            )
+                        data: Object.values(venditePerData)
                     }]
                 }
             }
@@ -441,14 +406,10 @@ document.getElementById(
     }
 
     function esportaCSV() {
-
-        let csv =
-            "ID,Email,Nome,Cognome,Prodotto,Importo,Stato,Data\n";
+        let csv = "ID,Email,Nome,Cognome,Prodotto,Importo,Stato,Data\n";
 
         tuttiOrdini.forEach(ordine => {
-
             csv += [
-
                 ordine.id,
                 ordine.email_cliente,
                 ordine.nome_cliente,
@@ -457,62 +418,52 @@ document.getElementById(
                 ordine.importo,
                 ordine.stato,
                 ordine.data_ordine
-
             ].join(",") + "\n";
         });
 
-        const blob =
-            new Blob(
-                [csv],
-                {
-                    type:
-                        "text/csv;charset=utf-8;"
-                }
-            );
+        const blob = new Blob(
+            [csv],
+            {
+                type: "text/csv;charset=utf-8;"
+            }
+        );
 
-        const url =
-            URL.createObjectURL(blob);
-
-        const link =
-            document.createElement("a");
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement("a");
 
         link.href = url;
-
-        link.download =
-            "dashboard_costodomestico.csv";
-
+        link.download = "dashboard_costodomestico.csv";
         link.click();
 
         URL.revokeObjectURL(url);
     }
 
     async function eliminaOrdiniTest() {
-    const conferma = confirm(
-        "Vuoi eliminare tutti gli ordini test?"
-    );
+        const conferma = confirm(
+            "Vuoi eliminare tutti gli ordini test?"
+        );
 
-    if (!conferma) {
-        return;
+        if (!conferma) {
+            return;
+        }
+
+        const risposta = await fetch(
+            "https://costodomestico-backend.onrender.com/elimina-ordini-test",
+            {
+                method: "DELETE"
+            }
+        );
+
+        const dati = await risposta.json();
+
+        alert(
+            "Ordini test eliminati: " + dati.ordini_eliminati
+        );
+
+        caricaDashboard();
     }
 
-    const risposta = await fetch(
-        "https://costodomestico-backend.onrender.com/elimina-ordini-test",
-        {
-            method: "DELETE"
-        }
-    );
-
-    const dati = await risposta.json();
-
-    alert(
-        "Ordini test eliminati: " + dati.ordini_eliminati
-    );
-
     caricaDashboard();
-}
-
-caricaDashboard();
-
 </script>
 
 </body>
