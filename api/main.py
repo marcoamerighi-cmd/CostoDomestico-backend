@@ -11,6 +11,7 @@ from pydantic import BaseModel
 
 from api.stripe_config import STRIPE_SECRET_KEY
 from api.email_service import invia_report_tfr_email
+from api.stripe_webhook_config import STRIPE_WEBHOOK_SECRET
 
 from tfr.tfr_models import LavoratoreDomestico, ContrattoDomestico
 from tfr.tfr_calculator import calcola_tfr_annualita_lorde
@@ -24,13 +25,12 @@ from database.ordini_repository import (
     crea_tabella_ordini,
     salva_ordine,
     leggi_ordini,
-    aggiorna_stato_ordine
+    aggiorna_stato_ordine,
+    elimina_ordini_test
 )
 
 from pdf.report_tfr import genera_pdf_tfr
-from api.stripe_webhook_config import (
-    STRIPE_WEBHOOK_SECRET
-)
+
 
 stripe.api_key = STRIPE_SECRET_KEY
 
@@ -78,10 +78,18 @@ class RichiestaTFR(BaseModel):
     anticipi: float = 0
     variazione_istat_foi: float = 2
 
+
 class RichiestaCheckoutTFR(BaseModel):
     email_cliente: str = ""
     nome_cliente: str = ""
     cognome_cliente: str = ""
+
+
+class RichiestaOrdineCostoDomestico(BaseModel):
+    email_cliente: str = ""
+    nome_cliente: str = ""
+    cognome_cliente: str = ""
+
 
 def elabora_tfr(richiesta: RichiestaTFR) -> dict:
     annualita_lorde = []
@@ -157,7 +165,6 @@ def pagina_checkout_tfr():
 
 @app.get("/download-report")
 def pagina_download_report(request: Request):
-
     session_id = request.query_params.get("session_id")
 
     if session_id:
@@ -171,12 +178,14 @@ def pagina_download_report(request: Request):
         media_type="text/html"
     )
 
+
 @app.get("/storico-ordini-page")
 def pagina_storico_ordini():
     return FileResponse(
         path=str(FRONTEND_DIR / "storico_ordini.html"),
         media_type="text/html"
     )
+
 
 @app.get("/dashboard-tfr")
 def pagina_dashboard_tfr():
@@ -185,12 +194,14 @@ def pagina_dashboard_tfr():
         media_type="text/html"
     )
 
+
 @app.get("/dashboard-admin")
 def pagina_dashboard_admin():
     return FileResponse(
         path=str(FRONTEND_DIR / "dashboard_admin.html"),
         media_type="text/html"
     )
+
 
 @app.post("/calcola-tfr")
 def calcola_tfr(richiesta: RichiestaTFR):
@@ -287,10 +298,10 @@ def crea_checkout_tfr(richiesta: RichiestaCheckoutTFR):
             }
         ],
         success_url=(
-    "http://127.0.0.1:8000/download-report"
-    "?session_id={CHECKOUT_SESSION_ID}"
-),
-        cancel_url="http://127.0.0.1:8000/checkout-tfr"
+            "https://costodomestico-backend.onrender.com/download-report"
+            "?session_id={CHECKOUT_SESSION_ID}"
+        ),
+        cancel_url="https://costodomestico-backend.onrender.com/checkout-tfr"
     )
 
     salva_ordine(
@@ -337,9 +348,10 @@ def storico_tfr():
         })
 
     return storico
+
+
 @app.get("/storico-ordini")
 def storico_ordini():
-
     ordini = leggi_ordini()
 
     risultato = []
@@ -359,9 +371,9 @@ def storico_ordini():
 
     return risultato
 
+
 @app.post("/stripe-webhook")
 async def stripe_webhook(request: Request):
-
     payload = await request.body()
 
     signature = request.headers.get(
@@ -369,7 +381,6 @@ async def stripe_webhook(request: Request):
     )
 
     try:
-
         evento = stripe.Webhook.construct_event(
             payload=payload,
             sig_header=signature,
@@ -382,7 +393,6 @@ async def stripe_webhook(request: Request):
         }
 
     if evento["type"] == "checkout.session.completed":
-
         sessione = evento["data"]["object"]
 
         aggiorna_stato_ordine(
@@ -393,12 +403,6 @@ async def stripe_webhook(request: Request):
     return {
         "success": True
     }
-    return risultato
-
-class RichiestaOrdineCostoDomestico(BaseModel):
-    email_cliente: str = ""
-    nome_cliente: str = ""
-    cognome_cliente: str = ""
 
 
 @app.post("/salva-ordine-costo-domestico")
@@ -417,4 +421,14 @@ def salva_ordine_costo_domestico(
 
     return {
         "success": True
+    }
+
+
+@app.delete("/elimina-ordini-test")
+def elimina_ordini_test_endpoint():
+    eliminati = elimina_ordini_test()
+
+    return {
+        "success": True,
+        "ordini_eliminati": eliminati
     }

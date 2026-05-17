@@ -2,7 +2,6 @@ import os
 from datetime import datetime
 
 import psycopg2
-from psycopg2.extras import RealDictCursor
 
 
 DATABASE_URL = os.getenv("DATABASE_URL")
@@ -121,3 +120,23 @@ def aggiorna_stato_ordine(
     conn.commit()
     cursor.close()
     conn.close()
+
+
+def elimina_ordini_test():
+    conn = get_connessione()
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        DELETE FROM ordini
+        WHERE
+            email_cliente ILIKE '%test%'
+            OR email_cliente ILIKE '%postgres%'
+    """)
+
+    eliminati = cursor.rowcount
+
+    conn.commit()
+    cursor.close()
+    conn.close()
+
+    return eliminati
