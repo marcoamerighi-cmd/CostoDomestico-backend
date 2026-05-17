@@ -225,6 +225,14 @@ def pagina_login_admin():
     )
 
 
+@app.get("/area-cliente")
+def pagina_area_cliente():
+    return FileResponse(
+        path=str(FRONTEND_DIR / "area_cliente.html"),
+        media_type="text/html"
+    )
+
+
 @app.post("/login-admin")
 def login_admin(richiesta: RichiestaLoginAdmin):
     if richiesta.password != ADMIN_PASSWORD:
@@ -497,3 +505,30 @@ def elimina_ordini_test_endpoint():
         "success": True,
         "ordini_eliminati": eliminati
     }
+
+
+@app.get("/ordini-cliente")
+def ordini_cliente(email: str):
+
+    ordini = leggi_ordini()
+
+    risultato = []
+
+    for ordine in ordini:
+
+        email_ordine = (ordine[1] or "").lower()
+
+        if email_ordine == email.lower():
+            risultato.append({
+                "id": ordine[0],
+                "email_cliente": ordine[1],
+                "nome_cliente": ordine[2],
+                "cognome_cliente": ordine[3],
+                "prodotto": ordine[4],
+                "importo": ordine[5],
+                "stato": ordine[6],
+                "sessione_stripe": ordine[7],
+                "data_ordine": ordine[8]
+            })
+
+    return risultato

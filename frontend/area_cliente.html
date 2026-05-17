@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <title>Area Cliente - CostoDomestico</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f6f9;
+            padding: 30px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: auto;
+            background: white;
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+        }
+
+        h1 {
+            color: #1f3c88;
+            text-align: center;
+        }
+
+        input {
+            width: 100%;
+            padding: 14px;
+            margin-top: 20px;
+            border-radius: 10px;
+            border: 1px solid #ccc;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+
+        button {
+            margin-top: 15px;
+            padding: 14px 20px;
+            background: #1f3c88;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 30px;
+        }
+
+        th {
+            background: #1f3c88;
+            color: white;
+            padding: 12px;
+        }
+
+        td {
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .msg {
+            margin-top: 20px;
+            color: #666;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+    <h1>Area Cliente</h1>
+
+    <p>
+        Inserisci la tua email per vedere gli acquisti effettuati.
+    </p>
+
+    <input
+        type="email"
+        id="email_cliente"
+        placeholder="La tua email"
+    >
+
+    <button onclick="cercaOrdiniCliente()">
+        Accedi alla mia area
+    </button>
+
+    <div id="messaggio" class="msg"></div>
+
+    <table id="tabella" style="display:none;">
+        <thead>
+            <tr>
+                <th>Prodotto</th>
+                <th>Importo</th>
+                <th>Stato</th>
+                <th>Data</th>
+            </tr>
+        </thead>
+
+        <tbody id="ordini_cliente"></tbody>
+    </table>
+</div>
+
+<script>
+    async function cercaOrdiniCliente() {
+        const email = document.getElementById("email_cliente").value.trim();
+
+        if (!email) {
+            document.getElementById("messaggio").innerText =
+                "Inserisci una email valida.";
+            return;
+        }
+
+        const risposta = await fetch(
+            "https://costodomestico-backend.onrender.com/ordini-cliente?email=" +
+            encodeURIComponent(email)
+        );
+
+        const ordini = await risposta.json();
+
+        const corpo = document.getElementById("ordini_cliente");
+        corpo.innerHTML = "";
+
+        if (ordini.length === 0) {
+            document.getElementById("tabella").style.display = "none";
+            document.getElementById("messaggio").innerText =
+                "Nessun ordine trovato per questa email.";
+            return;
+        }
+
+        document.getElementById("messaggio").innerText =
+            "Ordini trovati: " + ordini.length;
+
+        document.getElementById("tabella").style.display = "table";
+
+        ordini.forEach(ordine => {
+            corpo.innerHTML += `
+                <tr>
+                    <td>${ordine.prodotto}</td>
+                    <td>€ ${Number(ordine.importo).toFixed(2)}</td>
+                    <td>${ordine.stato}</td>
+                    <td>${ordine.data_ordine}</td>
+                </tr>
+            `;
+        });
+    }
+</script>
+
+</body>
+</html>
