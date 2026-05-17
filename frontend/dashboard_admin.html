@@ -114,9 +114,26 @@
 
 <body>
 
-    
+   <script>
+    const tokenAdmin = localStorage.getItem("admin_token");
+
+    if (tokenAdmin !== "admin_sessione_ok") {
+        window.location.href = "/login-admin";
+    }
+
+    function logoutAdmin() {
+        localStorage.removeItem("admin_token");
+        window.location.href = "/login-admin";
+    }
+</script> 
 
 <h1>Dashboard Admin - CostoDomestico</h1>
+
+<div style="text-align:right; margin-bottom:20px;">
+    <button onclick="logoutAdmin()" style="background:#dc2626;">
+        Logout
+    </button>
+</div>
 
 <div class="stats">
 
