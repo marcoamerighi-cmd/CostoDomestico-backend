@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Download Report TFR - CostoDomestico</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f6f9;
+            margin: 0;
+            padding: 40px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 650px;
+            margin: auto;
+            background: white;
+            padding: 35px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        h1 {
+            color: #1f3c88;
+        }
+
+        .success {
+            font-size: 80px;
+            margin-bottom: 20px;
+        }
+
+        .download-box {
+            margin-top: 30px;
+            background: #f8fafc;
+            border: 1px solid #dbe3ec;
+            padding: 25px;
+            border-radius: 12px;
+        }
+
+        button {
+            width: 100%;
+            background-color: #1f3c88;
+            color: white;
+            border: none;
+            padding: 16px;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+
+        button:hover {
+            background-color: #162d66;
+        }
+
+        .email-note {
+            margin-top: 25px;
+            color: #666;
+            font-size: 14px;
+        }
+
+        .loading {
+            margin-top: 15px;
+            color: #1f3c88;
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <div class="success">
+        ✅
+    </div>
+
+    <h1>Pagamento completato</h1>
+
+    <p>
+        Il report professionale TFR è pronto.
+    </p>
+
+    <div class="download-box">
+
+        <h3>
+            Download automatico in corso...
+        </h3>
+
+        <p>
+            Se il download non parte automaticamente,
+            utilizza il pulsante qui sotto.
+        </p>
+
+        <button onclick="scaricaSoloPdf()">
+            Scarica il report PDF
+        </button>
+
+        <div class="loading" id="loading_text">
+            Preparazione PDF...
+        </div>
+
+    </div>
+
+    <div class="email-note">
+        Una copia del report viene inviata anche via email.
+    </div>
+
+</div>
+
+<script>
+
+    let downloadGiaEseguito = false;
+
+    let emailGiaInviata =
+        localStorage.getItem("email_report_tfr_inviata") === "1";
+
+    async function scaricaManuale() {
+
+        if (downloadGiaEseguito) {
+            return;
+        }
+
+        downloadGiaEseguito = true;
+
+        const richiestaSalvata =
+            localStorage.getItem("richiesta_tfr");
+
+        if (!richiestaSalvata) {
+
+            alert(
+                "Dati del report non trovati.\n\nEffettua nuovamente il calcolo TFR."
+            );
+
+            return;
+        }
+
+        const richiesta =
+            JSON.parse(richiestaSalvata);
+
+        try {
+
+            const risposta = await fetch(
+                "http://127.0.0.1:8000/genera-pdf-tfr",
+                {
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+
+                    body: JSON.stringify({
+                        ...richiesta,
+                        email_cliente: emailGiaInviata
+                            ? ""
+                            : richiesta.email_cliente
+                    })
+                }
+            );
+
+            const blob =
+                await risposta.blob();
+
+            const url =
+                window.URL.createObjectURL(blob);
+
+            const link =
+                document.createElement("a");
+
+            link.href = url;
+
+            link.download =
+                "report_tfr_costodomestico.pdf";
+
+            document.body.appendChild(link);
+
+            link.click();
+
+            document.body.removeChild(link);
+
+            window.URL.revokeObjectURL(url);
+
+            localStorage.setItem(
+                "email_report_tfr_inviata",
+                "1"
+            );
+
+            emailGiaInviata = true;
+
+            document.getElementById("loading_text")
+                .textContent =
+                "PDF scaricato correttamente. Una copia è stata inviata via email.";
+
+        } catch (errore) {
+
+            console.error(errore);
+
+            document.getElementById("loading_text")
+                .textContent =
+                "Errore durante il download del PDF.";
+
+            alert(
+                "Errore durante la generazione del PDF."
+            );
+        }
+    }
+
+    async function scaricaSoloPdf() {
+
+        const richiestaSalvata =
+            localStorage.getItem("richiesta_tfr");
+
+        if (!richiestaSalvata) {
+
+            alert(
+                "Dati del report non trovati.\n\nEffettua nuovamente il calcolo TFR."
+            );
+
+            return;
+        }
+
+        const richiesta =
+            JSON.parse(richiestaSalvata);
+
+        try {
+
+            const risposta = await fetch(
+                "http://127.0.0.1:8000/genera-pdf-tfr",
+                {
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+
+                    body: JSON.stringify({
+                        ...richiesta,
+                        email_cliente: ""
+                    })
+                }
+            );
+
+            const blob =
+                await risposta.blob();
+
+            const url =
+                window.URL.createObjectURL(blob);
+
+            const link =
+                document.createElement("a");
+
+            link.href = url;
+
+            link.download =
+                "report_tfr_costodomestico.pdf";
+
+            document.body.appendChild(link);
+
+            link.click();
+
+            document.body.removeChild(link);
+
+            window.URL.revokeObjectURL(url);
+
+            document.getElementById("loading_text")
+                .textContent =
+                "PDF scaricato manualmente.";
+
+        } catch (errore) {
+
+            console.error(errore);
+
+            document.getElementById("loading_text")
+                .textContent =
+                "Errore durante il download manuale del PDF.";
+        }
+    }
+
+    setTimeout(() => {
+        scaricaManuale();
+    }, 1500);
+
+</script>
+
+</body>
+</html>

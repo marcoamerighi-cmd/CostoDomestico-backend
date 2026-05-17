@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Storico TFR - CostoDomestico</title>
+
+    <style>
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f6f9;
+            padding: 30px;
+            margin: 0;
+        }
+
+        h1 {
+            text-align: center;
+            color: #1f3c88;
+            margin-bottom: 30px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+        }
+
+        th {
+            background-color: #1f3c88;
+            color: white;
+            padding: 14px;
+            text-align: left;
+        }
+
+        td {
+            padding: 12px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        tr:hover {
+            background-color: #f2f6ff;
+        }
+
+        .totale {
+            font-weight: bold;
+            color: #1f3c88;
+        }
+
+        @media (max-width: 700px) {
+
+            table {
+                font-size: 14px;
+            }
+
+            th, td {
+                padding: 8px;
+            }
+        }
+
+    </style>
+</head>
+
+<body>
+
+<h1>Storico Calcoli TFR</h1>
+
+<table>
+
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Lavoratore</th>
+            <th>Mesi</th>
+            <th>Quota TFR</th>
+            <th>Totale</th>
+            <th>Data</th>
+        </tr>
+    </thead>
+
+    <tbody id="tabella_storico">
+
+    </tbody>
+
+</table>
+
+<script>
+
+    async function caricaStorico() {
+
+        const risposta = await fetch(
+            "http://127.0.0.1:8000/storico-tfr"
+        );
+
+        const dati = await risposta.json();
+
+        const tabella =
+            document.getElementById("tabella_storico");
+
+        tabella.innerHTML = "";
+
+        dati.forEach(calcolo => {
+
+            const riga = `
+                <tr>
+                    <td>${calcolo.id}</td>
+
+                    <td>
+                        ${calcolo.nome}
+                        ${calcolo.cognome}
+                    </td>
+
+                    <td>${calcolo.mesi_utili}</td>
+
+                    <td>
+                        € ${calcolo.quota_tfr}
+                    </td>
+
+                    <td class="totale">
+                        € ${calcolo.totale_da_liquidare}
+                    </td>
+
+                    <td>
+                        ${calcolo.data_calcolo}
+                    </td>
+                </tr>
+            `;
+
+            tabella.innerHTML += riga;
+        });
+    }
+
+    caricaStorico();
+
+</script>
+
+</body>
+</html>

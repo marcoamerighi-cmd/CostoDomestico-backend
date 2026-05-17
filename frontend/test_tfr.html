@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calcolo TFR - CostoDomestico</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f6f9;
+            margin: 0;
+            padding: 40px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 850px;
+            margin: auto;
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #1f3c88;
+        }
+
+        h2 {
+            color: #1f3c88;
+            margin-top: 35px;
+        }
+
+        label {
+            font-weight: bold;
+            display: block;
+            margin-bottom: 6px;
+        }
+
+        input,
+        select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-sizing: border-box;
+            font-size: 15px;
+        }
+
+        .helper-text {
+            font-size: 14px;
+            color: #666;
+            margin-top: -12px;
+            margin-bottom: 20px;
+        }
+
+        button {
+            width: 100%;
+            background-color: #1f3c88;
+            color: white;
+            border: none;
+            padding: 15px;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #162d66;
+        }
+
+        .risultato {
+            margin-top: 30px;
+            background: #f8fafc;
+            border: 1px solid #dbe3ec;
+            border-radius: 12px;
+            padding: 25px;
+            display: none;
+        }
+
+        .totale {
+            margin-top: 20px;
+            padding: 20px;
+            background-color: #e8f0ff;
+            border-radius: 10px;
+            text-align: center;
+            font-size: 24px;
+            font-weight: bold;
+            color: #1f3c88;
+        }
+
+        .premium-box {
+            margin-top: 25px;
+            padding: 25px;
+            background: #fff4e5;
+            border: 1px solid #ffd28a;
+            border-radius: 12px;
+        }
+
+        .premium-button {
+            background: #ff9800;
+            margin-top: 15px;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .premium-button:hover {
+            background: #e68900;
+        }
+
+        .badge-premium {
+            display: inline-block;
+            background: #ff9800;
+            color: white;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        .prezzo-premium {
+            font-size: 36px;
+            font-weight: bold;
+            color: #1f3c88;
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+
+        .anno-box {
+            background: #f7f9fc;
+            border: 1px solid #dbe3ec;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .anno-info {
+            font-size: 14px;
+            color: #555;
+            margin-bottom: 15px;
+        }
+
+        @media (max-width: 600px) {
+            body {
+                padding: 15px;
+            }
+
+            .container {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1>Calcolo TFR Colf e Badanti</h1>
+
+    <h2>Dati Datore di Lavoro</h2>
+
+    <label>Nome datore</label>
+    <input id="nome_datore">
+
+    <label>Cognome datore</label>
+    <input id="cognome_datore">
+    <label>Email per ricevere il report</label>
+    <input id="email_cliente" type="email">
+    <h2>Dati Lavoratore</h2>
+
+    <label>Nome lavoratore</label>
+    <input id="nome">
+
+    <label>Cognome lavoratore</label>
+    <input id="cognome">
+
+    <label>Tipo di lavoro</label>
+    <select id="tipo_lavoro" onchange="aggiornaLivello()">
+        <option value="">Seleziona</option>
+        <option value="B">Colf / pulizie casa</option>
+        <option value="BS">Babysitter</option>
+        <option value="CS">Badante persona autosufficiente</option>
+        <option value="DS">Badante persona non autosufficiente</option>
+    </select>
+
+    <label>Tipo di rapporto</label>
+    <select id="tipo_rapporto">
+        <option value="">Seleziona</option>
+        <option value="convivente">Convivente</option>
+        <option value="non_convivente">Non convivente</option>
+    </select>
+
+    <label>Livello CCNL</label>
+    <select id="livello">
+        <option value="">Seleziona</option>
+        <option value="A">A</option>
+        <option value="AS">AS</option>
+        <option value="B">B</option>
+        <option value="BS">BS</option>
+        <option value="C">C</option>
+        <option value="CS">CS</option>
+        <option value="D">D</option>
+        <option value="DS">DS</option>
+    </select>
+
+    <p class="helper-text">
+        Il livello viene suggerito automaticamente, ma puoi modificarlo.
+    </p>
+
+    <label>Data assunzione</label>
+    <input id="data_assunzione" type="date" onchange="generaAnnualita()">
+
+    <label>Data cessazione</label>
+    <input id="data_cessazione" type="date" onchange="generaAnnualita()">
+
+    <label>Ore settimanali</label>
+    <input id="ore_settimanali" type="number">
+
+    <label>Anticipi TFR (€)</label>
+    <input id="anticipi" type="number">
+
+    <h2>Retribuzioni Annuali Nette</h2>
+
+    <p class="helper-text">
+        Inserisci quanto hai pagato al lavoratore come netto annuale.
+        Il sistema convertirà automaticamente il netto in lordo per il calcolo TFR.
+    </p>
+
+    <div id="annualita_container"></div>
+
+    <button onclick="calcolaTFR()">
+        Calcola TFR
+    </button>
+
+    <div id="risultato" class="risultato">
+
+        <h2 id="nome_lavoratore"></h2>
+
+        <div>
+            <strong>Mesi utili:</strong>
+            <span id="mesi_utili"></span>
+        </div>
+
+        <div>
+            <strong>Quota TFR stimata:</strong>
+            € <span id="quota_tfr"></span>
+        </div>
+
+        <div class="totale">
+            Totale da liquidare:
+            € <span id="totale_da_liquidare"></span>
+        </div>
+
+        <div class="premium-box">
+
+            <div class="badge-premium">
+                PDF PROFESSIONALE
+            </div>
+
+            <h3 style="margin-top:0; color:#1f3c88;">
+                Scarica il report completo TFR
+            </h3>
+
+            <p style="line-height:1.6;">
+                Ottieni il report professionale con dettaglio annuale,
+                conversione netto/lordo, rivalutazione, anticipi e riepilogo pronto da stampare.
+            </p>
+
+            <ul style="line-height:1.8;">
+                <li>✔ Documento PDF professionale</li>
+                <li>✔ Dettaglio netto e lordo stimato</li>
+                <li>✔ Calcolo TFR anno per anno</li>
+                <li>✔ Rivalutazione inclusa</li>
+                <li>✔ Formato professionale CostoDomestico.it</li>
+            </ul>
+
+            <div class="prezzo-premium">
+                € 7,90
+            </div>
+
+            <button class="premium-button" onclick="scaricaPDF()">
+                Scarica il report PDF completo
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+    function aggiornaLivello() {
+        const tipoLavoro = document.getElementById("tipo_lavoro");
+        document.getElementById("livello").value = tipoLavoro.value;
+    }
+
+    function calcolaMesiUtiliPerAnno(dataInizio, dataFine, anno) {
+        let mesiUtili = 0;
+
+        for (let mese = 0; mese < 12; mese++) {
+            const primoGiorno = new Date(anno, mese, 1);
+            const ultimoGiorno = new Date(anno, mese + 1, 0);
+
+            const inizioEffettivo =
+                dataInizio > primoGiorno ? dataInizio : primoGiorno;
+
+            const fineEffettiva =
+                dataFine < ultimoGiorno ? dataFine : ultimoGiorno;
+
+            if (inizioEffettivo > fineEffettiva) {
+                continue;
+            }
+
+            const giorni =
+                Math.floor(
+                    (fineEffettiva - inizioEffettivo) /
+                    (1000 * 60 * 60 * 24)
+                ) + 1;
+
+            if (giorni >= 15) {
+                mesiUtili += 1;
+            }
+        }
+
+        return mesiUtili;
+    }
+
+    function generaAnnualita() {
+        const dataAssunzioneValue =
+            document.getElementById("data_assunzione").value;
+
+        const dataCessazioneValue =
+            document.getElementById("data_cessazione").value;
+
+        if (!dataAssunzioneValue || !dataCessazioneValue) {
+            return;
+        }
+
+        const dataAssunzione =
+            new Date(dataAssunzioneValue);
+
+        const dataCessazione =
+            new Date(dataCessazioneValue);
+
+        const annoInizio =
+            dataAssunzione.getFullYear();
+
+        const annoFine =
+            dataCessazione.getFullYear();
+
+        const container =
+            document.getElementById("annualita_container");
+
+        container.innerHTML = "";
+
+        for (let anno = annoInizio; anno <= annoFine; anno++) {
+            const mesiUtili =
+                calcolaMesiUtiliPerAnno(
+                    dataAssunzione,
+                    dataCessazione,
+                    anno
+                );
+
+            container.innerHTML += `
+                <div class="anno-box">
+                    <h3>${anno}</h3>
+
+                    <div class="anno-info">
+                        Mesi utili calcolati:
+                        <strong>${mesiUtili}</strong>
+                    </div>
+
+                    <label>
+                        Retribuzione netta annuale (€)
+                    </label>
+
+                    <input
+                        type="number"
+                        id="netto_${anno}"
+                    >
+
+                    <input
+                        type="hidden"
+                        id="mesi_${anno}"
+                        value="${mesiUtili}"
+                    >
+                </div>
+            `;
+        }
+    }
+
+    function costruisciRichiesta() {
+        const dataAssunzione =
+            document.getElementById("data_assunzione").value;
+
+        const dataCessazione =
+            document.getElementById("data_cessazione").value;
+
+        const annoInizio =
+            new Date(dataAssunzione).getFullYear();
+
+        const annoFine =
+            new Date(dataCessazione).getFullYear();
+
+        const annualita = [];
+
+        for (let anno = annoInizio; anno <= annoFine; anno++) {
+            annualita.push({
+                anno: anno,
+                retribuzione_netta:
+                    Number(document.getElementById(`netto_${anno}`).value),
+                mesi_utili:
+                    Number(document.getElementById(`mesi_${anno}`).value)
+            });
+        }
+
+        return {
+            nome_datore:
+                document.getElementById("nome_datore").value,
+
+            cognome_datore:
+                document.getElementById("cognome_datore").value,
+            email_cliente:
+                document.getElementById("email_cliente").value,
+
+            nome:
+                document.getElementById("nome").value,
+
+            cognome:
+                document.getElementById("cognome").value,
+
+            livello:
+                document.getElementById("livello").value,
+
+            convivente:
+                document.getElementById("tipo_rapporto").value === "convivente",
+
+            data_assunzione:
+                dataAssunzione,
+
+            data_cessazione:
+                dataCessazione,
+
+            ore_settimanali:
+                Number(document.getElementById("ore_settimanali").value),
+
+            annualita:
+                annualita,
+
+            variazione_istat_foi:
+                2,
+
+            anticipi:
+                Number(document.getElementById("anticipi").value)
+        };
+    }
+
+    async function calcolaTFR() {
+        const richiesta = costruisciRichiesta();
+
+        const risposta = await fetch(
+            "http://127.0.0.1:8000/calcola-tfr",
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(richiesta)
+            }
+        );
+
+        const dati = await risposta.json();
+
+        document.getElementById("risultato").style.display = "block";
+        document.getElementById("nome_lavoratore").textContent = dati.lavoratore;
+        document.getElementById("mesi_utili").textContent = dati.mesi_utili;
+        document.getElementById("quota_tfr").textContent =
+            dati.dettaglio_tfr.quota_tfr;
+        document.getElementById("totale_da_liquidare").textContent =
+            dati.liquidazione.totale_da_liquidare;
+    }
+
+    function scaricaPDF() {
+    const richiesta = costruisciRichiesta();
+    localStorage.removeItem(
+        "email_report_tfr_inviata"
+    );
+    localStorage.setItem(
+        "richiesta_tfr",
+        JSON.stringify(richiesta)
+    );
+
+    window.location.href = "http://127.0.0.1:8000/checkout-tfr";
+}
+</script>
+
+</body>
+</html>

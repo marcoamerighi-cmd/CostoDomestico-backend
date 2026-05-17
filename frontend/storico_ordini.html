@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <title>Storico Ordini TFR</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f6f9;
+            padding: 30px;
+        }
+
+        h1 {
+            color: #1f3c88;
+            text-align: center;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            margin-top: 30px;
+        }
+
+        th {
+            background: #1f3c88;
+            color: white;
+            padding: 12px;
+        }
+
+        td {
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+            font-size: 14px;
+        }
+
+        tr:hover {
+            background: #f2f6ff;
+        }
+    </style>
+</head>
+
+<body>
+
+<h1>Storico Ordini TFR</h1>
+
+<table>
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Email</th>
+            <th>Nome</th>
+            <th>Cognome</th>
+            <th>Prodotto</th>
+            <th>Importo</th>
+            <th>Stato</th>
+            <th>Data</th>
+        </tr>
+    </thead>
+
+    <tbody id="tabella_ordini"></tbody>
+</table>
+
+<script>
+    async function caricaOrdini() {
+        const risposta = await fetch(
+            "http://127.0.0.1:8000/storico-ordini"
+        );
+
+        const ordini = await risposta.json();
+
+        const tabella = document.getElementById("tabella_ordini");
+
+        tabella.innerHTML = "";
+
+        ordini.forEach(ordine => {
+            tabella.innerHTML += `
+                <tr>
+                    <td>${ordine.id}</td>
+                    <td>${ordine.email_cliente}</td>
+                    <td>${ordine.nome_cliente}</td>
+                    <td>${ordine.cognome_cliente}</td>
+                    <td>${ordine.prodotto}</td>
+                    <td>€ ${ordine.importo}</td>
+                    <td>${ordine.stato}</td>
+                    <td>${ordine.data_ordine}</td>
+                </tr>
+            `;
+        });
+    }
+
+    caricaOrdini();
+</script>
+
+</body>
+</html>

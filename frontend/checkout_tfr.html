@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout Report TFR - CostoDomestico</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f6f9;
+            margin: 0;
+            padding: 40px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 650px;
+            margin: auto;
+            background: white;
+            padding: 35px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        h1 {
+            color: #1f3c88;
+        }
+
+        .box {
+            background: #f8fafc;
+            border: 1px solid #dbe3ec;
+            padding: 25px;
+            border-radius: 12px;
+            margin-top: 25px;
+            text-align: left;
+        }
+
+        .price {
+            font-size: 42px;
+            font-weight: bold;
+            color: #1f3c88;
+            margin: 25px 0;
+        }
+
+        button {
+            width: 100%;
+            background-color: #ff9800;
+            color: white;
+            border: none;
+            padding: 17px;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #e68900;
+        }
+
+        .secure {
+            margin-top: 15px;
+            color: #666;
+            font-size: 14px;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1>Report Professionale TFR</h1>
+
+    <p>
+        Scarica il report completo in PDF con il dettaglio del calcolo TFR.
+    </p>
+
+    <div class="box">
+        <h3>Il report include:</h3>
+
+        <ul>
+            <li>Dettaglio annualità</li>
+            <li>Conversione netto/lordo stimata</li>
+            <li>Quota TFR anno per anno</li>
+            <li>Rivalutazione TFR</li>
+            <li>Anticipi già corrisposti</li>
+            <li>Totale finale da liquidare</li>
+            <li>Documento pronto da stampare</li>
+        </ul>
+    </div>
+
+    <div class="price">
+        € 7,90
+    </div>
+
+    <button onclick="pagaReport()">
+        Paga e scarica il PDF
+    </button>
+
+    <div class="secure">
+        Pagamento sicuro con carta tramite Stripe.
+    </div>
+
+</div>
+
+<script>
+    async function pagaReport() {
+        const richiestaSalvata =
+            localStorage.getItem("richiesta_tfr");
+
+        let datiCliente = {};
+
+        if (richiestaSalvata) {
+            const richiesta =
+                JSON.parse(richiestaSalvata);
+
+            datiCliente = {
+                email_cliente: richiesta.email_cliente,
+                nome_cliente: richiesta.nome,
+                cognome_cliente: richiesta.cognome
+            };
+        }
+
+        const risposta = await fetch(
+            "http://127.0.0.1:8000/crea-checkout-tfr",
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(datiCliente)
+            }
+        );
+
+        const dati =
+            await risposta.json();
+
+        window.location.href =
+            dati.checkout_url;
+    }
+</script>
+
+</body>
+</html>

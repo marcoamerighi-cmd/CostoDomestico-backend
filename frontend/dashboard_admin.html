@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard Admin - CostoDomestico</title>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f6f9;
+            padding: 30px;
+            color: #333;
+        }
+
+        h1 {
+            color: #1f3c88;
+            text-align: center;
+            margin-bottom: 35px;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns:
+                repeat(auto-fit, minmax(220px, 1fr));
+            gap: 18px;
+            margin-bottom: 35px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 14px;
+            padding: 24px;
+            box-shadow: 0 4px 14px rgba(0,0,0,0.08);
+            text-align: center;
+        }
+
+        .card strong {
+            display: block;
+            color: #666;
+            margin-bottom: 10px;
+        }
+
+        .card span {
+            font-size: 30px;
+            font-weight: bold;
+            color: #1f3c88;
+        }
+
+        .filters {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 14px;
+            margin-bottom: 25px;
+        }
+
+        .filters input,
+        .filters select {
+            padding: 12px;
+            border-radius: 10px;
+            border: 1px solid #ccc;
+            min-width: 220px;
+            font-size: 15px;
+        }
+
+        .actions {
+            margin-bottom: 25px;
+        }
+
+        button {
+            background: #16a34a;
+            color: white;
+            border: none;
+            padding: 14px 20px;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            margin-top: 25px;
+        }
+
+        th {
+            background: #1f3c88;
+            color: white;
+            padding: 12px;
+        }
+
+        td {
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+            font-size: 14px;
+        }
+
+        tr:hover {
+            background: #f2f6ff;
+        }
+
+        canvas {
+            background: white;
+            border-radius: 14px;
+            padding: 20px;
+            margin-top: 35px;
+            box-shadow: 0 4px 14px rgba(0,0,0,0.08);
+        }
+    </style>
+</head>
+
+<body>
+
+<script>
+    const passwordCorretta = "admin123";
+
+    const passwordInserita = prompt(
+        "Inserisci password amministratore"
+    );
+
+    if (passwordInserita !== passwordCorretta) {
+
+        document.body.innerHTML =
+            "<h1 style='color:red;text-align:center;margin-top:80px;'>Accesso negato</h1>";
+
+        throw new Error("Accesso negato");
+    }
+</script>
+
+<h1>Dashboard Admin - CostoDomestico</h1>
+
+<div class="stats">
+
+    <div class="card">
+        <strong>Ordini totali</strong>
+        <span id="totale_ordini">0</span>
+    </div>
+
+    <div class="card">
+        <strong>Incasso totale</strong>
+        <span id="incasso_totale">€ 0,00</span>
+    </div>
+
+    <div class="card">
+        <strong>Prodotti venduti</strong>
+        <span id="totale_prodotti">0</span>
+    </div>
+
+</div>
+
+<div class="actions">
+    <button onclick="esportaCSV()">
+        Esporta CSV
+    </button>
+</div>
+
+<div class="filters">
+
+    <input
+        type="text"
+        id="ricerca"
+        placeholder="Cerca cliente/email"
+        oninput="filtraOrdini()"
+    >
+
+    <select
+        id="filtro_stato"
+        onchange="filtraOrdini()"
+    >
+        <option value="">
+            Tutti gli stati
+        </option>
+
+        <option value="checkout_creato">
+            Checkout creato
+        </option>
+
+        <option value="pagato">
+            Pagato
+        </option>
+    </select>
+
+    <select
+        id="filtro_prodotto"
+        onchange="filtraOrdini()"
+    >
+        <option value="">
+            Tutti i prodotti
+        </option>
+
+        <option value="Report Professionale TFR">
+            TFR
+        </option>
+
+        <option value="Costo Domestico">
+            Costo Domestico
+        </option>
+    </select>
+
+</div>
+
+<h2>Storico ordini</h2>
+
+<table>
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Email</th>
+            <th>Nome</th>
+            <th>Cognome</th>
+            <th>Prodotto</th>
+            <th>Importo</th>
+            <th>Stato</th>
+            <th>Data</th>
+        </tr>
+    </thead>
+
+    <tbody id="tabella_ordini"></tbody>
+</table>
+
+<h2 style="margin-top:40px;">
+    Vendite
+</h2>
+
+<canvas id="graficoVendite"></canvas>
+
+<script>
+
+    let tuttiOrdini = [];
+
+    function euro(valore) {
+
+        return new Intl.NumberFormat(
+            "it-IT",
+            {
+                style: "currency",
+                currency: "EUR"
+            }
+        ).format(valore || 0);
+    }
+
+    async function caricaDashboard() {
+
+        const risposta = await fetch(
+            "http://127.0.0.1:8000/storico-ordini"
+        );
+
+        tuttiOrdini =
+            await risposta.json();
+
+        aggiornaDashboard(tuttiOrdini);
+
+        creaGrafico(tuttiOrdini);
+    }
+
+    function aggiornaDashboard(ordini) {
+
+        document.getElementById(
+            "totale_ordini"
+        ).textContent = ordini.length;
+
+        const incassoTotale =
+            ordini.reduce(
+                (totale, ordine) =>
+                    totale + Number(ordine.importo || 0),
+                0
+            );
+
+        document.getElementById(
+            "incasso_totale"
+        ).textContent =
+            euro(incassoTotale);
+
+        document.getElementById(
+            "totale_prodotti"
+        ).textContent =
+            ordini.length;
+
+        const tabella =
+            document.getElementById(
+                "tabella_ordini"
+            );
+
+        tabella.innerHTML = "";
+
+        ordini.forEach(ordine => {
+
+            tabella.innerHTML += `
+                <tr>
+                    <td>${ordine.id}</td>
+                    <td>${ordine.email_cliente}</td>
+                    <td>${ordine.nome_cliente}</td>
+                    <td>${ordine.cognome_cliente}</td>
+                    <td>${ordine.prodotto}</td>
+                    <td>${euro(ordine.importo)}</td>
+                    <td>${ordine.stato}</td>
+                    <td>${ordine.data_ordine}</td>
+                </tr>
+            `;
+        });
+    }
+
+    function filtraOrdini() {
+
+        const testo =
+            document.getElementById(
+                "ricerca"
+            ).value.toLowerCase();
+
+        const stato =
+            document.getElementById(
+                "filtro_stato"
+            ).value;
+
+        const prodotto =
+            document.getElementById(
+                "filtro_prodotto"
+            ).value;
+
+        const filtrati =
+            tuttiOrdini.filter(ordine => {
+
+                const matchTesto =
+                    ordine.email_cliente
+                        .toLowerCase()
+                        .includes(testo)
+                    ||
+                    ordine.nome_cliente
+                        .toLowerCase()
+                        .includes(testo)
+                    ||
+                    ordine.cognome_cliente
+                        .toLowerCase()
+                        .includes(testo);
+
+                const matchStato =
+                    stato === ""
+                    ||
+                    ordine.stato === stato;
+
+                const matchProdotto =
+                    prodotto === ""
+                    ||
+                    ordine.prodotto === prodotto;
+
+                return (
+                    matchTesto
+                    &&
+                    matchStato
+                    &&
+                    matchProdotto
+                );
+            });
+
+        aggiornaDashboard(filtrati);
+    }
+
+    function creaGrafico(ordini) {
+
+        const venditePerData = {};
+
+        ordini.forEach(ordine => {
+
+            const data =
+                ordine.data_ordine.split("T")[0];
+
+            if (!venditePerData[data]) {
+                venditePerData[data] = 0;
+            }
+
+            venditePerData[data] +=
+                Number(ordine.importo || 0);
+        });
+
+        new Chart(
+            document.getElementById(
+                "graficoVendite"
+            ),
+            {
+                type: "bar",
+
+                data: {
+
+                    labels:
+                        Object.keys(venditePerData),
+
+                    datasets: [{
+                        label: "Vendite €",
+
+                        data:
+                            Object.values(
+                                venditePerData
+                            )
+                    }]
+                }
+            }
+        );
+    }
+
+    function esportaCSV() {
+
+        let csv =
+            "ID,Email,Nome,Cognome,Prodotto,Importo,Stato,Data\n";
+
+        tuttiOrdini.forEach(ordine => {
+
+            csv += [
+
+                ordine.id,
+                ordine.email_cliente,
+                ordine.nome_cliente,
+                ordine.cognome_cliente,
+                ordine.prodotto,
+                ordine.importo,
+                ordine.stato,
+                ordine.data_ordine
+
+            ].join(",") + "\n";
+        });
+
+        const blob =
+            new Blob(
+                [csv],
+                {
+                    type:
+                        "text/csv;charset=utf-8;"
+                }
+            );
+
+        const url =
+            URL.createObjectURL(blob);
+
+        const link =
+            document.createElement("a");
+
+        link.href = url;
+
+        link.download =
+            "dashboard_costodomestico.csv";
+
+        link.click();
+
+        URL.revokeObjectURL(url);
+    }
+
+    caricaDashboard();
+
+</script>
+
+</body>
+</html>
