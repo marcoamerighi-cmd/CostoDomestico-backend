@@ -1,3 +1,5 @@
 import os
 
-STRIPE_SECRET_KEY = os.getenv("STRIPE_SECRET_KEY", "")
+RESEND_API_KEY = os.getenv("RESEND_API_KEY", "")
+
+EMAIL_MITTENTE = "CostoDomestico <support@costodomestico.it>"
