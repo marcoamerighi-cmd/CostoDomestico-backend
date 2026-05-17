@@ -29,6 +29,11 @@ from database.ordini_repository import (
     aggiorna_stato_ordine,
     elimina_ordini_test
 )
+from database.clienti_repository import (
+    crea_tabella_clienti,
+    salva_o_aggiorna_cliente,
+    leggi_clienti
+)
 
 from pdf.report_tfr import genera_pdf_tfr
 
@@ -47,13 +52,16 @@ app.add_middleware(
 
 crea_database()
 crea_tabella_ordini()
+crea_tabella_clienti()
 
 BASE_DIR = Path(__file__).resolve().parents[1]
 FRONTEND_DIR = BASE_DIR / "frontend"
 PDF_DIR = BASE_DIR / "pdf_generati"
 PDF_DIR.mkdir(exist_ok=True)
+
 ADMIN_PASSWORD = os.getenv("ADMIN_PASSWORD", "")
 ADMIN_TOKEN = "admin_sessione_ok"
+
 
 class AnnualitaTFR(BaseModel):
     anno: int
@@ -209,6 +217,27 @@ def pagina_dashboard_admin():
     )
 
 
+@app.get("/login-admin")
+def pagina_login_admin():
+    return FileResponse(
+        path=str(FRONTEND_DIR / "login_admin.html"),
+        media_type="text/html"
+    )
+
+
+@app.post("/login-admin")
+def login_admin(richiesta: RichiestaLoginAdmin):
+    if richiesta.password != ADMIN_PASSWORD:
+        return {
+            "success": False
+        }
+
+    return {
+        "success": True,
+        "token": ADMIN_TOKEN
+    }
+
+
 @app.post("/calcola-tfr")
 def calcola_tfr(richiesta: RichiestaTFR):
     risultato = elabora_tfr(richiesta)
@@ -320,7 +349,38 @@ def crea_checkout_tfr(richiesta: RichiestaCheckoutTFR):
         sessione_stripe=sessione.id
     )
 
+    salva_o_aggiorna_cliente(
+        email=richiesta.email_cliente,
+        nome=richiesta.nome_cliente,
+        cognome=richiesta.cognome_cliente
+    )
+
     return {"checkout_url": sessione.url}
+
+
+@app.post("/salva-ordine-costo-domestico")
+def salva_ordine_costo_domestico(
+    richiesta: RichiestaOrdineCostoDomestico
+):
+    salva_ordine(
+        email_cliente=richiesta.email_cliente,
+        nome_cliente=richiesta.nome_cliente,
+        cognome_cliente=richiesta.cognome_cliente,
+        prodotto="Costo Domestico",
+        importo=9.90,
+        stato="pagato",
+        sessione_stripe="checkout_statico_costo_domestico"
+    )
+
+    salva_o_aggiorna_cliente(
+        email=richiesta.email_cliente,
+        nome=richiesta.nome_cliente,
+        cognome=richiesta.cognome_cliente
+    )
+
+    return {
+        "success": True
+    }
 
 
 @app.get("/pagamento-successo")
@@ -378,6 +438,24 @@ def storico_ordini():
     return risultato
 
 
+@app.get("/clienti")
+def clienti():
+    elenco = leggi_clienti()
+
+    risultato = []
+
+    for cliente in elenco:
+        risultato.append({
+            "id": cliente[0],
+            "email": cliente[1],
+            "nome": cliente[2],
+            "cognome": cliente[3],
+            "data_creazione": cliente[4]
+        })
+
+    return risultato
+
+
 @app.post("/stripe-webhook")
 async def stripe_webhook(request: Request):
     payload = await request.body()
@@ -411,25 +489,6 @@ async def stripe_webhook(request: Request):
     }
 
 
-@app.post("/salva-ordine-costo-domestico")
-def salva_ordine_costo_domestico(
-    richiesta: RichiestaOrdineCostoDomestico
-):
-    salva_ordine(
-        email_cliente=richiesta.email_cliente,
-        nome_cliente=richiesta.nome_cliente,
-        cognome_cliente=richiesta.cognome_cliente,
-        prodotto="Costo Domestico",
-        importo=9.90,
-        stato="pagato",
-        sessione_stripe="checkout_statico_costo_domestico"
-    )
-
-    return {
-        "success": True
-    }
-
-
 @app.delete("/elimina-ordini-test")
 def elimina_ordini_test_endpoint():
     eliminati = elimina_ordini_test()
@@ -437,26 +496,4 @@ def elimina_ordini_test_endpoint():
     return {
         "success": True,
         "ordini_eliminati": eliminati
-    }
-
-
-@app.get("/login-admin")
-def pagina_login_admin():
-    return FileResponse(
-        path=str(FRONTEND_DIR / "login_admin.html"),
-        media_type="text/html"
-    )
-
-
-@app.post("/login-admin")
-def login_admin(richiesta: RichiestaLoginAdmin):
-
-    if richiesta.password != ADMIN_PASSWORD:
-        return {
-            "success": False
-        }
-
-    return {
-        "success": True,
-        "token": ADMIN_TOKEN
     }
