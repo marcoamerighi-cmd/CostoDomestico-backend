@@ -1,6 +1,7 @@
 from datetime import date
 from typing import List
 from pathlib import Path
+import os
 
 import stripe
 
@@ -51,7 +52,7 @@ BASE_DIR = Path(__file__).resolve().parents[1]
 FRONTEND_DIR = BASE_DIR / "frontend"
 PDF_DIR = BASE_DIR / "pdf_generati"
 PDF_DIR.mkdir(exist_ok=True)
-
+ADMIN_PASSWORD = os.getenv("ADMIN_PASSWORD", "")
 
 class AnnualitaTFR(BaseModel):
     anno: int
@@ -196,7 +197,15 @@ def pagina_dashboard_tfr():
 
 
 @app.get("/dashboard-admin")
-def pagina_dashboard_admin():
+def pagina_dashboard_admin(request: Request):
+
+    password = request.query_params.get("password")
+
+    if password != ADMIN_PASSWORD:
+        return {
+            "errore": "Accesso non autorizzato"
+        }
+
     return FileResponse(
         path=str(FRONTEND_DIR / "dashboard_admin.html"),
         media_type="text/html"
