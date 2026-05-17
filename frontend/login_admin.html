@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <title>Login Admin - CostoDomestico</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f6f9;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .box {
+            background: white;
+            padding: 35px;
+            border-radius: 14px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+            width: 360px;
+            text-align: center;
+        }
+
+        h1 {
+            color: #1f3c88;
+        }
+
+        input {
+            width: 100%;
+            padding: 14px;
+            margin-top: 18px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+
+        button {
+            width: 100%;
+            margin-top: 20px;
+            padding: 14px;
+            background: #1f3c88;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 17px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .errore {
+            color: red;
+            margin-top: 15px;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="box">
+    <h1>Login Admin</h1>
+
+    <input
+        type="password"
+        id="password"
+        placeholder="Password amministratore"
+    >
+
+    <button onclick="loginAdmin()">
+        Accedi
+    </button>
+
+    <div id="errore" class="errore"></div>
+</div>
+
+<script>
+    async function loginAdmin() {
+        const password = document.getElementById("password").value;
+
+        const risposta = await fetch(
+            "/login-admin",
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    password: password
+                })
+            }
+        );
+
+        const dati = await risposta.json();
+
+        if (dati.success) {
+            localStorage.setItem("admin_token", dati.token);
+            window.location.href = "/dashboard-admin";
+        } else {
+            document.getElementById("errore").innerText =
+                "Password non corretta";
+        }
+    }
+</script>
+
+</body>
+</html>

@@ -53,6 +53,7 @@ FRONTEND_DIR = BASE_DIR / "frontend"
 PDF_DIR = BASE_DIR / "pdf_generati"
 PDF_DIR.mkdir(exist_ok=True)
 ADMIN_PASSWORD = os.getenv("ADMIN_PASSWORD", "")
+ADMIN_TOKEN = "admin_sessione_ok"
 
 class AnnualitaTFR(BaseModel):
     anno: int
@@ -90,6 +91,10 @@ class RichiestaOrdineCostoDomestico(BaseModel):
     email_cliente: str = ""
     nome_cliente: str = ""
     cognome_cliente: str = ""
+
+
+class RichiestaLoginAdmin(BaseModel):
+    password: str
 
 
 def elabora_tfr(richiesta: RichiestaTFR) -> dict:
@@ -197,15 +202,7 @@ def pagina_dashboard_tfr():
 
 
 @app.get("/dashboard-admin")
-def pagina_dashboard_admin(request: Request):
-
-    password = request.query_params.get("password")
-
-    if password != ADMIN_PASSWORD:
-        return {
-            "errore": "Accesso non autorizzato"
-        }
-
+def pagina_dashboard_admin():
     return FileResponse(
         path=str(FRONTEND_DIR / "dashboard_admin.html"),
         media_type="text/html"
@@ -440,4 +437,26 @@ def elimina_ordini_test_endpoint():
     return {
         "success": True,
         "ordini_eliminati": eliminati
+    }
+
+
+@app.get("/login-admin")
+def pagina_login_admin():
+    return FileResponse(
+        path=str(FRONTEND_DIR / "login_admin.html"),
+        media_type="text/html"
+    )
+
+
+@app.post("/login-admin")
+def login_admin(richiesta: RichiestaLoginAdmin):
+
+    if richiesta.password != ADMIN_PASSWORD:
+        return {
+            "success": False
+        }
+
+    return {
+        "success": True,
+        "token": ADMIN_TOKEN
     }
