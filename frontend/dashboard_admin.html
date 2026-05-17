@@ -152,6 +152,16 @@
         <span id="totale_prodotti">0</span>
     </div>
 
+    <div class="card">
+    <strong>Ordini pagati</strong>
+    <span id="ordini_pagati">0</span>
+</div>
+
+<div class="card">
+    <strong>Ultimo cliente</strong>
+    <span id="ultimo_cliente" style="font-size:16px;">-</span>
+</div>
+
 </div>
 
 <div class="actions" style="display:flex; gap:12px; flex-wrap:wrap;">
@@ -289,6 +299,25 @@
             "totale_prodotti"
         ).textContent =
             ordini.length;
+
+const ordiniPagati = ordini.filter(
+    ordine => ordine.stato === "pagato"
+).length;
+
+document.getElementById(
+    "ordini_pagati"
+).textContent =
+    ordiniPagati;
+
+const ultimoCliente =
+    ordini.length > 0
+        ? ordini[0].email_cliente
+        : "-";
+
+document.getElementById(
+    "ultimo_cliente"
+).textContent =
+    ultimoCliente;
 
         const tabella =
             document.getElementById(
