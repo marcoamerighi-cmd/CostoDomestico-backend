@@ -154,9 +154,17 @@
 
 </div>
 
-<div class="actions">
+<div class="actions" style="display:flex; gap:12px; flex-wrap:wrap;">
     <button onclick="esportaCSV()">
         Esporta CSV
+    </button>
+
+    <button onclick="eliminaOrdiniTest()" style="background:#dc2626;">
+        Elimina ordini test
+    </button>
+
+    <button onclick="logoutAdmin()" style="background:#374151;">
+        Logout
     </button>
 </div>
 
@@ -449,7 +457,32 @@
         URL.revokeObjectURL(url);
     }
 
+    async function eliminaOrdiniTest() {
+    const conferma = confirm(
+        "Vuoi eliminare tutti gli ordini test?"
+    );
+
+    if (!conferma) {
+        return;
+    }
+
+    const risposta = await fetch(
+        "https://costodomestico-backend.onrender.com/elimina-ordini-test",
+        {
+            method: "DELETE"
+        }
+    );
+
+    const dati = await risposta.json();
+
+    alert(
+        "Ordini test eliminati: " + dati.ordini_eliminati
+    );
+
     caricaDashboard();
+}
+
+caricaDashboard();
 
 </script>
 
