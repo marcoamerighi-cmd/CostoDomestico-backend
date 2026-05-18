@@ -196,6 +196,12 @@
         <option value="non_convivente">Non convivente</option>
     </select>
 
+    <label>Tipo contratto</label>
+    <select id="tipo_contratto">
+        <option value="indeterminato">Tempo indeterminato</option>
+        <option value="determinato">Tempo determinato</option>
+    </select>
+
     <label>Livello CCNL</label>
     <select id="livello">
         <option value="">Seleziona</option>
@@ -440,6 +446,9 @@
 
             convivente:
                 document.getElementById("tipo_rapporto").value === "convivente",
+
+                tempo_determinato:
+                document.getElementById("tipo_contratto").value === "determinato",
 
             data_assunzione:
                 dataAssunzione,

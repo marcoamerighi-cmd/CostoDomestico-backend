@@ -78,6 +78,7 @@ class RichiestaTFR(BaseModel):
     cognome: str
     livello: str
     convivente: bool
+    tempo_determinato: bool = False
 
     data_assunzione: date
     data_cessazione: date
@@ -143,6 +144,7 @@ def elabora_tfr(richiesta: RichiestaTFR) -> dict:
         "lavoratore": f"{richiesta.nome} {richiesta.cognome}",
         "livello": richiesta.livello,
         "convivente": richiesta.convivente,
+        "tempo_determinato": richiesta.tempo_determinato,
         "mesi_utili": mesi_totali,
         "dettaglio_anni": risultato_annuale["dettaglio_anni"],
         "annualita_elaborate": annualita_lorde,
