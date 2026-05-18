@@ -50,4 +50,4 @@ def converti_netto_in_lordo(
 
         lordo_annuo = nuovo_lordo
 
-    return round(lordo_annuo, 2)
+    return float(f"{lordo_annuo:.2f}")

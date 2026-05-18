@@ -215,7 +215,10 @@ def calcola_tfr_annualita_lorde(
             retribuzione_lorda / 12
         ) * mesi_utili
 
-        quota_tfr = retribuzione_utile / 13.5
+        quota_tfr = round(
+            retribuzione_utile / 13.5,
+            2
+        )
 
         totale_tfr += quota_tfr
 
