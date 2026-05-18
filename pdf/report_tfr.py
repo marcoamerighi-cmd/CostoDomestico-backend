@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from reportlab.platypus import (
     SimpleDocTemplate,
     Paragraph,
@@ -14,7 +16,12 @@ from reportlab.platypus.flowables import HRFlowable
 
 
 def euro(valore) -> str:
-    return f"€ {float(valore):,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")
+    return (
+        f"€ {float(valore):,.2f}"
+        .replace(",", "X")
+        .replace(".", ",")
+        .replace("X", ".")
+    )
 
 
 def genera_pdf_tfr(
@@ -34,11 +41,30 @@ def genera_pdf_tfr(
     styles = getSampleStyleSheet()
     elementi = []
 
-    elementi.append(
-        Paragraph("<b>Report Professionale TFR</b>", styles["Title"])
+    header_brand = Paragraph(
+        "<font size='22'><b>CostoDomestico.it</b></font>",
+        styles["Title"]
     )
 
-    elementi.append(Spacer(1, 20))
+    elementi.append(header_brand)
+    elementi.append(Spacer(1, 8))
+
+    titolo_report = Paragraph(
+        "<font size='18'><b>Report Professionale TFR</b></font>",
+        styles["Heading1"]
+    )
+
+    elementi.append(titolo_report)
+
+    data_generazione = datetime.now().strftime("%d/%m/%Y")
+
+    generato_il = Paragraph(
+        f"<font size='11'>Generato il {data_generazione}</font>",
+        styles["BodyText"]
+    )
+
+    elementi.append(generato_il)
+    elementi.append(Spacer(1, 25))
 
     datore = risultato.get("datore", "")
     lavoratore = risultato.get("lavoratore", "")
@@ -110,26 +136,17 @@ def genera_pdf_tfr(
         ]
     ]
 
-    totale_progressivo = 0
-    rivalutazione_totale = risultato.get("rivalutazione", 0)
     dettaglio_anni = risultato["dettaglio_anni"]
 
-    for indice, riga in enumerate(dettaglio_anni):
+    for riga in dettaglio_anni:
         quota = float(riga["quota_tfr"])
-
-        if indice == 0:
-            rivalutazione_anno = 0
-        else:
-            rivalutazione_anno = float(
-                riga.get("rivalutazione", 0)
+        rivalutazione_anno = float(riga.get("rivalutazione", 0))
+        totale_progressivo = float(
+            riga.get(
+                "totale_progressivo",
+                quota + rivalutazione_anno
             )
-
-            totale_progressivo = float(
-                riga.get(
-                    "totale_progressivo",
-                    totale_progressivo + quota + rivalutazione_anno
-                )
-            )
+        )
 
         riepilogo_dati.append([
             str(riga["anno"]),
@@ -173,8 +190,13 @@ def genera_pdf_tfr(
     elementi.append(Paragraph(disclaimer, styles["Italic"]))
     elementi.append(Spacer(1, 20))
 
+    footer = """
+    <b>Report generato da CostoDomestico.it</b><br/>
+    Simulatore informativo per lavoro domestico
+    """
+
     elementi.append(
-        Paragraph("<b>CostoDomestico.it</b>", styles["BodyText"])
+        Paragraph(footer, styles["BodyText"])
     )
 
     doc.build(elementi)
