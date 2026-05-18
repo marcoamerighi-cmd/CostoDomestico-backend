@@ -87,15 +87,11 @@ def calcola_tfr_proporzionato(
     superminimo: float = 0
 ) -> dict:
     retribuzione_mensile = paga_lorda_annua / 12
-
     retribuzione_periodo = retribuzione_mensile * mesi_utili
 
     tredicesima = (retribuzione_mensile / 12) * mesi_utili
-
     vitto_alloggio_proporzionato = (vitto_alloggio / 12) * mesi_utili
-
     scatti_proporzionati = (scatti_anzianita / 12) * mesi_utili
-
     superminimo_proporzionato = (superminimo / 12) * mesi_utili
 
     retribuzione_utile = calcola_retribuzione_utile(
@@ -137,17 +133,6 @@ def calcola_rivalutazione_tfr(
     tfr_pregresso: float | None = None,
     coefficiente: float | None = None
 ) -> float:
-    """
-    Rivalutazione professionale TFR.
-
-    Regole:
-    - non rivaluta l'anno corrente;
-    - rivaluta solo le quote pregresse;
-    - usa 1,5% + 75% FOI.
-    """
-
-    # Compatibilità con vecchie chiamate:
-    # calcola_rivalutazione_tfr(tfr_pregresso=..., coefficiente=...)
     if tfr_pregresso is not None and coefficiente is not None:
         return round(tfr_pregresso * coefficiente / 100, 2)
 
@@ -223,18 +208,9 @@ def calcola_tfr_annualita_lorde(
         retribuzione_lorda = riga["retribuzione_lorda"]
         mesi_utili = riga["mesi_utili"]
 
-        retribuzione_proporzionata = (
+        retribuzione_utile = (
             retribuzione_lorda / 12
         ) * mesi_utili
-
-        tredicesima = (
-            retribuzione_lorda / 12 / 12
-        ) * mesi_utili
-
-        retribuzione_utile = (
-            retribuzione_proporzionata
-            + tredicesima
-        )
 
         quota_tfr = retribuzione_utile / 13.5
 

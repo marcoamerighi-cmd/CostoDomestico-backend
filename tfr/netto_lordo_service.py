@@ -1,7 +1,3 @@
-# Tabelle contributive semplificate lavoro domestico 2026
-# Quota contributiva a carico lavoratore
-
-
 def contributo_lavoratore_orario_2026(
     retribuzione_oraria_lorda: float,
     ore_settimanali: float
@@ -33,25 +29,25 @@ def converti_netto_in_lordo(
     ore_annue = ore_settimanali * settimane_annue
 
     if ore_annue <= 0:
-        return netto_annuo
+        return round(netto_annuo, 2)
 
-    paga_oraria_netta = netto_annuo / ore_annue
+    lordo_annuo = netto_annuo
 
-    lordo_orario_stimato = paga_oraria_netta + 0.50
+    for _ in range(10):
+        paga_oraria_lorda = lordo_annuo / ore_annue
 
-    contributo_orario = contributo_lavoratore_orario_2026(
-        lordo_orario_stimato,
-        ore_settimanali
-    )
+        contributo_orario = contributo_lavoratore_orario_2026(
+            paga_oraria_lorda,
+            ore_settimanali
+        )
 
-    paga_oraria_lorda = paga_oraria_netta + contributo_orario
+        contributi_lavoratore = contributo_orario * ore_annue
 
-    lordo_annuo = paga_oraria_lorda * ore_annue
+        nuovo_lordo = netto_annuo + contributi_lavoratore
 
-    if convivente:
-        lordo_annuo += 2200
+        if abs(nuovo_lordo - lordo_annuo) < 0.01:
+            break
 
-    if livello in ["D", "DS"]:
-        lordo_annuo *= 1.02
+        lordo_annuo = nuovo_lordo
 
     return round(lordo_annuo, 2)
