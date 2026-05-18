@@ -155,10 +155,10 @@ def calcola_rivalutazione_tfr(
         mese=12
     )
 
-        rivalutazione_anno = round(
-            tfr_accantonato * coefficiente_anno / 100,
-            2
-        )
+    rivalutazione_anno = round(
+        tfr_accantonato * coefficiente_anno / 100,
+        2
+    )
 
         riga["coefficiente_rivalutazione"] = coefficiente_anno
         riga["rivalutazione"] = rivalutazione_anno
