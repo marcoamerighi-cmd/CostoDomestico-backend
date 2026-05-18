@@ -111,6 +111,7 @@ def elabora_tfr(richiesta: RichiestaTFR) -> dict:
     for riga in richiesta.annualita:
         lordo = converti_netto_in_lordo(
             netto_annuo=riga.retribuzione_netta,
+            anno=riga.anno,
             livello=richiesta.livello,
             ore_settimanali=richiesta.ore_settimanali,
             convivente=richiesta.convivente
