@@ -3,6 +3,7 @@ import calendar
 
 from tfr.coefficienti_tfr import trova_coefficiente_tfr
 
+
 def calcola_quota_tfr(retribuzione_utile_annua: float) -> float:
     return round(retribuzione_utile_annua / 13.5, 2)
 
@@ -134,14 +135,11 @@ def calcola_rivalutazione_tfr(
     tfr_pregresso: float | None = None,
     coefficiente: float | None = None
 ) -> float:
-
     if tfr_pregresso is not None and coefficiente is not None:
         return round(tfr_pregresso * coefficiente / 100, 2)
 
     if not dettaglio_anni or len(dettaglio_anni) <= 1:
         return 0
-
-    
 
     tfr_accantonato = 0
     rivalutazione_totale = 0
@@ -150,15 +148,15 @@ def calcola_rivalutazione_tfr(
         anno = riga["anno"]
         quota_tfr = riga["quota_tfr"]
 
-    coefficiente_anno = trova_coefficiente_tfr(
-        anno=anno,
-        mese=12
-    )
+        coefficiente_anno = trova_coefficiente_tfr(
+            anno=anno,
+            mese=12
+        )
 
-    rivalutazione_anno = round(
-        tfr_accantonato * coefficiente_anno / 100,
-        2
-    )
+        rivalutazione_anno = round(
+            tfr_accantonato * coefficiente_anno / 100,
+            2
+        )
 
         riga["coefficiente_rivalutazione"] = coefficiente_anno
         riga["rivalutazione"] = rivalutazione_anno
@@ -167,7 +165,10 @@ def calcola_rivalutazione_tfr(
 
         tfr_accantonato += quota_tfr + rivalutazione_anno
 
-        riga["totale_progressivo"] = round(tfr_accantonato, 2)
+        riga["totale_progressivo"] = round(
+            tfr_accantonato,
+            2
+        )
 
     return round(rivalutazione_totale, 2)
 
