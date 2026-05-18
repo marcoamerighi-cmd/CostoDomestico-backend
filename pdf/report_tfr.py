@@ -120,12 +120,16 @@ def genera_pdf_tfr(
         if indice == 0:
             rivalutazione_anno = 0
         else:
-            rivalutazione_anno = round(
-                rivalutazione_totale / (len(dettaglio_anni) - 1),
-                2
+            rivalutazione_anno = float(
+                riga.get("rivalutazione", 0)
             )
 
-        totale_progressivo += quota + rivalutazione_anno
+            totale_progressivo = float(
+                riga.get(
+                    "totale_progressivo",
+                    totale_progressivo + quota + rivalutazione_anno
+                )
+            )
 
         riepilogo_dati.append([
             str(riga["anno"]),
