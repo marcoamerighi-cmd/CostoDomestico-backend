@@ -465,7 +465,7 @@
         const richiesta = costruisciRichiesta();
 
         const risposta = await fetch(
-            "http://127.0.0.1:8000/calcola-tfr",
+            "https://costodomestico-backend.onrender.com/calcola-tfr",
             {
                 method: "POST",
                 headers: {
@@ -496,7 +496,7 @@
         JSON.stringify(richiesta)
     );
 
-    window.location.href = "http://127.0.0.1:8000/checkout-tfr";
+    window.location.href = "https://costodomestico-backend.onrender.com/checkout-tfr";
 }
 </script>
 
