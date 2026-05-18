@@ -1,85 +1,106 @@
 CONTRIBUTI_DOMESTICI = {
-    2025: {
-        "tempo_indeterminato": {
-            "fino_24_ore": [
-                {
-                    "min": 0,
-                    "max": 9.48,
-                    "quota_lavoratore": 0.42,
-                    "totale_con_cuaf": 1.79,
-                    "totale_senza_cuaf": 1.80
-                },
-                {
-                    "min": 9.49,
-                    "max": 11.54,
-                    "quota_lavoratore": 0.48,
-                    "totale_con_cuaf": 2.03,
-                    "totale_senza_cuaf": 2.04
-                },
-                {
-                    "min": 11.55,
-                    "max": 999,
-                    "quota_lavoratore": 0.58,
-                    "totale_con_cuaf": 2.47,
-                    "totale_senza_cuaf": 2.48
-                }
-            ],
-            "oltre_24_ore": {
-                "quota_lavoratore": 0.31,
-                "totale_con_cuaf": 1.31,
-                "totale_senza_cuaf": 1.31
-            }
-        }
+    2016: {
+        "fino_24_ore": [
+            {"min": 0, "max": 7.88, "quota_lavoratore": 0.35},
+            {"min": 7.89, "max": 9.59, "quota_lavoratore": 0.40},
+            {"min": 9.60, "max": 999, "quota_lavoratore": 0.48},
+        ],
+        "oltre_24_ore": {"quota_lavoratore": 0.25}
     },
-
+    2017: {
+        "fino_24_ore": [
+            {"min": 0, "max": 7.88, "quota_lavoratore": 0.35},
+            {"min": 7.89, "max": 9.59, "quota_lavoratore": 0.40},
+            {"min": 9.60, "max": 999, "quota_lavoratore": 0.48},
+        ],
+        "oltre_24_ore": {"quota_lavoratore": 0.25}
+    },
+    2018: {
+        "fino_24_ore": [
+            {"min": 0, "max": 7.97, "quota_lavoratore": 0.35},
+            {"min": 7.98, "max": 9.70, "quota_lavoratore": 0.40},
+            {"min": 9.71, "max": 999, "quota_lavoratore": 0.49},
+        ],
+        "oltre_24_ore": {"quota_lavoratore": 0.26}
+    },
+    2019: {
+        "fino_24_ore": [
+            {"min": 0, "max": 8.06, "quota_lavoratore": 0.36},
+            {"min": 8.07, "max": 9.81, "quota_lavoratore": 0.40},
+            {"min": 9.82, "max": 999, "quota_lavoratore": 0.49},
+        ],
+        "oltre_24_ore": {"quota_lavoratore": 0.26}
+    },
+    2020: {
+        "fino_24_ore": [
+            {"min": 0, "max": 8.10, "quota_lavoratore": 0.36},
+            {"min": 8.11, "max": 9.86, "quota_lavoratore": 0.41},
+            {"min": 9.87, "max": 999, "quota_lavoratore": 0.49},
+        ],
+        "oltre_24_ore": {"quota_lavoratore": 0.26}
+    },
+    2021: {
+        "fino_24_ore": [
+            {"min": 0, "max": 8.10, "quota_lavoratore": 0.36},
+            {"min": 8.11, "max": 9.86, "quota_lavoratore": 0.41},
+            {"min": 9.87, "max": 999, "quota_lavoratore": 0.49},
+        ],
+        "oltre_24_ore": {"quota_lavoratore": 0.26}
+    },
+    2022: {
+        "fino_24_ore": [
+            {"min": 0, "max": 8.25, "quota_lavoratore": 0.37},
+            {"min": 8.26, "max": 10.05, "quota_lavoratore": 0.41},
+            {"min": 10.06, "max": 999, "quota_lavoratore": 0.50},
+        ],
+        "oltre_24_ore": {"quota_lavoratore": 0.27}
+    },
+    2023: {
+        "fino_24_ore": [
+            {"min": 0, "max": 8.92, "quota_lavoratore": 0.40},
+            {"min": 8.93, "max": 10.86, "quota_lavoratore": 0.45},
+            {"min": 10.87, "max": 999, "quota_lavoratore": 0.55},
+        ],
+        "oltre_24_ore": {"quota_lavoratore": 0.29}
+    },
+    2024: {
+        "fino_24_ore": [
+            {"min": 0, "max": 9.40, "quota_lavoratore": 0.42},
+            {"min": 9.41, "max": 11.45, "quota_lavoratore": 0.47},
+            {"min": 11.46, "max": 999, "quota_lavoratore": 0.57},
+        ],
+        "oltre_24_ore": {"quota_lavoratore": 0.30}
+    },
+    2025: {
+        "fino_24_ore": [
+            {"min": 0, "max": 9.48, "quota_lavoratore": 0.42},
+            {"min": 9.49, "max": 11.54, "quota_lavoratore": 0.48},
+            {"min": 11.55, "max": 999, "quota_lavoratore": 0.58},
+        ],
+        "oltre_24_ore": {"quota_lavoratore": 0.31}
+    },
     2026: {
-        "tempo_indeterminato": {
-            "fino_24_ore": [
-                {
-                    "min": 0,
-                    "max": 9.61,
-                    "quota_lavoratore": 0.43,
-                    "totale_con_cuaf": 1.70,
-                    "totale_senza_cuaf": 1.71
-                },
-                {
-                    "min": 9.62,
-                    "max": 11.70,
-                    "quota_lavoratore": 0.48,
-                    "totale_con_cuaf": 1.92,
-                    "totale_senza_cuaf": 1.93
-                },
-                {
-                    "min": 11.71,
-                    "max": 999,
-                    "quota_lavoratore": 0.59,
-                    "totale_con_cuaf": 2.34,
-                    "totale_senza_cuaf": 2.35
-                }
-            ],
-            "oltre_24_ore": {
-                "quota_lavoratore": 0.31,
-                "totale_con_cuaf": 1.32,
-                "totale_senza_cuaf": 1.33
-            }
-        }
+        "fino_24_ore": [
+            {"min": 0, "max": 9.61, "quota_lavoratore": 0.43},
+            {"min": 9.62, "max": 11.70, "quota_lavoratore": 0.48},
+            {"min": 11.71, "max": 999, "quota_lavoratore": 0.59},
+        ],
+        "oltre_24_ore": {"quota_lavoratore": 0.31}
     }
 }
 
 
-def trova_tabella_contributiva(
-    anno: int
-) -> dict:
+def trova_tabella_contributiva(anno: int) -> dict:
     if anno in CONTRIBUTI_DOMESTICI:
         return CONTRIBUTI_DOMESTICI[anno]
 
-    anni_disponibili = sorted(CONTRIBUTI_DOMESTICI.keys())
+    anni = sorted(CONTRIBUTI_DOMESTICI.keys())
 
-    for anno_disponibile in reversed(anni_disponibili):
+    for anno_disponibile in reversed(anni):
         if anno_disponibile <= anno:
             return CONTRIBUTI_DOMESTICI[anno_disponibile]
 
-    return CONTRIBUTI_DOMESTICI[anni_disponibili[0]]
+    return CONTRIBUTI_DOMESTICI[anni[0]]
 
 
 def contributo_lavoratore_orario(
@@ -90,42 +111,14 @@ def contributo_lavoratore_orario(
 ) -> float:
     tabella = trova_tabella_contributiva(anno)
 
-    dati = tabella["tempo_indeterminato"]
-
     if ore_settimanali > 24:
-        return dati["oltre_24_ore"]["quota_lavoratore"]
+        return tabella["oltre_24_ore"]["quota_lavoratore"]
 
-    for fascia in dati["fino_24_ore"]:
+    for fascia in tabella["fino_24_ore"]:
         if (
             retribuzione_oraria_lorda >= fascia["min"]
             and retribuzione_oraria_lorda <= fascia["max"]
         ):
             return fascia["quota_lavoratore"]
 
-    return dati["fino_24_ore"][-1]["quota_lavoratore"]
-
-
-def contributo_totale_orario_datore(
-    anno: int,
-    retribuzione_oraria_lorda: float,
-    ore_settimanali: float,
-    con_cuaf: bool = True,
-    tempo_determinato: bool = False
-) -> float:
-    tabella = trova_tabella_contributiva(anno)
-
-    dati = tabella["tempo_indeterminato"]
-
-    chiave = "totale_con_cuaf" if con_cuaf else "totale_senza_cuaf"
-
-    if ore_settimanali > 24:
-        return dati["oltre_24_ore"][chiave]
-
-    for fascia in dati["fino_24_ore"]:
-        if (
-            retribuzione_oraria_lorda >= fascia["min"]
-            and retribuzione_oraria_lorda <= fascia["max"]
-        ):
-            return fascia[chiave]
-
-    return dati["fino_24_ore"][-1][chiave]
+    return tabella["fino_24_ore"][-1]["quota_lavoratore"]
