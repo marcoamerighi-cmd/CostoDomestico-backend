@@ -133,39 +133,45 @@ def calcola_rivalutazione_tfr(
     tfr_pregresso: float | None = None,
     coefficiente: float | None = None
 ) -> float:
+
     if tfr_pregresso is not None and coefficiente is not None:
         return round(tfr_pregresso * coefficiente / 100, 2)
 
     if not dettaglio_anni or len(dettaglio_anni) <= 1:
         return 0
 
-    coefficiente_annuo = calcola_coefficiente_rivalutazione(
-        variazione_istat_foi
-    )
+    coefficienti_per_anno = {
+        2022: 9.974576,
+        2023: 1.944162,
+        2024: 2.320017,
+        2025: 2.311148
+    }
 
-    ultimo_anno = max(
-        riga["anno"]
-        for riga in dettaglio_anni
-    )
-
+    tfr_accantonato = 0
     rivalutazione_totale = 0
 
     for riga in dettaglio_anni:
         anno = riga["anno"]
         quota_tfr = riga["quota_tfr"]
 
-        if anno == ultimo_anno:
-            continue
-
-        anni_da_rivalutare = ultimo_anno - anno
-
-        rivalutazione_quota = (
-            quota_tfr
-            * (coefficiente_annuo / 100)
-            * anni_da_rivalutare
+        coefficiente_anno = coefficienti_per_anno.get(
+            anno,
+            calcola_coefficiente_rivalutazione(variazione_istat_foi)
         )
 
-        rivalutazione_totale += rivalutazione_quota
+        rivalutazione_anno = round(
+            tfr_accantonato * coefficiente_anno / 100,
+            2
+        )
+
+        riga["coefficiente_rivalutazione"] = coefficiente_anno
+        riga["rivalutazione"] = rivalutazione_anno
+
+        rivalutazione_totale += rivalutazione_anno
+
+        tfr_accantonato += quota_tfr + rivalutazione_anno
+
+        riga["totale_progressivo"] = round(tfr_accantonato, 2)
 
     return round(rivalutazione_totale, 2)
 
