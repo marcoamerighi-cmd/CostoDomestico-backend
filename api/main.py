@@ -8,7 +8,6 @@ import stripe
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse
-from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 
 from api.stripe_config import STRIPE_SECRET_KEY
@@ -519,6 +518,12 @@ def elimina_ordini_test_endpoint():
         "ordini_eliminati": eliminati
     }
 
+@app.get("/immagini/report-tfr-preview.png")
+def immagine_report_tfr_preview():
+    return FileResponse(
+        path=str(FRONTEND_DIR / "immagini" / "report-tfr-preview.png"),
+        media_type="image/png"
+    )
 
 @app.get("/ordini-cliente")
 def ordini_cliente(email: str):
