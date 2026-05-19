@@ -154,12 +154,86 @@
                 padding: 20px;
             }
         }
+        .preview-tfr {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 50px;
+    padding: 60px 30px;
+    background: #f8fafc;
+    border-radius: 20px;
+    margin-top: 70px;
+}
+
+.preview-left {
+    flex: 1;
+}
+
+.preview-right {
+    flex: 1;
+    text-align: center;
+}
+
+.badge {
+    background: #e8efff;
+    padding: 10px 15px;
+    border-radius: 30px;
+    font-size: 13px;
+    font-weight: bold;
+    color: #2962ff;
+}
+
+.preview-left h2 {
+    font-size: 36px;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    color: #1f3c88;
+}
+
+.benefici {
+    margin-top: 30px;
+}
+
+.beneficio {
+    margin-bottom: 15px;
+    font-weight: 600;
+}
+
+.report-preview {
+    max-width: 100%;
+    filter: blur(4px);
+    transform: rotate(-4deg);
+    border-radius: 20px;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.15);
+}
+
+.cta-btn {
+    display: inline-block;
+    padding: 15px 30px;
+    margin-top: 30px;
+    background: #2962ff;
+    color: white;
+    border-radius: 12px;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+@media (max-width: 700px) {
+    .preview-tfr {
+        flex-direction: column;
+        padding: 35px 20px;
+    }
+
+    .preview-left h2 {
+        font-size: 28px;
+    }
+}
     </style>
 </head>
 
 <body>
 
-<div class="container">
+<div class="container" id="calcolo-tfr">
 
     <h1>Calcolo TFR Colf e Badanti</h1>
 
@@ -299,6 +373,60 @@
     </div>
 
 </div>
+
+<section class="preview-tfr">
+
+    <div class="preview-left">
+
+        <span class="badge">
+            📄 REPORT PROFESSIONALE
+        </span>
+
+        <h2>
+            Calcolo TFR Colf e Badanti
+        </h2>
+
+        <p>
+            Calcola il TFR maturato con rivalutazione automatica
+            e scarica un report PDF professionale.
+        </p>
+
+        <div class="benefici">
+
+            <div class="beneficio">
+                ✓ Rivalutazione automatica
+            </div>
+
+            <div class="beneficio">
+                ✓ Coefficienti storici ISTAT
+            </div>
+
+            <div class="beneficio">
+                ✓ Report PDF professionale
+            </div>
+
+            <div class="beneficio">
+                ✓ Lavoro domestico
+            </div>
+
+        </div>
+
+        <a href="#calcolo-tfr" class="cta-btn">
+            Calcola TFR
+        </a>
+
+    </div>
+
+    <div class="preview-right">
+
+        <img
+            src="/frontend/immagini/report-tfr-preview.png"
+            class="report-preview"
+        >
+
+    </div>
+
+</section>
 
 <script>
     function aggiornaLivello() {
