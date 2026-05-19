@@ -554,3 +554,22 @@ def ordini_cliente(email: str):
             })
 
     return risultato
+
+
+@app.get("/{nome_pagina}")
+def pagina_frontend_generica(nome_pagina: str):
+
+    percorso = FRONTEND_DIR / f"{nome_pagina}.html"
+
+    if not percorso.exists():
+        percorso = FRONTEND_DIR / nome_pagina
+
+    if not percorso.exists():
+        return {
+            "detail": "Pagina non trovata"
+        }
+
+    return FileResponse(
+        path=str(percorso),
+        media_type="text/html"
+    )
