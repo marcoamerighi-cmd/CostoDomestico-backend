@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>CostoDomestico.it - Calcolo costo colf, badanti e TFR</title>
+
+    <meta name="description" content="Calcola online il costo reale di colf e badanti e il TFR maturato nel lavoro domestico. Report PDF professionali, contributi, tredicesima e rivalutazione TFR.">
+
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f4f6f9;
+            color: #1f2937;
+        }
+
+        header {
+            background: #2962ff;
+            color: white;
+            padding: 24px 40px;
+        }
+
+        .logo {
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .logo span {
+            color: #4ade80;
+        }
+
+        .hero {
+            padding: 70px 30px;
+            text-align: center;
+            background: white;
+        }
+
+        .hero h1 {
+            font-size: 44px;
+            color: #1f3c88;
+            margin-bottom: 20px;
+        }
+
+        .hero p {
+            font-size: 20px;
+            max-width: 760px;
+            margin: auto;
+            line-height: 1.6;
+        }
+
+        .tools {
+            max-width: 1100px;
+            margin: 60px auto;
+            padding: 0 25px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 30px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 20px;
+            padding: 35px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+        }
+
+        .card h2 {
+            color: #1f3c88;
+            font-size: 28px;
+        }
+
+        .card p {
+            line-height: 1.6;
+            color: #4b5563;
+        }
+
+        .card ul {
+            padding-left: 20px;
+            line-height: 1.9;
+        }
+
+        .btn {
+            display: inline-block;
+            margin-top: 20px;
+            background: #2962ff;
+            color: white;
+            padding: 14px 24px;
+            border-radius: 10px;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .btn.orange {
+            background: #ff9800;
+        }
+
+        .preview {
+            max-width: 1100px;
+            margin: 60px auto;
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+            text-align: center;
+        }
+
+        .preview h2 {
+            color: #1f3c88;
+            font-size: 32px;
+        }
+
+        .preview img {
+            max-width: 520px;
+            width: 100%;
+            margin-top: 25px;
+            border-radius: 18px;
+            filter: blur(3px);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.18);
+        }
+
+        .faq {
+            max-width: 1000px;
+            margin: 60px auto;
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+        }
+
+        .faq h2 {
+            color: #1f3c88;
+        }
+
+        .faq-item {
+            border-bottom: 1px solid #e5e7eb;
+            padding: 18px 0;
+        }
+
+        .faq-item:last-child {
+            border-bottom: none;
+        }
+
+        .cta {
+            text-align: center;
+            padding: 60px 30px;
+            background: #e8efff;
+        }
+
+        .cta h2 {
+            color: #1f3c88;
+            font-size: 34px;
+        }
+
+        footer {
+            padding: 25px 40px;
+            font-size: 14px;
+            color: #6b7280;
+            display: flex;
+            justify-content: space-between;
+            background: white;
+        }
+
+        @media (max-width: 700px) {
+            .hero h1 {
+                font-size: 34px;
+            }
+
+            footer {
+                flex-direction: column;
+                gap: 10px;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    <div class="logo">
+        CostoDomestico<span>.it</span>
+    </div>
+</header>
+
+<section class="hero">
+    <h1>
+        Calcola costi e TFR per colf e badanti in pochi secondi
+    </h1>
+
+    <p>
+        Strumenti online per il lavoro domestico: costo reale mensile,
+        contributi, tredicesima, TFR e report PDF professionali.
+    </p>
+</section>
+
+<section class="tools">
+
+    <div class="card">
+        <h2>Calcolo costo lavoro domestico</h2>
+
+        <p>
+            Scopri quanto costa davvero assumere una colf o una badante,
+            includendo stipendio, contributi INPS, tredicesima e TFR.
+        </p>
+
+        <ul>
+            <li>✓ Calcolo aggiornato</li>
+            <li>✓ Costo mensile e annuale</li>
+            <li>✓ Contributi e TFR inclusi</li>
+            <li>✓ Report PDF professionale</li>
+        </ul>
+
+        <a class="btn" href="/costo-domestico">
+            Calcola costo domestico
+        </a>
+    </div>
+
+    <div class="card">
+        <h2>Calcolo TFR colf e badanti</h2>
+
+        <p>
+            Calcola il TFR maturato nel lavoro domestico con rivalutazione
+            automatica, contributi storici e riepilogo professionale.
+        </p>
+
+        <ul>
+            <li>✓ Rivalutazione automatica</li>
+            <li>✓ Coefficienti storici</li>
+            <li>✓ Netto/lordo lavoro domestico</li>
+            <li>✓ Report PDF scaricabile</li>
+        </ul>
+
+        <a class="btn orange" href="/tfr-tool">
+            Calcola TFR
+        </a>
+    </div>
+
+</section>
+
+<section class="preview">
+    <h2>Report professionali pronti da scaricare</h2>
+
+    <p>
+        Ogni calcolo può generare un report PDF chiaro, ordinato e pronto da conservare.
+    </p>
+
+    <img src="/immagini/report-tfr-preview.png" alt="Anteprima report TFR">
+</section>
+
+<section class="faq">
+    <h2>Domande frequenti</h2>
+
+    <div class="faq-item">
+        <h3>Posso calcolare il costo di una colf o badante?</h3>
+        <p>Sì, puoi stimare il costo reale mensile e annuale del rapporto domestico.</p>
+    </div>
+
+    <div class="faq-item">
+        <h3>Posso calcolare il TFR?</h3>
+        <p>Sì, puoi calcolare il TFR maturato con rivalutazione e scaricare il report PDF.</p>
+    </div>
+
+    <div class="faq-item">
+        <h3>Il datore domestico trattiene IRPEF?</h3>
+        <p>No. Nel lavoro domestico il datore non è sostituto d’imposta.</p>
+    </div>
+
+    <div class="faq-item">
+        <h3>Serve registrarsi?</h3>
+        <p>No, i calcoli principali possono essere effettuati senza registrazione.</p>
+    </div>
+</section>
+
+<section class="cta">
+    <h2>Inizia subito il tuo calcolo</h2>
+
+    <a class="btn" href="/costo-domestico">
+        Calcola costo
+    </a>
+
+    <a class="btn orange" href="/tfr-tool">
+        Calcola TFR
+    </a>
+</section>
+
+<footer>
+    <div>Report generati da CostoDomestico.it</div>
+    <div>Simulatore informativo per lavoro domestico</div>
+</footer>
+
+</body>
+</html>
