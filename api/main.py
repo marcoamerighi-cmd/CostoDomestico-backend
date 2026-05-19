@@ -59,7 +59,9 @@ BASE_DIR = Path(__file__).resolve().parents[1]
 FRONTEND_DIR = BASE_DIR / "frontend"
 app.mount(
     "/immagini",
-    StaticFiles(directory=str(FRONTEND_DIR / "immagini")),
+    StaticFiles(
+        directory=str(BASE_DIR / "frontend" / "immagini")
+    ),
     name="immagini"
 )
 PDF_DIR = BASE_DIR / "pdf_generati"
