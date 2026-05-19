@@ -515,8 +515,17 @@ def elimina_ordini_test_endpoint():
 
 @app.get("/immagini/report-tfr-preview.png")
 def immagine_report_tfr_preview():
+
+    percorso = FRONTEND_DIR / "immagini" / "report-tfr-preview.png"
+
+    if not percorso.exists():
+        return {
+            "errore": "Immagine non trovata",
+            "percorso_cercato": str(percorso)
+        }
+
     return FileResponse(
-        path=str(FRONTEND_DIR / "immagini" / "report-tfr-preview.png"),
+        path=str(percorso),
         media_type="image/png"
     )
 
