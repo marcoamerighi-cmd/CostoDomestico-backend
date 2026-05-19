@@ -303,11 +303,10 @@ margin-bottom:10px;
 color:white;
 }
 
-.hero-tfr p{
-font-size:20px;
-max-width:700px;
-margin:auto;
-line-height:1.5;
+.hero-tfr p {
+    text-align: center;
+    max-width: 700px;
+    margin: 0 auto;
 }
 
 .brand-logo {
@@ -343,6 +342,7 @@ line-height:1.5;
     .hero-tfr .brand-logo{
         margin:auto;
     }
+    
     </style>
 </head>
 
@@ -351,23 +351,18 @@ line-height:1.5;
 <div class="container" id="calcolo-tfr">
     <div class="hero-tfr">
 
-<div class="brand-logo">
-
-<svg viewBox="0 0 64 64" fill="none">
-
-<path d="M32 4L54 12V28C54 43 44 54 32 60C20 54 10 43 10 28V12L32 4Z"
-fill="#2563eb"/>
-
-<path d="M32 14L46 19V29C46 39 40 47 32 52C24 47 18 39 18 29V19L32 14Z"
-fill="white"/>
-
-<path d="M32 20L38 23V30C38 35 35 39 32 42C29 39 26 35 26 30V23L32 20Z"
-fill="#16a34a"/>
-
-</svg>
-
-<div class="brand-name">
-CostoDomestico<span class="brand-it">.it</span>
+<div class="brand-logo" aria-label="CostoDomestico.it">
+  <svg viewBox="0 0 64 64" role="img" aria-hidden="true">
+    <path d="M32 4 L56 13 V29 C56 45 45 57 32 61 C19 57 8 45 8 29 V13 Z" fill="#ffffff" stroke="#0b4dbb" stroke-width="4"/>
+    <path d="M18 31 L32 20 L46 31 V45 H18 Z" fill="#0b4dbb"/>
+    <path d="M24 36 H30 V42 H24 Z M34 36 H40 V42 H34 Z" fill="#ffffff"/>
+    <path d="M17 50 C29 48 42 39 52 25" fill="none" stroke="#16a34a" stroke-width="5" stroke-linecap="round"/>
+    <path d="M48 24 L57 19 L55 30 Z" fill="#16a34a"/>
+    <rect x="20" y="46" width="7" height="8" fill="#16a34a"/>
+    <rect x="30" y="43" width="7" height="11" fill="#16a34a"/>
+    <rect x="40" y="38" width="7" height="16" fill="#16a34a"/>
+  </svg>
+  <span class="brand-name">CostoDomestico<span class="brand-it">.it</span></span>
 </div>
 
 </div>

@@ -165,13 +165,8 @@ def elabora_tfr(richiesta: RichiestaTFR) -> dict:
 
 @app.get("/")
 def home():
-    return {"messaggio": "API CostoDomestico attiva"}
-
-
-@app.get("/tfr-tool")
-def pagina_tfr_tool():
     return FileResponse(
-        path=str(FRONTEND_DIR / "test_tfr.html"),
+        path=str(FRONTEND_DIR / "index.html"),
         media_type="text/html"
     )
 
