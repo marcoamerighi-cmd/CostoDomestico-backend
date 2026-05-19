@@ -60,11 +60,6 @@ IMMAGINI_DIR = Path(__file__).resolve().parents[1] / "frontend" / "immagini"
 
 IMMAGINI_DIR = FRONTEND_DIR / "immagini"
 
-app.mount(
-    "/immagini",
-    StaticFiles(directory=str(IMMAGINI_DIR)),
-    name="immagini"
-)
 PDF_DIR = BASE_DIR / "pdf_generati"
 PDF_DIR.mkdir(exist_ok=True)
 
