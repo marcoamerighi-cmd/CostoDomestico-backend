@@ -8,6 +8,7 @@ import stripe
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse
+from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 
 from api.stripe_config import STRIPE_SECRET_KEY
@@ -56,6 +57,11 @@ crea_tabella_clienti()
 
 BASE_DIR = Path(__file__).resolve().parents[1]
 FRONTEND_DIR = BASE_DIR / "frontend"
+app.mount(
+    "/immagini",
+    StaticFiles(directory=str(FRONTEND_DIR / "immagini")),
+    name="immagini"
+)
 PDF_DIR = BASE_DIR / "pdf_generati"
 PDF_DIR.mkdir(exist_ok=True)
 
