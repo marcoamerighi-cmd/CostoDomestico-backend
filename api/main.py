@@ -57,11 +57,11 @@ crea_tabella_clienti()
 
 BASE_DIR = Path(__file__).resolve().parents[1]
 FRONTEND_DIR = BASE_DIR / "frontend"
+IMMAGINI_DIR = Path(__file__).resolve().parents[1] / "frontend" / "immagini"
+
 app.mount(
     "/immagini",
-    StaticFiles(
-        directory=str(BASE_DIR / "frontend" / "immagini")
-    ),
+    StaticFiles(directory=str(IMMAGINI_DIR)),
     name="immagini"
 )
 PDF_DIR = BASE_DIR / "pdf_generati"
