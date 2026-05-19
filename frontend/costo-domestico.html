@@ -1,0 +1,1722 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Calcolo costo colf e badanti 2026 | CostoDomestico.it</title>
+  <meta name="description" content="Calcola il costo reale di colf, badanti e babysitter nel 2026 con contributi INPS, tredicesima, TFR e report PDF professionale.">
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f5f7fa;
+      margin: 0;
+      padding: 0;
+      color: #1f2937;
+    }
+
+    .container {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 24px;
+    }
+
+    .hero {
+      background: linear-gradient(135deg, #1d4ed8, #2563eb);
+      color: white;
+      padding: 56px 28px;
+      border-radius: 0 0 28px 28px;
+      text-align: center;
+    }
+
+    .hero h1 {
+      font-size: 42px;
+      margin: 0 0 14px;
+    }
+
+    .hero p {
+      font-size: 20px;
+      max-width: 760px;
+      margin: 0 auto 26px;
+      line-height: 1.5;
+    }
+
+    .hero button {
+      width: auto;
+      padding: 16px 28px;
+      background: white;
+      color: #1d4ed8;
+      border-radius: 999px;
+    }
+
+    .card {
+      background: white;
+      border-radius: 18px;
+      padding: 30px;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+      margin: 28px 0;
+    }
+
+    h2 {
+      margin-top: 0;
+      color: #111827;
+    }
+
+    .subtitle {
+      font-size: 17px;
+      color: #4b5563;
+      line-height: 1.5;
+    }
+
+    label {
+      display: block;
+      margin-top: 16px;
+      margin-bottom: 6px;
+      font-weight: bold;
+    }
+
+    select,
+    input {
+      width: 100%;
+      padding: 13px;
+      border: 1px solid #d1d5db;
+      border-radius: 10px;
+      font-size: 16px;
+      box-sizing: border-box;
+    }
+
+    button {
+      margin-top: 24px;
+      width: 100%;
+      padding: 15px;
+      border: none;
+      border-radius: 12px;
+      background: #2563eb;
+      color: white;
+      font-size: 18px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    button:hover {
+      opacity: 0.92;
+    }
+
+    .results {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 16px;
+      margin-top: 20px;
+    }
+
+    .result-box {
+      background: #f9fafb;
+      border: 1px solid #e5e7eb;
+      border-radius: 14px;
+      padding: 18px;
+    }
+
+    .result-box strong {
+      display: block;
+      font-size: 14px;
+      color: #6b7280;
+      margin-bottom: 6px;
+    }
+
+    .result-box span {
+      font-size: 24px;
+      font-weight: bold;
+      color: #111827;
+    }
+
+    .highlight {
+      background: #ecfdf5;
+      border: 1px solid #10b981;
+      color: #065f46;
+      padding: 18px;
+      border-radius: 14px;
+      font-size: 18px;
+      font-weight: bold;
+    }
+
+    .difference {
+      margin-top: 10px;
+      font-weight: bold;
+      color: #dc2626;
+      font-size: 18px;
+    }
+
+
+    .ccnl-warning {
+      background: #fff7ed;
+      border: 1px solid #f59e0b;
+      color: #9a3412;
+      padding: 14px;
+      border-radius: 12px;
+      margin-top: 18px;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .warning {
+      background: #fffbeb;
+      border: 1px solid #f59e0b;
+      color: #92400e;
+      padding: 14px;
+      border-radius: 12px;
+      margin-top: 20px;
+      font-size: 14px;
+    }
+
+
+    .paid-download-box {
+      margin-top: 22px;
+      padding: 24px;
+      border-radius: 18px;
+      background: #ecfdf5;
+      border: 2px solid #16a34a;
+      text-align: center;
+      box-shadow: 0 10px 24px rgba(22, 163, 74, 0.16);
+    }
+
+    .paid-download-box h2 {
+      margin: 0 0 8px;
+      color: #065f46;
+      font-size: 24px;
+    }
+
+    .paid-download-box p {
+      margin: 8px 0;
+      color: #064e3b;
+      line-height: 1.5;
+    }
+
+    .paid-download-box button {
+      background: #16a34a;
+      max-width: 420px;
+      margin-top: 16px;
+    }
+
+    .paid-floating-download {
+      position: fixed;
+      left: 12px;
+      right: 12px;
+      bottom: 12px;
+      z-index: 9999;
+      background: #16a34a;
+      color: white;
+      border-radius: 16px;
+      padding: 14px;
+      box-shadow: 0 12px 30px rgba(0,0,0,0.25);
+      text-align: center;
+      display: none;
+    }
+
+    .paid-floating-download.show {
+      display: block;
+    }
+
+    .paid-floating-download button {
+      margin: 8px 0 0;
+      background: white;
+      color: #166534;
+      width: 100%;
+      border-radius: 12px;
+      padding: 13px;
+      font-size: 17px;
+    }
+
+    .paywall {
+      margin-top: 22px;
+      padding: 24px;
+      border-radius: 16px;
+      background: #eff6ff;
+      border: 2px solid #3b82f6;
+      text-align: center;
+    }
+
+    .paywall h2 {
+      margin-bottom: 8px;
+    }
+
+    .paywall ul {
+      text-align: left;
+      display: inline-block;
+      line-height: 1.9;
+      margin: 10px 0 0;
+    }
+
+    .paywall button {
+      background: #16a34a;
+      max-width: 420px;
+    }
+
+
+    .pdf-preview {
+      margin: 22px auto 4px;
+      max-width: 520px;
+      background: white;
+      border-radius: 16px;
+      border: 1px solid #bfdbfe;
+      box-shadow: 0 12px 30px rgba(15, 23, 42, 0.12);
+      padding: 14px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .pdf-preview-title {
+      font-size: 15px;
+      font-weight: bold;
+      color: #1e3a8a;
+      margin-bottom: 10px;
+      text-align: center;
+    }
+
+    .pdf-preview-sheet {
+      background: #ffffff;
+      border: 1px solid #dbeafe;
+      border-radius: 10px;
+      padding: 16px;
+      filter: blur(2.6px);
+      transform: scale(1.01);
+      opacity: 0.86;
+      pointer-events: none;
+      user-select: none;
+      min-height: 310px;
+    }
+
+    .pdf-preview-header {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      align-items: flex-start;
+      margin-bottom: 12px;
+    }
+
+    .pdf-preview-brand {
+      font-weight: 800;
+      color: #0b4dbb;
+      font-size: 17px;
+    }
+
+    .pdf-preview-brand span {
+      color: #16a34a;
+    }
+
+    .pdf-preview-date {
+      font-size: 10px;
+      color: #64748b;
+    }
+
+    .pdf-preview-line {
+      height: 10px;
+      background: #e0ecff;
+      border-radius: 999px;
+      margin: 8px 0;
+    }
+
+    .pdf-preview-line.short {
+      width: 58%;
+    }
+
+    .pdf-preview-line.medium {
+      width: 78%;
+    }
+
+    .pdf-preview-summary {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      margin: 18px 0;
+    }
+
+    .pdf-preview-mini-box {
+      background: #eff6ff;
+      border: 1px solid #dbeafe;
+      border-radius: 8px;
+      padding: 10px 6px;
+      text-align: center;
+      font-size: 10px;
+      font-weight: bold;
+      color: #1e3a8a;
+    }
+
+    .pdf-preview-tables {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .pdf-preview-table {
+      border: 1px solid #bfdbfe;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    .pdf-preview-table-head {
+      background: #1d4ed8;
+      height: 18px;
+    }
+
+    .pdf-preview-row {
+      height: 16px;
+      border-top: 1px solid #e5e7eb;
+      background: #f8fafc;
+    }
+
+    .pdf-preview-note {
+      height: 26px;
+      margin-top: 12px;
+      border-radius: 8px;
+      background: #ecfdf5;
+      border: 1px solid #bbf7d0;
+    }
+
+    .pdf-preview-lock {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.14));
+      pointer-events: none;
+    }
+
+    .pdf-preview-lock-badge {
+      width: 165px;
+      height: 165px;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.88);
+      color: white;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 14px 34px rgba(15, 23, 42, 0.28);
+      text-align: center;
+      padding: 18px;
+    }
+
+    .pdf-preview-lock-icon {
+      font-size: 34px;
+      margin-bottom: 8px;
+    }
+
+    .pdf-preview-lock-badge strong {
+      display: block;
+      font-size: 18px;
+      line-height: 1.15;
+      margin-bottom: 6px;
+    }
+
+    .pdf-preview-lock-badge span {
+      font-size: 12px;
+      line-height: 1.3;
+      color: #dbeafe;
+    }
+
+    @media (max-width: 620px) {
+      .pdf-preview {
+        padding: 10px;
+      }
+
+      .pdf-preview-sheet {
+        min-height: 260px;
+        padding: 12px;
+      }
+
+      .pdf-preview-summary {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .pdf-preview-tables {
+        grid-template-columns: 1fr;
+      }
+
+      .pdf-preview-lock-badge {
+        width: 140px;
+        height: 140px;
+      }
+
+      .pdf-preview-lock-badge strong {
+        font-size: 16px;
+      }
+    }
+
+    .trust-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+    }
+
+    .trust-item {
+      background: #f9fafb;
+      border-radius: 14px;
+      padding: 18px;
+      border: 1px solid #e5e7eb;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .small-note {
+      font-size: 13px;
+      color: #6b7280;
+      margin-top: 6px;
+    }
+
+    .brand-logo {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      background: rgba(255,255,255,0.96);
+      color: #0f172a;
+      padding: 10px 18px;
+      border-radius: 999px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+      margin-bottom: 22px;
+    }
+
+    .brand-logo svg {
+      width: 44px;
+      height: 44px;
+      flex: 0 0 auto;
+    }
+
+    .brand-logo .brand-name {
+      font-size: 28px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      color: #0b4dbb;
+      white-space: nowrap;
+    }
+
+    .brand-logo .brand-it {
+      color: #16a34a;
+    }
+
+    @media (max-width: 520px) {
+      .brand-logo {
+        gap: 8px;
+        padding: 8px 12px;
+      }
+      .brand-logo svg {
+        width: 36px;
+        height: 36px;
+      }
+      .brand-logo .brand-name {
+        font-size: 22px;
+      }
+    }
+
+
+    footer {
+      text-align: center;
+      font-size: 13px;
+      color: #6b7280;
+      padding: 30px 10px;
+    }
+  
+    .cookie-banner {
+      position: fixed;
+      left: 16px;
+      right: 16px;
+      bottom: 16px;
+      z-index: 10000;
+      background: #ffffff;
+      border: 1px solid #dbeafe;
+      box-shadow: 0 12px 35px rgba(15, 23, 42, 0.18);
+      border-radius: 16px;
+      padding: 18px;
+      max-width: 760px;
+      margin: 0 auto;
+      display: none;
+      color: #1f2937;
+    }
+
+    .cookie-banner.show {
+      display: block;
+    }
+
+    .cookie-banner p {
+      margin: 0 0 12px;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .cookie-banner a {
+      color: #2563eb;
+      font-weight: bold;
+      text-decoration: none;
+    }
+
+    .cookie-actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .cookie-actions button {
+      margin: 0;
+      width: auto;
+      padding: 11px 16px;
+      border-radius: 10px;
+      font-size: 14px;
+      cursor: pointer;
+      border: none;
+      font-weight: bold;
+    }
+
+    .cookie-accept {
+      background: #16a34a;
+      color: white;
+    }
+
+    .cookie-reject {
+      background: #e5e7eb;
+      color: #111827;
+    }
+
+  </style>
+<!-- Google tag (gtag.js) con consenso cookie -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-3LF3S9S7LB"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+
+  gtag('consent', 'default', {
+    'analytics_storage': localStorage.getItem('cookieConsent') === 'accepted' ? 'granted' : 'denied',
+    'ad_storage': 'denied',
+    'ad_user_data': 'denied',
+    'ad_personalization': 'denied'
+  });
+
+  gtag('js', new Date());
+  gtag('config', 'G-3LF3S9S7LB', {
+    'anonymize_ip': true
+  });
+</script>
+
+</head>
+<body>
+  <section class="hero">
+<div class="brand-logo" aria-label="CostoDomestico.it">
+  <svg viewBox="0 0 64 64" role="img" aria-hidden="true">
+    <path d="M32 4 L56 13 V29 C56 45 45 57 32 61 C19 57 8 45 8 29 V13 Z" fill="#ffffff" stroke="#0b4dbb" stroke-width="4"/>
+    <path d="M18 31 L32 20 L46 31 V45 H18 Z" fill="#0b4dbb"/>
+    <path d="M24 36 H30 V42 H24 Z M34 36 H40 V42 H34 Z" fill="#ffffff"/>
+    <path d="M17 50 C29 48 42 39 52 25" fill="none" stroke="#16a34a" stroke-width="5" stroke-linecap="round"/>
+    <path d="M48 24 L57 19 L55 30 Z" fill="#16a34a"/>
+    <rect x="20" y="46" width="7" height="8" fill="#16a34a"/>
+    <rect x="30" y="43" width="7" height="11" fill="#16a34a"/>
+    <rect x="40" y="38" width="7" height="16" fill="#16a34a"/>
+  </svg>
+  <span class="brand-name">CostoDomestico<span class="brand-it">.it</span></span>
+</div>
+    <h1>Scopri il costo reale di una colf o badante</h1>
+    <p>
+      Inserisci pochi dati e scopri subito quanto spenderai davvero ogni mese:
+  stipendio, contributi INPS, tredicesima e TFR inclusi.
+    </p>
+    <button onclick="document.getElementById('calcolatore').scrollIntoView({ behavior: 'smooth' })">
+      Calcola il costo reale
+    </button>
+  </section>
+
+  <div class="container">
+    <div class="card" id="calcolatore">
+      <h2>Calcolatore costo lavoro domestico</h2>
+      <p class="subtitle">
+        Inserisci pochi dati e scopri quanto percepisce il lavoratore e qual è il costo reale per il datore.
+      </p>
+
+      <label>Tipo di lavoro</label>
+      <select id="tipoLavoro" onchange="suggerisciLivello()">
+        <option value="colf">Colf / pulizie casa</option>
+        <option value="babysitter">Babysitter</option>
+        <option value="badante_auto">Badante persona autosufficiente</option>
+        <option value="badante_non_auto">Badante persona non autosufficiente</option>
+      </select>
+
+      <label>Tipo rapporto</label>
+      <select id="rapporto" onchange="gestisciCampoPagaPattuita()">
+        <option value="convivente">Convivente</option>
+        <option value="non_convivente">Non convivente</option>
+      </select>
+
+      <label>Livello CCNL</label>
+      <select id="livello">
+        <option value="A">A</option>
+        <option value="AS">AS</option>
+        <option value="B">B</option>
+        <option value="BS">BS</option>
+        <option value="C">C</option>
+        <option value="CS">CS</option>
+        <option value="D">D</option>
+        <option value="DS">DS</option>
+      </select>
+      <p class="small-note">Il livello viene suggerito automaticamente, ma puoi modificarlo.</p>
+
+      <label>Ore settimanali</label>
+      <input id="ore" type="number" value="" min="1" step="0.5" oninput="aggiornaCampiNonConviventeDaOre()">
+
+      <label>Retribuzione pattuita superiore al CCNL?</label>
+      <select id="usaPagaPattuita" onchange="gestisciCampoPagaPattuita()">
+        <option value="no">No, usa minimo CCNL</option>
+        <option value="si">Sì, inserisci netto pattuito</option>
+      </select>
+
+      <div id="boxPagaPattuita" class="hidden">
+
+        <!-- Campo usato solo per rapporti conviventi -->
+        <div id="boxConviventePaga">
+          <label>Netto mensile percepito dal lavoratore</label>
+          <input id="pagaPattuita" type="number" value="0" min="0" step="0.01">
+          <p class="small-note">
+            Per i conviventi inserisci il netto mensile percepito.
+          </p>
+        </div>
+
+        <!-- Campi usati solo per rapporti non conviventi -->
+        <div id="boxNonConviventePaga" class="hidden">
+          <label>Paga netta oraria concordata</label>
+          <input id="pagaNettaOraria" type="number" value="0" min="0" step="0.01"
+                 oninput="modalitaPagaNonConvivente = 'oraria'; aggiornaNettoMensileDaOrario();">
+          <p class="small-note">
+            Inserisci la paga netta oraria. Il netto mensile viene calcolato automaticamente.
+          </p>
+
+          <label>Netto mensile concordato</label>
+          <input id="nettoMensileConcordato" type="number" value="0" min="0" step="0.01"
+                 oninput="modalitaPagaNonConvivente = 'mensile'; aggiornaPagaOrariaDaMensile();">
+          <p class="small-note">
+            Oppure inserisci il netto mensile: la paga netta oraria viene calcolata automaticamente.
+          </p>
+        </div>
+
+      </div>
+
+      <button onclick="calcola()">Calcola costo reale</button>
+    </div>
+
+    <div id="output" class="card hidden">
+      <h2>Simulazione costo reale lavoro domestico</h2>
+
+      <div class="highlight" id="fraseFinale"></div>
+      <div id="differenza" class="difference"></div>
+<p style="
+  margin-top:12px;
+  font-size:18px;
+  font-weight:bold;
+  color:#111827;
+">
+  Molte famiglie sottovalutano il costo reale del lavoro domestico.
+</p>
+
+      <div id="warningMinimi" class="ccnl-warning hidden">
+        ⚠️ <strong>Retribuzione sotto i minimi CCNL.</strong><br><br>
+        <span id="testoWarningMinimi">
+          Il sistema applicherà automaticamente la retribuzione minima contrattuale prevista.
+        </span>
+      </div>
+
+      <div class="results">
+        <div class="result-box">
+          <strong>Netto mensile percepito</strong>
+          <span id="nettoMensile"></span>
+        </div>
+
+        <div class="result-box">
+          <strong>Costo mensile reale datore</strong>
+          <span id="costoMensile"></span>
+        </div>
+
+        <div class="result-box">
+          <strong>Costo annuo reale datore</strong>
+          <span id="costoAnnuo"></span>
+        </div>
+      </div>
+
+      <p class="small-note" style="margin-top:14px;text-align:center;">
+        Il dettaglio completo delle singole voci è disponibile nel report professionale.
+      </p>
+
+      <div class="paywall">
+  <h2>Vuoi vedere il dettaglio completo?</h2>
+
+  <p>
+    Il risultato gratuito ti mostra i numeri principali. Nel
+    <strong>report professionale completo</strong> trovi tutte le voci di costo
+    suddivise tra mensile e annuale.
+  </p>
+
+  <ul>
+    <li>✔ Retribuzione lorda</li>
+    <li>✔ Contributi INPS a carico del datore</li>
+    <li>✔ Tredicesima e quota mensile</li>
+    <li>✔ TFR annuo e quota mensile</li>
+    <li>✔ Costo orario reale</li>
+    <li>✔ Informazione contributi trattenuti al lavoratore</li>
+  </ul>
+
+
+  <div class="pdf-preview" aria-label="Anteprima sfocata del report completo">
+    <div class="pdf-preview-title">Anteprima del report completo scaricabile</div>
+
+    <div class="pdf-preview-sheet">
+      <div class="pdf-preview-header">
+        <div>
+          <div class="pdf-preview-brand">CostoDomestico<span>.it</span></div>
+          <div class="pdf-preview-line medium"></div>
+          <div class="pdf-preview-line short"></div>
+        </div>
+        <div class="pdf-preview-date">Generato oggi</div>
+      </div>
+
+      <div class="pdf-preview-line medium"></div>
+      <div class="pdf-preview-line short"></div>
+
+      <div class="pdf-preview-summary">
+        <div class="pdf-preview-mini-box">Netto<br>€</div>
+        <div class="pdf-preview-mini-box">Costo mese<br>€</div>
+        <div class="pdf-preview-mini-box">Costo anno<br>€</div>
+        <div class="pdf-preview-mini-box">Costo orario<br>€/h</div>
+      </div>
+
+      <div class="pdf-preview-tables">
+        <div class="pdf-preview-table">
+          <div class="pdf-preview-table-head"></div>
+          <div class="pdf-preview-row"></div>
+          <div class="pdf-preview-row"></div>
+          <div class="pdf-preview-row"></div>
+          <div class="pdf-preview-row"></div>
+          <div class="pdf-preview-row"></div>
+        </div>
+
+        <div class="pdf-preview-table">
+          <div class="pdf-preview-table-head"></div>
+          <div class="pdf-preview-row"></div>
+          <div class="pdf-preview-row"></div>
+          <div class="pdf-preview-row"></div>
+          <div class="pdf-preview-row"></div>
+          <div class="pdf-preview-row"></div>
+        </div>
+      </div>
+
+      <div class="pdf-preview-note"></div>
+      <div class="pdf-preview-line medium"></div>
+      <div class="pdf-preview-line short"></div>
+    </div>
+
+    <div class="pdf-preview-lock">
+      <div class="pdf-preview-lock-badge">
+        <div class="pdf-preview-lock-icon">🔒</div>
+        <strong>ANTEPRIMA<br>SFOCATA</strong>
+        <span>Il report completo si sblocca dopo il pagamento.</span>
+      </div>
+    </div>
+  </div>
+
+  <button onclick="vaiAlPagamento()">
+    Scarica report professionale - 9,90€
+  </button>
+
+  <p class="small-note">
+    Il report è pensato per aiutare le famiglie a valutare il costo reale prima dell’assunzione.
+  </p>
+</div>
+
+      <div id="boxDownloadPagamento" class="paid-download-box hidden">
+        <h2>Pagamento completato ✅</h2>
+        <p>
+          Pagamento completato ✅
+          Il report è pronto per il download.
+        </p>
+        <button onclick="generaPDF()">
+          Scarica ora il report PDF
+        </button>
+        <p class="small-note">
+          Il pulsante resta disponibile dopo il pagamento.
+        </p>
+      </div>
+
+      <!-- Dettaglio tecnico nascosto nella pagina: disponibile nel report PDF professionale. -->
+      <div class="hidden" aria-hidden="true">
+        <span id="lordoMensile"></span>
+        <span id="oreMensili"></span>
+        <span id="unitaPaga"></span>
+        <span id="pagaCcnl"></span>
+        <span id="pagaEffettiva"></span>
+        <span id="contributiLavMensili"></span>
+        <span id="contributiDatMensili"></span>
+        <span id="tredicesima"></span>
+        <span id="tfrAnnuo"></span>
+      </div>
+
+      <div class="warning">
+        Calcolo indicativo basato su CCNL lavoro domestico 2026 e contributi INPS configurati nel sistema.
+        Alcuni oneri minori non sono inclusi. Il risultato ha finalità informativa e di simulazione.
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Perché usare CostoDomestico?</h2>
+      <div class="trust-grid">
+        <div class="trust-item"><strong>Semplice</strong><br>Inserisci pochi dati e ottieni subito il risultato.</div>
+        <div class="trust-item"><strong>Completo</strong><br>Include stipendio, contributi, tredicesima e TFR.</div>
+        <div class="trust-item"><strong>Utile</strong><br>Ti aiuta a capire il vero costo del rapporto domestico.</div>
+      </div>
+    </div>
+  </div>
+<div class="card">
+  <h2>Calcolo costo colf e badanti</h2>
+
+  <p>
+    Il simulatore permette di stimare il costo reale di una colf o badante convivente o non convivente,
+    includendo contributi INPS, tredicesima e TFR.
+  </p>
+
+  <p>
+    Utile per famiglie che vogliono capire quanto costa assumere una badante o una collaboratrice domestica.
+  </p>
+</div>
+
+  <div id="floatingDownloadPagamento" class="paid-floating-download">
+    <strong>Report pronto ✅</strong>
+    <button onclick="generaPDF()">Scarica report PDF</button>
+  </div>
+
+  
+  <div id="cookieBanner" class="cookie-banner">
+    <p>
+      Usiamo cookie tecnici e, previo consenso, Google Analytics per capire come viene utilizzato il sito.
+      Puoi accettare o rifiutare i cookie statistici. Leggi la
+      <a href="/cookie-policy.html">Cookie Policy</a> e la
+      <a href="/privacy-policy.html">Privacy Policy</a>.
+    </p>
+    <div class="cookie-actions">
+      <button class="cookie-accept" onclick="accettaCookie()">Accetta</button>
+      <button class="cookie-reject" onclick="rifiutaCookie()">Rifiuta</button>
+    </div>
+  </div>
+
+  <footer>
+    CostoDomestico — Simulatore informativo per lavoro domestico.
+  <br><a href="/privacy-policy.html">Privacy Policy</a> · <a href="/cookie-policy.html">Cookie Policy</a></footer>
+
+  <script>
+    const pagheConviventi = {
+      DS: 1682.42,
+      D: 1612.20,
+      CS: 1193.84,
+      C: 1123.63,
+      BS: 1053.39,
+      B: 983.16,
+      AS: 958.55,
+      A: 908.10
+    };
+
+    const pagheNonConviventi = {
+      DS: 9.97,
+      D: 9.57,
+      CS: 8.30,
+      C: 7.86,
+      BS: 7.45,
+      B: 7.01,
+      AS: 6.76,
+      A: 6.51
+    };
+
+    const contributiInps = {
+      fino24: [
+        { min: 0, max: 9.61, totale: 1.70, lavoratore: 0.43 },
+        { min: 9.62, max: 11.70, totale: 1.92, lavoratore: 0.48 },
+        { min: 11.71, max: Infinity, totale: 2.34, lavoratore: 0.59 }
+      ],
+      oltre24: {
+        totale: 1.24,
+        lavoratore: 0.31
+      }
+    };
+
+    function euro(value) {
+      const numeroPulito = Number(value);
+      return new Intl.NumberFormat("it-IT", {
+        style: "currency",
+        currency: "EUR"
+      }).format(isNaN(numeroPulito) ? 0 : numeroPulito);
+    }
+
+    function numero(value) {
+      const numeroPulito = Number(value);
+      return new Intl.NumberFormat("it-IT", {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+      }).format(isNaN(numeroPulito) ? 0 : numeroPulito);
+    }
+
+    
+    let modalitaPagaNonConvivente = "oraria";
+
+    function getOreMensiliCorrenti() {
+      const oreSettimanali = Number(document.getElementById("ore").value) || 0;
+      return oreSettimanali * 4.333;
+    }
+
+    let aggiornamentoAutomaticoPaga = false;
+
+    function aggiornaNettoMensileDaOrario() {
+      if (aggiornamentoAutomaticoPaga) return;
+
+      const rapporto = document.getElementById("rapporto").value;
+      if (rapporto !== "non_convivente") return;
+
+      const pagaOraria = Number(document.getElementById("pagaNettaOraria").value) || 0;
+      const oreMensili = getOreMensiliCorrenti();
+
+      aggiornamentoAutomaticoPaga = true;
+      document.getElementById("nettoMensileConcordato").value =
+        oreMensili > 0 ? (pagaOraria * oreMensili).toFixed(2) : "0";
+      aggiornamentoAutomaticoPaga = false;
+    }
+
+    function aggiornaPagaOrariaDaMensile() {
+      if (aggiornamentoAutomaticoPaga) return;
+
+      const rapporto = document.getElementById("rapporto").value;
+      if (rapporto !== "non_convivente") return;
+
+      const nettoMensile = Number(document.getElementById("nettoMensileConcordato").value) || 0;
+      const oreMensili = getOreMensiliCorrenti();
+
+      aggiornamentoAutomaticoPaga = true;
+      document.getElementById("pagaNettaOraria").value =
+        oreMensili > 0 ? (nettoMensile / oreMensili).toFixed(2) : "0";
+      aggiornamentoAutomaticoPaga = false;
+    }
+
+    function aggiornaCampiNonConviventeDaOre() {
+      const rapporto = document.getElementById("rapporto").value;
+      const usaPagaPattuita = document.getElementById("usaPagaPattuita").value;
+
+      if (rapporto !== "non_convivente" || usaPagaPattuita !== "si") return;
+
+      const pagaOraria = Number(document.getElementById("pagaNettaOraria").value) || 0;
+      const nettoMensile = Number(document.getElementById("nettoMensileConcordato").value) || 0;
+
+      if (pagaOraria > 0) {
+        aggiornaNettoMensileDaOrario();
+      } else if (nettoMensile > 0) {
+        aggiornaPagaOrariaDaMensile();
+      }
+    }
+
+function suggerisciLivello() {
+      const tipo = document.getElementById("tipoLavoro").value;
+      let livello = "B";
+      if (tipo === "colf") livello = "B";
+      if (tipo === "babysitter") livello = "BS";
+      if (tipo === "badante_auto") livello = "CS";
+      if (tipo === "badante_non_auto") livello = "DS";
+      document.getElementById("livello").value = livello;
+    }
+
+    function gestisciCampoPagaPattuita() {
+      const scelta = document.getElementById("usaPagaPattuita").value;
+      const rapporto = document.getElementById("rapporto").value;
+
+      const box = document.getElementById("boxPagaPattuita");
+      const boxConvivente = document.getElementById("boxConviventePaga");
+      const boxNonConvivente = document.getElementById("boxNonConviventePaga");
+
+      if (scelta !== "si") {
+        box.classList.add("hidden");
+        document.getElementById("pagaPattuita").value = 0;
+        document.getElementById("pagaNettaOraria").value = 0;
+        document.getElementById("nettoMensileConcordato").value = 0;
+        return;
+      }
+
+      box.classList.remove("hidden");
+
+      if (rapporto === "non_convivente") {
+        boxConvivente.classList.add("hidden");
+        boxNonConvivente.classList.remove("hidden");
+        aggiornaCampiNonConviventeDaOre();
+      } else {
+        boxConvivente.classList.remove("hidden");
+        boxNonConvivente.classList.add("hidden");
+      }
+    }
+
+    function scegliContributi(oreSettimanali, pagaOraria) {
+      const ore = Number(oreSettimanali) || 0;
+      const paga = Number(pagaOraria) || 0;
+      if (ore > 24) {
+        return { totale: 1.24, lavoratore: 0.31 };
+      }
+      for (const fascia of contributiInps.fino24) {
+        if (paga >= fascia.min && paga <= fascia.max) {
+          return { totale: Number(fascia.totale), lavoratore: Number(fascia.lavoratore) };
+        }
+      }
+      return { totale: 1.70, lavoratore: 0.43 };
+    }
+
+    function calcolaLordoDaNetto(netto, oreMensili, oreSettimanali) {
+      const nettoPulito = Number(netto) || 0;
+      const oreMensiliPulite = Number(oreMensili) || 1;
+      const oreSettimanaliPulite = Number(oreSettimanali) || 0;
+      let lordo = nettoPulito;
+      for (let i = 0; i < 10; i++) {
+        const pagaOraria = lordo / oreMensiliPulite;
+        const contributi = scegliContributi(oreSettimanaliPulite, pagaOraria);
+        const contributiLavoratoreMensili = Number(contributi.lavoratore) * oreMensiliPulite;
+        lordo = nettoPulito + contributiLavoratoreMensili;
+      }
+      return lordo;
+    }
+
+    function calcolaLordoOrarioDaNettoOrario(nettoOrario, oreSettimanali) {
+      const nettoOrarioPulito = Number(nettoOrario) || 0;
+      const oreSettimanaliPulite = Number(oreSettimanali) || 0;
+      let lordoOrario = nettoOrarioPulito;
+
+      for (let i = 0; i < 10; i++) {
+        const contributi = scegliContributi(oreSettimanaliPulite, lordoOrario);
+        lordoOrario = nettoOrarioPulito + Number(contributi.lavoratore);
+      }
+
+      return lordoOrario;
+    }
+
+    function calcola() {
+      const rapporto = document.getElementById("rapporto").value;
+      const livello = document.getElementById("livello").value;
+      const oreSettimanali = Number(document.getElementById("ore").value) || 0;
+      const usaPagaPattuita = document.getElementById("usaPagaPattuita").value;
+
+      let nettoPattuito = Number(document.getElementById("pagaPattuita").value) || 0;
+
+      if (rapporto === "non_convivente") {
+        const pagaNettaOraria = Number(document.getElementById("pagaNettaOraria").value) || 0;
+        const nettoMensileConcordato = Number(document.getElementById("nettoMensileConcordato").value) || 0;
+
+        if (pagaNettaOraria > 0) {
+          nettoPattuito = pagaNettaOraria;
+        } else if (nettoMensileConcordato > 0) {
+          const oreMensiliProvvisorie = oreSettimanali * 4.333;
+          nettoPattuito = oreMensiliProvvisorie > 0 ? nettoMensileConcordato / oreMensiliProvvisorie : 0;
+          document.getElementById("pagaNettaOraria").value = nettoPattuito.toFixed(2);
+        } else {
+          nettoPattuito = 0;
+        }
+      }
+
+      if (oreSettimanali <= 0) {
+        alert("Inserisci un numero di ore settimanali valido.");
+        return;
+      }
+
+      const oreMensili = oreSettimanali * 4.333;
+      let unitaPaga = "";
+      let pagaCcnl = 0;
+      let pagaEffettiva = 0;
+      let retribuzioneLordaMensile = 0;
+      let pagaOrariaContributiva = 0;
+      let minimoViolato = false;
+      let nettoMinimoApplicatoMensile = 0;
+      let nettoMinimoApplicatoOrario = 0;
+      let testoMinimoApplicato = "";
+
+      if (rapporto === "convivente") {
+        unitaPaga = "Mensile";
+        pagaCcnl = Number(pagheConviventi[livello]) || 0;
+        if (usaPagaPattuita === "si" && nettoPattuito > 0) {
+          const lordoDaNetto = calcolaLordoDaNetto(nettoPattuito, oreMensili, oreSettimanali);
+
+          if (lordoDaNetto < pagaCcnl) {
+            minimoViolato = true;
+
+            const pagaOrariaMinima = pagaCcnl / oreMensili;
+            const contributiMinimi = scegliContributi(oreSettimanali, pagaOrariaMinima);
+            nettoMinimoApplicatoMensile = pagaCcnl - (Number(contributiMinimi.lavoratore) * oreMensili);
+            nettoMinimoApplicatoOrario = nettoMinimoApplicatoMensile / oreMensili;
+
+            testoMinimoApplicato =
+              `Hai inserito un netto mensile di ${euro(nettoPattuito)}, inferiore al minimo contrattuale stimato. ` +
+              `Il calcolo usa automaticamente il minimo CCNL: netto stimato ${euro(nettoMinimoApplicatoMensile)} al mese.`;
+          }
+
+          pagaEffettiva = Math.max(pagaCcnl, lordoDaNetto);
+        } else {
+          pagaEffettiva = pagaCcnl;
+        }
+        retribuzioneLordaMensile = pagaEffettiva;
+        pagaOrariaContributiva = retribuzioneLordaMensile / oreMensili;
+      }
+
+      if (rapporto === "non_convivente") {
+        unitaPaga = "Oraria";
+        pagaCcnl = Number(pagheNonConviventi[livello]) || 0;
+        if (usaPagaPattuita === "si" && nettoPattuito > 0) {
+          // Per i non conviventi il valore inserito è una paga netta ORARIA.
+          const lordoOrarioDaNetto = calcolaLordoOrarioDaNettoOrario(nettoPattuito, oreSettimanali);
+
+          if (lordoOrarioDaNetto < pagaCcnl) {
+            minimoViolato = true;
+
+            const contributiMinimi = scegliContributi(oreSettimanali, pagaCcnl);
+            nettoMinimoApplicatoOrario = pagaCcnl - Number(contributiMinimi.lavoratore);
+            nettoMinimoApplicatoMensile = nettoMinimoApplicatoOrario * oreMensili;
+
+            if (modalitaPagaNonConvivente === "mensile") {
+              const nettoMensileInserito = Number(document.getElementById("nettoMensileConcordato").value) || 0;
+              testoMinimoApplicato =
+                `Hai inserito un netto mensile di ${euro(nettoMensileInserito)}, inferiore al minimo contrattuale stimato. ` +
+                `Il calcolo usa automaticamente il minimo CCNL: circa ${euro(nettoMinimoApplicatoOrario)} netti all’ora, pari a ${euro(nettoMinimoApplicatoMensile)} al mese.`;
+            } else {
+              testoMinimoApplicato =
+                `Hai inserito una paga netta oraria di ${euro(nettoPattuito)}, inferiore al minimo contrattuale stimato. ` +
+                `Il calcolo usa automaticamente il minimo CCNL: circa ${euro(nettoMinimoApplicatoOrario)} netti all’ora, pari a ${euro(nettoMinimoApplicatoMensile)} al mese.`;
+            }
+          }
+
+          pagaEffettiva = Math.max(pagaCcnl, lordoOrarioDaNetto);
+        } else {
+          pagaEffettiva = pagaCcnl;
+        }
+        retribuzioneLordaMensile = pagaEffettiva * oreMensili;
+        pagaOrariaContributiva = pagaEffettiva;
+      }
+
+      const contributi = scegliContributi(oreSettimanali, pagaOrariaContributiva);
+      const contributoTotaleOrario = Number(contributi.totale) || 0;
+      const contributoLavoratoreOrario = Number(contributi.lavoratore) || 0;
+      const contributoDatoreOrario = contributoTotaleOrario - contributoLavoratoreOrario;
+
+      const contributiLavoratoreMensili = contributoLavoratoreOrario * oreMensili;
+      const contributiDatoreMensili = contributoDatoreOrario * oreMensili;
+      const contributiDatoreAnnui = contributiDatoreMensili * 12;
+
+      let nettoMensile = 0;
+
+      if (minimoViolato && nettoMinimoApplicatoMensile > 0) {
+
+        // Se la retribuzione inserita è sotto minimo,
+        // il valore mostrato e usato nel prospetto diventa il minimo CCNL stimato.
+        nettoMensile = nettoMinimoApplicatoMensile;
+
+      } else if (usaPagaPattuita === "si" && nettoPattuito > 0) {
+
+        if (rapporto === "non_convivente") {
+
+          // Se l'utente ha inserito il netto mensile,
+          // usiamo ESATTAMENTE quel valore senza ricalcoli arrotondati.
+          if (modalitaPagaNonConvivente === "mensile") {
+
+            nettoMensile =
+              Number(document.getElementById("nettoMensileConcordato").value) || 0;
+
+          } else {
+
+            // Se invece ha inserito la paga oraria,
+            // calcoliamo il netto mensile dalle ore.
+            nettoMensile = nettoPattuito * oreMensili;
+
+          }
+
+        } else {
+
+          nettoMensile = nettoPattuito;
+
+        }
+
+      } else {
+
+        nettoMensile = retribuzioneLordaMensile - contributiLavoratoreMensili;
+
+      }
+
+      const retribuzioneAnnua = retribuzioneLordaMensile * 12;
+      const tredicesima = retribuzioneLordaMensile;
+      const tfrAnnuo = (retribuzioneAnnua + tredicesima) / 13.5;
+      const quotaTredicesimaMensile = tredicesima / 12;
+      const quotaTfrMensile = tfrAnnuo / 12;
+      const costoAnnuo = retribuzioneAnnua + tredicesima + tfrAnnuo + contributiDatoreAnnui;
+      const costoMensile = costoAnnuo / 12;
+      const differenzaPercentuale = nettoMensile > 0 ? ((costoMensile - nettoMensile) / nettoMensile) * 100 : 0;
+
+      window.calcolo = {
+        rapporto: rapporto,
+        nettoMensile: nettoMensile,
+        nettoPattuito: nettoPattuito,
+        minimoViolato: minimoViolato,
+        nettoMinimoApplicatoMensile: nettoMinimoApplicatoMensile,
+        nettoMinimoApplicatoOrario: nettoMinimoApplicatoOrario,
+        testoMinimoApplicato: testoMinimoApplicato,
+        lordoMensile: retribuzioneLordaMensile,
+        oreMensili: oreMensili,
+        contributiLavMensili: contributiLavoratoreMensili,
+        contributiDatMensili: contributiDatoreMensili,
+        quotaTredicesimaMensile,
+        quotaTfrMensile,
+        costoMensile,
+        retribuzioneAnnua,
+        contributiLavAnnui: contributiLavoratoreMensili * 12,
+        contributiDatAnnui: contributiDatoreMensili * 12,
+        tredicesima,
+        tfr: tfrAnnuo,
+        costoAnnuo
+      };
+
+      document.getElementById("output").classList.remove("hidden");
+
+      const warningMinimi = document.getElementById("warningMinimi");
+
+      if (minimoViolato) {
+        warningMinimi.classList.remove("hidden");
+        document.getElementById("testoWarningMinimi").innerText =
+          testoMinimoApplicato || "Il sistema applica automaticamente la retribuzione minima contrattuale prevista.";
+      } else {
+        warningMinimi.classList.add("hidden");
+      }
+      let fraseNetto = "";
+
+      if (minimoViolato && nettoMinimoApplicatoMensile > 0) {
+        if (rapporto === "non_convivente") {
+          fraseNetto =
+            `Retribuzione sotto minimo: il sistema applica circa ${euro(nettoMinimoApplicatoOrario)} netti all’ora, pari a circa ${euro(nettoMensile)} al mese.`;
+        } else {
+          fraseNetto =
+            `Retribuzione sotto minimo: il sistema applica il minimo CCNL stimato, pari a circa ${euro(nettoMensile)} netti al mese.`;
+        }
+      } else if (rapporto === "non_convivente" && usaPagaPattuita === "si" && nettoPattuito > 0) {
+        fraseNetto =
+          `Il lavoratore percepisce circa ${euro(nettoPattuito)} netti all’ora, pari a circa ${euro(nettoMensile)} al mese.`;
+      } else {
+        fraseNetto =
+          `Il lavoratore percepisce circa ${euro(nettoMensile)} al mese.`;
+      }
+
+      document.getElementById("fraseFinale").innerText =
+        `${fraseNetto} Il costo reale per il datore è circa ${euro(costoMensile)} al mese, cioè ${euro(costoAnnuo)} all’anno.`;
+      document.getElementById("differenza").innerText =
+        `Il costo reale è circa il +${differenzaPercentuale.toFixed(0)}% rispetto al netto percepito.`;
+
+      document.getElementById("nettoMensile").innerText = euro(nettoMensile);
+      document.getElementById("costoMensile").innerText = euro(costoMensile);
+      document.getElementById("costoAnnuo").innerText = euro(costoAnnuo);
+      document.getElementById("lordoMensile").innerText = euro(retribuzioneLordaMensile);
+      document.getElementById("oreMensili").innerText = numero(oreMensili);
+      document.getElementById("unitaPaga").innerText = unitaPaga;
+      document.getElementById("pagaCcnl").innerText = rapporto === "convivente" ? euro(pagaCcnl) : `${euro(pagaCcnl)} / ora`;
+      document.getElementById("pagaEffettiva").innerText = rapporto === "convivente" ? euro(pagaEffettiva) : `${euro(pagaEffettiva)} / ora`;
+      document.getElementById("contributiLavMensili").innerText = euro(contributiLavoratoreMensili);
+      document.getElementById("contributiDatMensili").innerText = euro(contributiDatoreMensili);
+      document.getElementById("tredicesima").innerText = euro(tredicesima);
+      document.getElementById("tfrAnnuo").innerText = euro(tfrAnnuo);
+      document.getElementById("output").scrollIntoView({ behavior: "smooth" });
+    }
+let pdfGiaGenerato = false;
+
+    async function generaPDF() {
+if (pdfGiaGenerato) {
+  return;
+}
+
+pdfGiaGenerato = true;
+      if (!window.calcolo) {
+        alert("Prima esegui il calcolo.");
+        return;
+      }
+
+      if (typeof gtag === "function") {
+        gtag('event', 'pdf_download', {
+          currency: 'EUR',
+          value: 9.90
+        });
+      }
+
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF();
+
+      const netto = document.getElementById("nettoMensile").innerText;
+      const costoMensile = document.getElementById("costoMensile").innerText;
+      const costoAnnuo = document.getElementById("costoAnnuo").innerText;
+      const differenza = document.getElementById("differenza").innerText;
+      const tipoLavoro = document.getElementById("tipoLavoro").selectedOptions[0].text;
+      const rapporto = document.getElementById("rapporto").selectedOptions[0].text;
+      const livello = document.getElementById("livello").value;
+      const oreSettimanali = document.getElementById("ore").value;
+      const oreMensiliVal = Number(window.calcolo.oreMensili || 0) || (Number(oreSettimanali) * 4.333);
+      const costoOrarioReale = oreMensiliVal > 0 ? window.calcolo.costoMensile / oreMensiliVal : 0;
+      const dataReport = new Date().toLocaleDateString("it-IT");
+
+      // HEADER PREMIUM CON LOGO TESTUALE PULITO
+      doc.setFillColor(37, 99, 235);
+      doc.rect(0, 0, 210, 30, "F");
+
+      // Logo testuale: CostoDomestico bianco + .it verde
+      doc.setFont(undefined, "bold");
+      doc.setFontSize(19);
+      doc.setTextColor(255, 255, 255);
+      doc.text("CostoDomestico", 12, 14);
+      doc.setTextColor(34, 197, 94);
+      doc.text(".it", 67, 14);
+
+      // Sottotitolo logo
+      doc.setFont(undefined, "normal");
+      doc.setFontSize(9);
+      doc.setTextColor(219, 234, 254);
+      doc.text("Report costo lavoro domestico", 12, 22);
+
+      // Data report
+      doc.setFontSize(8);
+      doc.setTextColor(255, 255, 255);
+      doc.text(`Generato il ${dataReport}`, 198, 15, { align: "right" });
+
+      // TITOLO
+      doc.setTextColor(17, 24, 39);
+      doc.setFontSize(18);
+      doc.setFont(undefined, "bold");
+      doc.text("Calcolo costo colf / badante", 12, 43);
+
+      doc.setFontSize(10);
+      doc.setFont(undefined, "normal");
+      doc.setTextColor(75, 85, 99);
+      doc.text("Simulazione indicativa basata su CCNL lavoro domestico 2026.", 12, 50);
+
+      // DATI RAPPORTO
+      doc.setFillColor(249, 250, 251);
+      doc.roundedRect(12, 58, 186, 27, 3, 3, "F");
+
+      doc.setTextColor(17, 24, 39);
+      doc.setFontSize(11);
+      doc.setFont(undefined, "bold");
+      doc.text("Dati del rapporto", 18, 66);
+
+      doc.setFont(undefined, "normal");
+      doc.setFontSize(9);
+      doc.text(`Tipo lavoro: ${tipoLavoro}`, 18, 73);
+      doc.text(`Rapporto: ${rapporto}`, 18, 79);
+      doc.text(`Livello CCNL: ${livello}`, 105, 73);
+      doc.text(`Ore settimanali: ${oreSettimanali}`, 105, 79);
+
+      // BOX PRINCIPALI - mantiene grafica premium
+      doc.setFillColor(236, 253, 245);
+      doc.roundedRect(12, 94, 42, 38, 3, 3, "F");
+
+      doc.setFillColor(239, 246, 255);
+      doc.roundedRect(58, 94, 42, 38, 3, 3, "F");
+
+      doc.setFillColor(255, 247, 237);
+      doc.roundedRect(104, 94, 42, 38, 3, 3, "F");
+
+      doc.setFillColor(245, 243, 255);
+      doc.roundedRect(150, 94, 48, 38, 3, 3, "F");
+
+      doc.setFontSize(8);
+      doc.setTextColor(75, 85, 99);
+      doc.text("Netto", 17, 104);
+      doc.text("Costo mese", 63, 104);
+      doc.text("Costo anno", 109, 104);
+      doc.text("Costo orario", 155, 104);
+
+      doc.setFontSize(12);
+      doc.setFont(undefined, "bold");
+      doc.setTextColor(6, 95, 70);
+      doc.text(netto, 17, 119);
+
+      doc.setTextColor(30, 64, 175);
+      doc.text(costoMensile, 63, 119);
+
+      doc.setTextColor(154, 52, 18);
+      doc.text(costoAnnuo, 109, 119);
+
+      doc.setTextColor(91, 33, 182);
+      doc.text(`${euro(costoOrarioReale)} / h`, 155, 119);
+
+      // DIFFERENZA
+      doc.setFillColor(254, 242, 242);
+      doc.roundedRect(12, 140, 186, 16, 3, 3, "F");
+      doc.setTextColor(185, 28, 28);
+      doc.setFontSize(10);
+      doc.setFont(undefined, "bold");
+      doc.text(differenza, 18, 150);
+
+      // DETTAGLIO MENSILE/ANNUALE - contributi lavoratore fuori dalla tabella principale
+      doc.setTextColor(17, 24, 39);
+      doc.setFontSize(14);
+      doc.setFont(undefined, "bold");
+      doc.text("Dettaglio mensile", 12, 170);
+      doc.text("Dettaglio annuale", 112, 170);
+
+      const mensile = [
+        ["Retribuzione lorda", euro(window.calcolo.lordoMensile)],
+        ["Contributi datore", euro(window.calcolo.contributiDatMensili)],
+        ["Quota tredicesima", euro(window.calcolo.quotaTredicesimaMensile)],
+        ["Quota TFR", euro(window.calcolo.quotaTfrMensile)],
+        ["Costo totale mensile", euro(window.calcolo.costoMensile)]
+      ];
+
+      const annuale = [
+        ["Retribuzione annua", euro(window.calcolo.retribuzioneAnnua)],
+        ["Contributi datore", euro(window.calcolo.contributiDatAnnui)],
+        ["Tredicesima", euro(window.calcolo.tredicesima)],
+        ["TFR annuo", euro(window.calcolo.tfr)],
+        ["Costo totale annuo", euro(window.calcolo.costoAnnuo)]
+      ];
+
+      let y = 182;
+      for (let i = 0; i < mensile.length; i++) {
+        if (i % 2 === 0) {
+          doc.setFillColor(249, 250, 251);
+          doc.rect(12, y - 6, 86, 9, "F");
+          doc.rect(112, y - 6, 86, 9, "F");
+        }
+
+        doc.setFontSize(8.4);
+        doc.setFont(undefined, "normal");
+        doc.setTextColor(55, 65, 81);
+        doc.text(mensile[i][0], 14, y);
+        doc.text(annuale[i][0], 114, y);
+
+        doc.setFont(undefined, i === mensile.length - 1 ? "bold" : "normal");
+        doc.setTextColor(17, 24, 39);
+        doc.text(mensile[i][1], 98, y, { align: "right" });
+        doc.text(annuale[i][1], 195, y, { align: "right" });
+        y += 10;
+      }
+
+      // INFO LAVORATORE: secondaria, non confonde il costo datore
+      // Layout compatto per evitare sovrapposizioni nella parte bassa del PDF.
+      const yInfo = y + 2;
+
+      doc.setFillColor(248, 250, 252);
+      doc.roundedRect(12, yInfo - 6, 186, 10, 3, 3, "F");
+
+      doc.setTextColor(71, 85, 105);
+      doc.setFontSize(7.4);
+      doc.setFont(undefined, "normal");
+      doc.text(
+        `Informazione lavoratore: contributi trattenuti in busta paga ${euro(window.calcolo.contributiLavMensili)} al mese (${euro(window.calcolo.contributiLavAnnui)} annui).`,
+        16,
+        yInfo
+      );
+
+      // Nota minimi CCNL
+      let yBoxLettura = yInfo + 10;
+
+      if (window.calcolo.minimoViolato) {
+        const yMinimi = yInfo + 9;
+
+        doc.setFillColor(255, 247, 237);
+        doc.roundedRect(12, yMinimi, 186, 14, 3, 3, "F");
+
+        doc.setTextColor(154, 52, 18);
+        doc.setFontSize(7);
+        doc.setFont(undefined, "bold");
+        doc.text("Nota minimi CCNL", 16, yMinimi + 5);
+
+        doc.setFont(undefined, "normal");
+        doc.setFontSize(6.8);
+        doc.text(
+          "La retribuzione inserita era sotto i minimi contrattuali: il report usa il minimo CCNL stimato.",
+          16,
+          yMinimi + 11
+        );
+
+        yBoxLettura = yMinimi + 17;
+      }
+
+      // Come leggere il report
+      doc.setFillColor(239, 246, 255);
+      doc.roundedRect(12, yBoxLettura, 186, 18, 3, 3, "F");
+
+      doc.setTextColor(30, 64, 175);
+      doc.setFontSize(7.8);
+      doc.setFont(undefined, "bold");
+      doc.text("Come leggere il report", 16, yBoxLettura + 6);
+
+      doc.setTextColor(55, 65, 81);
+      doc.setFontSize(6.7);
+      doc.setFont(undefined, "normal");
+      doc.text(
+        "Il costo reale include retribuzione, contributi a carico del datore, tredicesima e TFR.",
+        16,
+        yBoxLettura + 12
+      );
+      doc.text(
+        "Il calcolo ha finalita' informativa e va verificato sul caso specifico.",
+        16,
+        yBoxLettura + 16
+      );
+
+      // Footer separato e più in basso
+      doc.setDrawColor(229, 231, 235);
+      doc.line(12, 284, 198, 284);
+      doc.setTextColor(107, 114, 128);
+      doc.setFontSize(6.8);
+      doc.text("Report generato da CostoDomestico.it", 12, 290);
+      doc.text("Simulatore informativo per lavoro domestico", 198, 290, { align: "right" });
+
+      doc.save("report_costo_lavoro_domestico.pdf");
+    }
+
+function vaiAlPagamento() {
+  localStorage.setItem("tipoLavoro", document.getElementById("tipoLavoro").value);
+  localStorage.setItem("rapporto", document.getElementById("rapporto").value);
+  localStorage.setItem("livello", document.getElementById("livello").value);
+  localStorage.setItem("ore", document.getElementById("ore").value);
+  localStorage.setItem("usaPagaPattuita", document.getElementById("usaPagaPattuita").value);
+
+  if (document.getElementById("pagaPattuita")) {
+    localStorage.setItem("pagaPattuita", document.getElementById("pagaPattuita").value);
+  }
+
+  if (document.getElementById("pagaNettaOraria")) {
+    localStorage.setItem("pagaNettaOraria", document.getElementById("pagaNettaOraria").value);
+  }
+
+  if (document.getElementById("nettoMensileConcordato")) {
+    localStorage.setItem("nettoMensileConcordato", document.getElementById("nettoMensileConcordato").value);
+  }
+
+  if (typeof gtag === "function") {
+    gtag('event', 'begin_checkout', {
+      currency: 'EUR',
+      value: 9.90
+    });
+  }
+
+  window.location.href = "https://buy.stripe.com/00w7sLfK55hWdINbNr48000";
+}
+
+function testPDF() {
+  const conferma = confirm(
+    "SIMULAZIONE PAGAMENTO\n\n" +
+    "Qui normalmente pagheresti 19€.\n\n" +
+    "Vuoi continuare e vedere il report?"
+  );
+
+  if (!conferma) return;
+
+  generaPDF();
+}
+
+
+
+function mostraDownloadPagamento() {
+  const box = document.getElementById("boxDownloadPagamento");
+  if (box) {
+    box.classList.remove("hidden");
+    box.scrollIntoView({ behavior: "smooth", block: "center" });
+  }
+
+  const floating = document.getElementById("floatingDownloadPagamento");
+  if (floating) {
+    floating.classList.add("show");
+  }
+}
+
+function pulisciParametroPaidDopoDownload() {
+  if (window.history && window.location.search.includes("paid=1")) {
+    const cleanUrl = window.location.origin + window.location.pathname;
+    window.history.replaceState({}, document.title, cleanUrl);
+  }
+}
+
+function ripristinaDatiDopoPagamento() {
+  const params = new URLSearchParams(window.location.search);
+
+  if (params.get("paid") !== "1" && params.get("download") !== "1" && params.get("success") !== "1") return;
+
+  document.getElementById("tipoLavoro").value = localStorage.getItem("tipoLavoro") || "colf";
+  document.getElementById("rapporto").value = localStorage.getItem("rapporto") || "convivente";
+  document.getElementById("livello").value = localStorage.getItem("livello") || "B";
+  document.getElementById("ore").value = localStorage.getItem("ore") || "";
+  document.getElementById("usaPagaPattuita").value = localStorage.getItem("usaPagaPattuita") || "no";
+
+  if (document.getElementById("pagaPattuita")) {
+    document.getElementById("pagaPattuita").value = localStorage.getItem("pagaPattuita") || "0";
+  }
+
+  if (document.getElementById("pagaNettaOraria")) {
+    document.getElementById("pagaNettaOraria").value = localStorage.getItem("pagaNettaOraria") || "0";
+  }
+
+  if (document.getElementById("nettoMensileConcordato")) {
+    document.getElementById("nettoMensileConcordato").value = localStorage.getItem("nettoMensileConcordato") || "0";
+  }
+
+  gestisciCampoPagaPattuita();
+
+  setTimeout(() => {
+    calcola();
+
+    setTimeout(() => {
+      mostraDownloadPagamento();
+
+      try {
+        generaPDF();
+      } catch (e) {
+        console.log("Download automatico bloccato:", e);
+pdfGiaGenerato = false;
+      }
+
+      setTimeout(() => {
+        pulisciParametroPaidDopoDownload();
+      }, 15000);
+    }, 900);
+  }, 600);
+}
+
+    suggerisciLivello();
+    gestisciCampoPagaPattuita();
+    ripristinaDatiDopoPagamento();
+  </script>
+
+<script>
+  function mostraCookieBanner() {
+    if (!localStorage.getItem('cookieConsent')) {
+      const banner = document.getElementById('cookieBanner');
+      if (banner) banner.classList.add('show');
+    }
+  }
+
+  function accettaCookie() {
+    localStorage.setItem('cookieConsent', 'accepted');
+
+    if (typeof gtag === 'function') {
+      gtag('consent', 'update', {
+        'analytics_storage': 'granted'
+      });
+    }
+
+    const banner = document.getElementById('cookieBanner');
+    if (banner) banner.classList.remove('show');
+  }
+
+  function rifiutaCookie() {
+    localStorage.setItem('cookieConsent', 'rejected');
+
+    if (typeof gtag === 'function') {
+      gtag('consent', 'update', {
+        'analytics_storage': 'denied'
+      });
+    }
+
+    const banner = document.getElementById('cookieBanner');
+    if (banner) banner.classList.remove('show');
+  }
+
+  document.addEventListener('DOMContentLoaded', mostraCookieBanner);
+</script>
+
+</body>
+</html>

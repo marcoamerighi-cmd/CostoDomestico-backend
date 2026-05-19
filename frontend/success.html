@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pagamento completato</title>
+  <meta name="robots" content="noindex, nofollow">
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f5f7fa;
+      text-align: center;
+      padding: 24px;
+      color: #1f2937;
+    }
+
+    .box {
+      background: white;
+      padding: 30px;
+      border-radius: 18px;
+      max-width: 520px;
+      margin: 30px auto;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    }
+
+    .brand {
+      font-size: 28px;
+      font-weight: 800;
+      color: #0b4dbb;
+      margin-bottom: 18px;
+    }
+
+    .brand span {
+      color: #16a34a;
+    }
+
+    h1 {
+      color: #16a34a;
+      margin-bottom: 10px;
+    }
+
+    p {
+      line-height: 1.5;
+      color: #374151;
+    }
+
+    button {
+      margin-top: 20px;
+      padding: 16px;
+      width: 100%;
+      border: none;
+      border-radius: 12px;
+      background: #16a34a;
+      color: white;
+      font-size: 18px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    button.secondary {
+      background: #2563eb;
+      margin-top: 12px;
+    }
+
+    .small {
+      margin-top: 15px;
+      font-size: 14px;
+      color: #6b7280;
+    }
+
+    .notice {
+      margin-top: 18px;
+      background: #ecfdf5;
+      border: 1px solid #86efac;
+      color: #065f46;
+      padding: 14px;
+      border-radius: 12px;
+      font-size: 14px;
+    }
+  
+    .cookie-banner {
+      position: fixed;
+      left: 16px;
+      right: 16px;
+      bottom: 16px;
+      z-index: 10000;
+      background: #ffffff;
+      border: 1px solid #dbeafe;
+      box-shadow: 0 12px 35px rgba(15, 23, 42, 0.18);
+      border-radius: 16px;
+      padding: 18px;
+      max-width: 760px;
+      margin: 0 auto;
+      display: none;
+      color: #1f2937;
+    }
+
+    .cookie-banner.show {
+      display: block;
+    }
+
+    .cookie-banner p {
+      margin: 0 0 12px;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .cookie-banner a {
+      color: #2563eb;
+      font-weight: bold;
+      text-decoration: none;
+    }
+
+    .cookie-actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .cookie-actions button {
+      margin: 0;
+      width: auto;
+      padding: 11px 16px;
+      border-radius: 10px;
+      font-size: 14px;
+      cursor: pointer;
+      border: none;
+      font-weight: bold;
+    }
+
+    .cookie-accept {
+      background: #16a34a;
+      color: white;
+    }
+
+    .cookie-reject {
+      background: #e5e7eb;
+      color: #111827;
+    }
+
+  </style>
+<!-- Google tag (gtag.js) con consenso cookie -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-3LF3S9S7LB"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+
+  gtag('consent', 'default', {
+    'analytics_storage': localStorage.getItem('cookieConsent') === 'accepted' ? 'granted' : 'denied',
+    'ad_storage': 'denied',
+    'ad_user_data': 'denied',
+    'ad_personalization': 'denied'
+  });
+
+  gtag('js', new Date());
+  gtag('config', 'G-3LF3S9S7LB', {
+    'anonymize_ip': true
+  });
+</script>
+
+</head>
+
+<body>
+
+  <div class="box">
+    <div class="brand">CostoDomestico<span>.it</span></div>
+
+    <h1>Pagamento completato ✅</h1>
+
+    <p>
+      Il tuo report è pronto.
+    </p>
+
+    <div class="notice">
+      Il report è pronto per il download.
+      Premi il pulsante qui sotto per tornare al calcolatore e scaricare il PDF.
+    </div>
+
+    <button onclick="tornaAlCalcolatore()">
+      Scarica il report PDF
+    </button>
+
+    <button class="secondary" onclick="tornaAlCalcolatore()">
+      Torna al calcolatore
+    </button>
+
+    <p class="small">
+      Se il download non parte automaticamente, premi il pulsante verde.
+    </p>
+  </div>
+
+  <script>
+    let redirectEseguito = false;
+
+    function salvaOrdineCostoDomestico() {
+
+      if (localStorage.getItem("ordine_costo_domestico_salvato") === "1") {
+        return;
+      }
+
+      localStorage.setItem(
+        "ordine_costo_domestico_salvato",
+        "1"
+      );
+
+      fetch("https://costodomestico-backend.onrender.com/salva-ordine-costo-domestico", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          email_cliente: localStorage.getItem("email_cliente") || "",
+          nome_cliente: "",
+          cognome_cliente: ""
+        })
+      }).catch(function(error) {
+        console.log("Errore salvataggio ordine:", error);
+      });
+    }
+
+    function tornaAlCalcolatore(downloadAutomatico = false) {
+
+      salvaOrdineCostoDomestico();
+
+      if (redirectEseguito && downloadAutomatico) {
+        return;
+      }
+
+      if (downloadAutomatico) {
+        redirectEseguito = true;
+      }
+
+      const url = downloadAutomatico
+        ? "https://costodomestico.it/?paid=1&download=1&success=1"
+        : "https://costodomestico.it/?paid=1&success=1";
+
+      window.location.href = url;
+    }
+
+    setTimeout(() => {
+      tornaAlCalcolatore(true);
+    }, 3000);
+  </script>
+
+
+<script>
+  if (typeof gtag === "function") {
+    gtag('event', 'purchase', {
+      currency: 'EUR',
+      value: 9.90,
+      transaction_id: 'stripe_' + Date.now()
+    });
+  }
+</script>
+
+
+  <div id="cookieBanner" class="cookie-banner">
+    <p>
+      Usiamo cookie tecnici e, previo consenso, Google Analytics per capire come viene utilizzato il sito.
+      Puoi accettare o rifiutare i cookie statistici. Leggi la
+      <a href="/cookie-policy.html">Cookie Policy</a> e la
+      <a href="/privacy-policy.html">Privacy Policy</a>.
+    </p>
+    <div class="cookie-actions">
+      <button class="cookie-accept" onclick="accettaCookie()">Accetta</button>
+      <button class="cookie-reject" onclick="rifiutaCookie()">Rifiuta</button>
+    </div>
+  </div>
+
+
+<script>
+  function mostraCookieBanner() {
+    if (!localStorage.getItem('cookieConsent')) {
+      const banner = document.getElementById('cookieBanner');
+      if (banner) banner.classList.add('show');
+    }
+  }
+
+  function accettaCookie() {
+    localStorage.setItem('cookieConsent', 'accepted');
+
+    if (typeof gtag === 'function') {
+      gtag('consent', 'update', {
+        'analytics_storage': 'granted'
+      });
+    }
+
+    const banner = document.getElementById('cookieBanner');
+    if (banner) banner.classList.remove('show');
+  }
+
+  function rifiutaCookie() {
+    localStorage.setItem('cookieConsent', 'rejected');
+
+    if (typeof gtag === 'function') {
+      gtag('consent', 'update', {
+        'analytics_storage': 'denied'
+      });
+    }
+
+    const banner = document.getElementById('cookieBanner');
+    if (banner) banner.classList.remove('show');
+  }
+
+  document.addEventListener('DOMContentLoaded', mostraCookieBanner);
+</script>
+
+</body>
+</html>
