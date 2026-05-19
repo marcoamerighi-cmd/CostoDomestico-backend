@@ -59,6 +59,10 @@ BASE_DIR = Path(__file__).resolve().parents[1]
 FRONTEND_DIR = BASE_DIR / "frontend"
 IMMAGINI_DIR = Path(__file__).resolve().parents[1] / "frontend" / "immagini"
 
+IMMAGINI_DIR = FRONTEND_DIR / "immagini"
+
+IMMAGINI_DIR.mkdir(parents=True, exist_ok=True)
+
 app.mount(
     "/immagini",
     StaticFiles(directory=str(IMMAGINI_DIR)),
