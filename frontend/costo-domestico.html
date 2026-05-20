@@ -1326,10 +1326,21 @@ let pdfGiaGenerato = false;
 
     async function generaPDF() {
 if (pdfGiaGenerato) {
-  return;
+  pdfGiaGenerato = false;
 }
 
-pdfGiaGenerato = true;
+const btn =
+document.querySelector(
+"#boxDownloadPagamento button"
+);
+
+if(btn){
+
+    btn.disabled=true;
+
+    btn.innerText=
+    "Generazione PDF...";
+}
       if (!window.calcolo) {
         alert("Prima esegui il calcolo.");
         return;
@@ -1607,6 +1618,15 @@ function testPDF() {
   if (!conferma) return;
 
   generaPDF();
+  pdfGiaGenerato = false;
+
+if(btn){
+
+    btn.disabled=false;
+
+    btn.innerText=
+    "Scarica ora il report PDF";
+}
 }
 
 
