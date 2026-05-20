@@ -78,87 +78,7 @@
       border-radius: 12px;
       font-size: 14px;
     }
-  
-    .cookie-banner {
-      position: fixed;
-      left: 16px;
-      right: 16px;
-      bottom: 16px;
-      z-index: 10000;
-      background: #ffffff;
-      border: 1px solid #dbeafe;
-      box-shadow: 0 12px 35px rgba(15, 23, 42, 0.18);
-      border-radius: 16px;
-      padding: 18px;
-      max-width: 760px;
-      margin: 0 auto;
-      display: none;
-      color: #1f2937;
-    }
-
-    .cookie-banner.show {
-      display: block;
-    }
-
-    .cookie-banner p {
-      margin: 0 0 12px;
-      font-size: 14px;
-      line-height: 1.5;
-    }
-
-    .cookie-banner a {
-      color: #2563eb;
-      font-weight: bold;
-      text-decoration: none;
-    }
-
-    .cookie-actions {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-
-    .cookie-actions button {
-      margin: 0;
-      width: auto;
-      padding: 11px 16px;
-      border-radius: 10px;
-      font-size: 14px;
-      cursor: pointer;
-      border: none;
-      font-weight: bold;
-    }
-
-    .cookie-accept {
-      background: #16a34a;
-      color: white;
-    }
-
-    .cookie-reject {
-      background: #e5e7eb;
-      color: #111827;
-    }
-
   </style>
-<!-- Google tag (gtag.js) con consenso cookie -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-3LF3S9S7LB"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-
-  gtag('consent', 'default', {
-    'analytics_storage': localStorage.getItem('cookieConsent') === 'accepted' ? 'granted' : 'denied',
-    'ad_storage': 'denied',
-    'ad_user_data': 'denied',
-    'ad_personalization': 'denied'
-  });
-
-  gtag('js', new Date());
-  gtag('config', 'G-3LF3S9S7LB', {
-    'anonymize_ip': true
-  });
-</script>
-
 </head>
 
 <body>
@@ -168,20 +88,17 @@
 
     <h1>Pagamento completato ✅</h1>
 
-    <p>
-      Il tuo report è pronto.
-    </p>
+    <p>Il tuo report è pronto.</p>
 
     <div class="notice">
-      Il report è pronto per il download.
-      Premi il pulsante qui sotto per tornare al calcolatore e scaricare il PDF.
+      Ti stiamo riportando al calcolatore. Da lì potrai scaricare il PDF.
     </div>
 
-    <button onclick="tornaAlCalcolatore()">
+    <button onclick="tornaAlCalcolatore(true)">
       Scarica il report PDF
     </button>
 
-    <button class="secondary" onclick="tornaAlCalcolatore()">
+    <button class="secondary" onclick="tornaAlCalcolatore(false)">
       Torna al calcolatore
     </button>
 
@@ -191,154 +108,57 @@
   </div>
 
   <script>
+    let redirectEseguito = false;
 
-let redirectEseguito = false;
+    function salvaOrdineCostoDomestico() {
 
-function salvaOrdineCostoDomestico() {
-
-    if (localStorage.getItem("ordine_costo_domestico_salvato") === "1") {
+      if (localStorage.getItem("ordine_costo_domestico_salvato") === "1") {
         return;
-    }
+      }
 
-    localStorage.setItem(
+      localStorage.setItem(
         "ordine_costo_domestico_salvato",
         "1"
-    );
+      );
 
-    fetch("https://costodomestico-backend.onrender.com/salva-ordine-costo-domestico", {
+      fetch("https://costodomestico-backend.onrender.com/salva-ordine-costo-domestico", {
         method: "POST",
         headers: {
-            "Content-Type":"application/json"
+          "Content-Type": "application/json"
         },
         body: JSON.stringify({
-            email_cliente: localStorage.getItem("email_cliente") || "",
-            nome_cliente: "",
-            cognome_cliente: ""
+          email_cliente: localStorage.getItem("email_cliente") || "",
+          nome_cliente: localStorage.getItem("nome_cliente") || "",
+          cognome_cliente: localStorage.getItem("cognome_cliente") || ""
         })
-    }).catch(error=>{
-        console.log(error);
-    });
-}
-
-function scaricaReport() {
-
-    salvaOrdineCostoDomestico();
-
-    const pdfUrl =
-      localStorage.getItem("pdf_url");
-
-    if(pdfUrl){
-
-        const link =
-          document.createElement("a");
-
-        link.href = pdfUrl;
-
-        link.download =
-          "report_costodomestico.pdf";
-
-        document.body.appendChild(link);
-
-        link.click();
-
-        document.body.removeChild(link);
-
-    }else{
-
-        alert(
-          "Report non trovato. Torna al calcolatore e rigenera il report."
-        );
+      }).catch(function(error) {
+        console.log("Errore salvataggio ordine:", error);
+      });
     }
-}
 
-function tornaAlCalcolatore(downloadAutomatico=false){
+    function tornaAlCalcolatore(downloadAutomatico = false) {
 
-    salvaOrdineCostoDomestico();
+      salvaOrdineCostoDomestico();
 
-    if (redirectEseguito && downloadAutomatico){
+      if (redirectEseguito && downloadAutomatico) {
         return;
+      }
+
+      if (downloadAutomatico) {
+        redirectEseguito = true;
+      }
+
+      const url = downloadAutomatico
+        ? "https://costodomestico.it/?paid=1&download=1&success=1"
+        : "https://costodomestico.it/?paid=1&success=1";
+
+      window.location.href = url;
     }
 
-    if(downloadAutomatico){
-        redirectEseguito=true;
-    }
-
-    const url=
-    "https://costodomestico.it/?paid=1&success=1";
-
-    window.location.href=url;
-}
-
-setTimeout(()=>{
-
-    scaricaReport();
-
-},2000);
-
-</script>
-
-
-<script>
-  if (typeof gtag === "function") {
-    gtag('event', 'purchase', {
-      currency: 'EUR',
-      value: 9.90,
-      transaction_id: 'stripe_' + Date.now()
-    });
-  }
-</script>
-
-
-  <div id="cookieBanner" class="cookie-banner">
-    <p>
-      Usiamo cookie tecnici e, previo consenso, Google Analytics per capire come viene utilizzato il sito.
-      Puoi accettare o rifiutare i cookie statistici. Leggi la
-      <a href="/cookie-policy.html">Cookie Policy</a> e la
-      <a href="/privacy-policy.html">Privacy Policy</a>.
-    </p>
-    <div class="cookie-actions">
-      <button class="cookie-accept" onclick="accettaCookie()">Accetta</button>
-      <button class="cookie-reject" onclick="rifiutaCookie()">Rifiuta</button>
-    </div>
-  </div>
-
-
-<script>
-  function mostraCookieBanner() {
-    if (!localStorage.getItem('cookieConsent')) {
-      const banner = document.getElementById('cookieBanner');
-      if (banner) banner.classList.add('show');
-    }
-  }
-
-  function accettaCookie() {
-    localStorage.setItem('cookieConsent', 'accepted');
-
-    if (typeof gtag === 'function') {
-      gtag('consent', 'update', {
-        'analytics_storage': 'granted'
-      });
-    }
-
-    const banner = document.getElementById('cookieBanner');
-    if (banner) banner.classList.remove('show');
-  }
-
-  function rifiutaCookie() {
-    localStorage.setItem('cookieConsent', 'rejected');
-
-    if (typeof gtag === 'function') {
-      gtag('consent', 'update', {
-        'analytics_storage': 'denied'
-      });
-    }
-
-    const banner = document.getElementById('cookieBanner');
-    if (banner) banner.classList.remove('show');
-  }
-
-  document.addEventListener('DOMContentLoaded', mostraCookieBanner);
-</script>
+    setTimeout(() => {
+      tornaAlCalcolatore(true);
+    }, 3000);
+  </script>
 
 </body>
 </html>
