@@ -56,15 +56,13 @@ crea_tabella_clienti()
 
 BASE_DIR = Path(__file__).resolve().parents[1]
 FRONTEND_DIR = BASE_DIR / "frontend"
-IMMAGINI_DIR = Path(__file__).resolve().parents[1] / "frontend" / "immagini"
-
-IMMAGINI_DIR = FRONTEND_DIR / "immagini"
-
 PDF_DIR = BASE_DIR / "pdf_generati"
 PDF_DIR.mkdir(exist_ok=True)
 
 ADMIN_PASSWORD = os.getenv("ADMIN_PASSWORD", "")
 ADMIN_TOKEN = "admin_sessione_ok"
+
+STRIPE_PRICE_ID_TFR = os.getenv("STRIPE_PRICE_ID_TFR", "")
 
 
 class AnnualitaTFR(BaseModel):
@@ -327,21 +325,60 @@ def genera_pdf(richiesta: RichiestaTFR):
 
 @app.post("/crea-checkout-tfr")
 def crea_checkout_tfr(richiesta: RichiestaCheckoutTFR):
+
+    nome_completo = (
+        f"{richiesta.nome_cliente} {richiesta.cognome_cliente}"
+        .strip()
+    )
+
+    line_item = {
+        "quantity": 1
+    }
+
+    if STRIPE_PRICE_ID_TFR:
+        line_item["price"] = STRIPE_PRICE_ID_TFR
+    else:
+        line_item["price_data"] = {
+            "currency": "eur",
+            "product_data": {
+                "name": "Report Professionale TFR - CostoDomestico.it"
+            },
+            "unit_amount": 790
+        }
+
     sessione = stripe.checkout.Session.create(
         payment_method_types=["card"],
         mode="payment",
-        line_items=[
+
+        customer_email=richiesta.email_cliente or None,
+        customer_creation="always",
+
+        billing_address_collection="auto",
+
+        custom_fields=[
             {
-                "price_data": {
-                    "currency": "eur",
-                    "product_data": {
-                        "name": "Report Professionale TFR - CostoDomestico.it"
-                    },
-                    "unit_amount": 790
+                "key": "nome_completo",
+                "label": {
+                    "type": "custom",
+                    "custom": "Nome completo"
                 },
-                "quantity": 1
+                "type": "text",
+                "optional": False
             }
         ],
+
+        line_items=[
+            line_item
+        ],
+
+        metadata={
+            "prodotto": "Report Professionale TFR",
+            "email_cliente": richiesta.email_cliente,
+            "nome_cliente": richiesta.nome_cliente,
+            "cognome_cliente": richiesta.cognome_cliente,
+            "nome_completo": nome_completo
+        },
+
         success_url=(
             "https://costodomestico-backend.onrender.com/download-report"
             "?session_id={CHECKOUT_SESSION_ID}"
@@ -466,8 +503,7 @@ def clienti():
     return risultato
 
 
-@app.post("/stripe-webhook")
-async def stripe_webhook(request: Request):
+async def gestisci_webhook_stripe(request: Request):
     payload = await request.body()
 
     signature = request.headers.get(
@@ -499,6 +535,16 @@ async def stripe_webhook(request: Request):
     }
 
 
+@app.post("/stripe-webhook")
+async def stripe_webhook(request: Request):
+    return await gestisci_webhook_stripe(request)
+
+
+@app.post("/webhook")
+async def webhook(request: Request):
+    return await gestisci_webhook_stripe(request)
+
+
 @app.delete("/elimina-ordini-test")
 def elimina_ordini_test_endpoint():
     eliminati = elimina_ordini_test()
@@ -507,6 +553,7 @@ def elimina_ordini_test_endpoint():
         "success": True,
         "ordini_eliminati": eliminati
     }
+
 
 @app.get("/immagini/report-tfr-preview.png")
 def immagine_report_tfr_preview():
@@ -523,6 +570,7 @@ def immagine_report_tfr_preview():
         path=str(percorso),
         media_type="image/png"
     )
+
 
 @app.get("/ordini-cliente")
 def ordini_cliente(email: str):
@@ -550,12 +598,14 @@ def ordini_cliente(email: str):
 
     return risultato
 
+
 @app.get("/tfr-tool")
 def pagina_tfr_tool():
     return FileResponse(
         path=str(FRONTEND_DIR / "test_tfr.html"),
         media_type="text/html"
     )
+
 
 @app.get("/{nome_pagina}")
 def pagina_frontend_generica(nome_pagina: str):
