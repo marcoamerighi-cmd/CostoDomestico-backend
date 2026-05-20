@@ -550,6 +550,12 @@ def ordini_cliente(email: str):
 
     return risultato
 
+@app.get("/tfr-tool")
+def pagina_tfr_tool():
+    return FileResponse(
+        path=str(FRONTEND_DIR / "test_tfr.html"),
+        media_type="text/html"
+    )
 
 @app.get("/{nome_pagina}")
 def pagina_frontend_generica(nome_pagina: str):
