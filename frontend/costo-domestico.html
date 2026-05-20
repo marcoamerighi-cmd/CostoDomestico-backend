@@ -1320,22 +1320,13 @@ function suggerisciLivello() {
 let pdfGiaGenerato = false;
 
     async function generaPDF() {
-if (pdfGiaGenerato) {
-  pdfGiaGenerato = false;
-}
+      const btn = document.querySelector("#boxDownloadPagamento button");
 
-const btn =
-document.querySelector(
-"#boxDownloadPagamento button"
-);
+      if (btn) {
+        btn.disabled = false;
+        btn.innerText = "Scarica ora il report PDF";
+      }
 
-if(btn){
-
-    btn.disabled=true;
-
-    btn.innerText=
-    "Generazione PDF...";
-}
       if (!window.calcolo) {
         alert("Prima esegui il calcolo.");
         return;
@@ -1572,14 +1563,10 @@ if(btn){
       doc.text("Simulatore informativo per lavoro domestico", 198, 290, { align: "right" });
 
       doc.save("report_costo_lavoro_domestico.pdf");
-      pdfGiaGenerato = false;
 
-      if(btn){
-
-          btn.disabled=false;
-
-          btn.innerText=
-          "Scarica ora il report PDF";
+      if (btn) {
+        btn.disabled = false;
+        btn.innerText = "Scarica ora il report PDF";
       }
     }
 
@@ -1627,6 +1614,11 @@ function testPDF() {
 
   function mostraDownloadPagamento() {
     const box = document.getElementById("boxDownloadPagamento");
+    const paywall = document.querySelector("#output .paywall");
+
+    if (paywall) {
+      paywall.classList.add("hidden");
+    }
 
     if (box) {
       box.classList.remove("hidden");
