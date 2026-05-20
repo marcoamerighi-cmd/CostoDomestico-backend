@@ -807,7 +807,7 @@
           Pagamento completato ✅
           Il report è pronto per il download.
         </p>
-        <button onclick="generaPDF()">
+        <button type="button" onclick="generaPDF()">
           Scarica ora il report PDF
         </button>
         <p class="small-note">
@@ -1288,256 +1288,302 @@ function suggerisciLivello() {
       document.getElementById("tfrAnnuo").innerText = euro(tfrAnnuo);
       document.getElementById("output").scrollIntoView({ behavior: "smooth" });
     }
-let pdfGiaGenerato = false;
+    function preparaBottoneDownload(testGenerazione = false) {
+      const btn = document.querySelector("#boxDownloadPagamento button");
+      if (!btn) return null;
+
+      btn.disabled = testGenerazione;
+      btn.innerText = testGenerazione
+        ? "Generazione PDF..."
+        : "Scarica ora il report PDF";
+
+      return btn;
+    }
+
+    function scaricaDocumentoPDF(doc) {
+      const nomeFile = "report_costo_lavoro_domestico.pdf";
+
+      try {
+        const blob = doc.output("blob");
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement("a");
+
+        link.href = url;
+        link.download = nomeFile;
+        link.style.display = "none";
+
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+
+        setTimeout(() => {
+          URL.revokeObjectURL(url);
+        }, 3000);
+      } catch (erroreBlob) {
+        console.log("Download tramite blob non riuscito, uso doc.save:", erroreBlob);
+        doc.save(nomeFile);
+      }
+    }
 
     async function generaPDF() {
-      const btn = document.querySelector("#boxDownloadPagamento button");
+      const btn = preparaBottoneDownload(true);
 
-      if (btn) {
-        btn.disabled = false;
-        btn.innerText = "Scarica ora il report PDF";
-      }
+      try {
+        if (!window.calcolo) {
+          const ore = Number(document.getElementById("ore")?.value) || 0;
 
-      if (!window.calcolo) {
-        alert("Prima esegui il calcolo.");
-        return;
-      }
-
-      if (typeof gtag === "function") {
-        gtag('event', 'pdf_download', {
-          currency: 'EUR',
-          value: 9.90
-        });
-      }
-
-      const { jsPDF } = window.jspdf;
-      const doc = new jsPDF();
-
-      const netto = document.getElementById("nettoMensile").innerText;
-      const costoMensile = document.getElementById("costoMensile").innerText;
-      const costoAnnuo = document.getElementById("costoAnnuo").innerText;
-      const differenza = document.getElementById("differenza").innerText;
-      const tipoLavoro = document.getElementById("tipoLavoro").selectedOptions[0].text;
-      const rapporto = document.getElementById("rapporto").selectedOptions[0].text;
-      const livello = document.getElementById("livello").value;
-      const oreSettimanali = document.getElementById("ore").value;
-      const oreMensiliVal = Number(window.calcolo.oreMensili || 0) || (Number(oreSettimanali) * 4.333);
-      const costoOrarioReale = oreMensiliVal > 0 ? window.calcolo.costoMensile / oreMensiliVal : 0;
-      const dataReport = new Date().toLocaleDateString("it-IT");
-
-      // HEADER PREMIUM CON LOGO TESTUALE PULITO
-      doc.setFillColor(37, 99, 235);
-      doc.rect(0, 0, 210, 30, "F");
-
-      // Logo testuale: CostoDomestico bianco + .it verde
-      doc.setFont(undefined, "bold");
-      doc.setFontSize(19);
-      doc.setTextColor(255, 255, 255);
-      doc.text("CostoDomestico", 12, 14);
-      doc.setTextColor(34, 197, 94);
-      doc.text(".it", 67, 14);
-
-      // Sottotitolo logo
-      doc.setFont(undefined, "normal");
-      doc.setFontSize(9);
-      doc.setTextColor(219, 234, 254);
-      doc.text("Report costo lavoro domestico", 12, 22);
-
-      // Data report
-      doc.setFontSize(8);
-      doc.setTextColor(255, 255, 255);
-      doc.text(`Generato il ${dataReport}`, 198, 15, { align: "right" });
-
-      // TITOLO
-      doc.setTextColor(17, 24, 39);
-      doc.setFontSize(18);
-      doc.setFont(undefined, "bold");
-      doc.text("Calcolo costo colf / badante", 12, 43);
-
-      doc.setFontSize(10);
-      doc.setFont(undefined, "normal");
-      doc.setTextColor(75, 85, 99);
-      doc.text("Simulazione indicativa basata su CCNL lavoro domestico 2026.", 12, 50);
-
-      // DATI RAPPORTO
-      doc.setFillColor(249, 250, 251);
-      doc.roundedRect(12, 58, 186, 27, 3, 3, "F");
-
-      doc.setTextColor(17, 24, 39);
-      doc.setFontSize(11);
-      doc.setFont(undefined, "bold");
-      doc.text("Dati del rapporto", 18, 66);
-
-      doc.setFont(undefined, "normal");
-      doc.setFontSize(9);
-      doc.text(`Tipo lavoro: ${tipoLavoro}`, 18, 73);
-      doc.text(`Rapporto: ${rapporto}`, 18, 79);
-      doc.text(`Livello CCNL: ${livello}`, 105, 73);
-      doc.text(`Ore settimanali: ${oreSettimanali}`, 105, 79);
-
-      // BOX PRINCIPALI - mantiene grafica premium
-      doc.setFillColor(236, 253, 245);
-      doc.roundedRect(12, 94, 42, 38, 3, 3, "F");
-
-      doc.setFillColor(239, 246, 255);
-      doc.roundedRect(58, 94, 42, 38, 3, 3, "F");
-
-      doc.setFillColor(255, 247, 237);
-      doc.roundedRect(104, 94, 42, 38, 3, 3, "F");
-
-      doc.setFillColor(245, 243, 255);
-      doc.roundedRect(150, 94, 48, 38, 3, 3, "F");
-
-      doc.setFontSize(8);
-      doc.setTextColor(75, 85, 99);
-      doc.text("Netto", 17, 104);
-      doc.text("Costo mese", 63, 104);
-      doc.text("Costo anno", 109, 104);
-      doc.text("Costo orario", 155, 104);
-
-      doc.setFontSize(12);
-      doc.setFont(undefined, "bold");
-      doc.setTextColor(6, 95, 70);
-      doc.text(netto, 17, 119);
-
-      doc.setTextColor(30, 64, 175);
-      doc.text(costoMensile, 63, 119);
-
-      doc.setTextColor(154, 52, 18);
-      doc.text(costoAnnuo, 109, 119);
-
-      doc.setTextColor(91, 33, 182);
-      doc.text(`${euro(costoOrarioReale)} / h`, 155, 119);
-
-      // DIFFERENZA
-      doc.setFillColor(254, 242, 242);
-      doc.roundedRect(12, 140, 186, 16, 3, 3, "F");
-      doc.setTextColor(185, 28, 28);
-      doc.setFontSize(10);
-      doc.setFont(undefined, "bold");
-      doc.text(differenza, 18, 150);
-
-      // DETTAGLIO MENSILE/ANNUALE - contributi lavoratore fuori dalla tabella principale
-      doc.setTextColor(17, 24, 39);
-      doc.setFontSize(14);
-      doc.setFont(undefined, "bold");
-      doc.text("Dettaglio mensile", 12, 170);
-      doc.text("Dettaglio annuale", 112, 170);
-
-      const mensile = [
-        ["Retribuzione lorda", euro(window.calcolo.lordoMensile)],
-        ["Contributi datore", euro(window.calcolo.contributiDatMensili)],
-        ["Quota tredicesima", euro(window.calcolo.quotaTredicesimaMensile)],
-        ["Quota TFR", euro(window.calcolo.quotaTfrMensile)],
-        ["Costo totale mensile", euro(window.calcolo.costoMensile)]
-      ];
-
-      const annuale = [
-        ["Retribuzione annua", euro(window.calcolo.retribuzioneAnnua)],
-        ["Contributi datore", euro(window.calcolo.contributiDatAnnui)],
-        ["Tredicesima", euro(window.calcolo.tredicesima)],
-        ["TFR annuo", euro(window.calcolo.tfr)],
-        ["Costo totale annuo", euro(window.calcolo.costoAnnuo)]
-      ];
-
-      let y = 182;
-      for (let i = 0; i < mensile.length; i++) {
-        if (i % 2 === 0) {
-          doc.setFillColor(249, 250, 251);
-          doc.rect(12, y - 6, 86, 9, "F");
-          doc.rect(112, y - 6, 86, 9, "F");
+          if (ore > 0) {
+            calcola();
+          }
         }
 
-        doc.setFontSize(8.4);
+        if (!window.calcolo) {
+          alert("Prima esegui il calcolo.");
+          return;
+        }
+
+        if (!window.jspdf || !window.jspdf.jsPDF) {
+          alert("Libreria PDF non caricata. Ricarica la pagina e riprova.");
+          return;
+        }
+
+        if (typeof gtag === "function") {
+          gtag('event', 'pdf_download', {
+            currency: 'EUR',
+            value: 9.90
+          });
+        }
+
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
+
+        const netto = document.getElementById("nettoMensile").innerText;
+        const costoMensile = document.getElementById("costoMensile").innerText;
+        const costoAnnuo = document.getElementById("costoAnnuo").innerText;
+        const differenza = document.getElementById("differenza").innerText;
+        const tipoLavoro = document.getElementById("tipoLavoro").selectedOptions[0].text;
+        const rapporto = document.getElementById("rapporto").selectedOptions[0].text;
+        const livello = document.getElementById("livello").value;
+        const oreSettimanali = document.getElementById("ore").value;
+        const oreMensiliVal = Number(window.calcolo.oreMensili || 0) || (Number(oreSettimanali) * 4.333);
+        const costoOrarioReale = oreMensiliVal > 0 ? window.calcolo.costoMensile / oreMensiliVal : 0;
+        const dataReport = new Date().toLocaleDateString("it-IT");
+
+        // HEADER PREMIUM CON LOGO TESTUALE PULITO
+        doc.setFillColor(37, 99, 235);
+        doc.rect(0, 0, 210, 30, "F");
+
+        // Logo testuale: CostoDomestico bianco + .it verde
+        doc.setFont(undefined, "bold");
+        doc.setFontSize(19);
+        doc.setTextColor(255, 255, 255);
+        doc.text("CostoDomestico", 12, 14);
+        doc.setTextColor(34, 197, 94);
+        doc.text(".it", 67, 14);
+
+        // Sottotitolo logo
         doc.setFont(undefined, "normal");
-        doc.setTextColor(55, 65, 81);
-        doc.text(mensile[i][0], 14, y);
-        doc.text(annuale[i][0], 114, y);
+        doc.setFontSize(9);
+        doc.setTextColor(219, 234, 254);
+        doc.text("Report costo lavoro domestico", 12, 22);
 
-        doc.setFont(undefined, i === mensile.length - 1 ? "bold" : "normal");
+        // Data report
+        doc.setFontSize(8);
+        doc.setTextColor(255, 255, 255);
+        doc.text(`Generato il ${dataReport}`, 198, 15, { align: "right" });
+
+        // TITOLO
         doc.setTextColor(17, 24, 39);
-        doc.text(mensile[i][1], 98, y, { align: "right" });
-        doc.text(annuale[i][1], 195, y, { align: "right" });
-        y += 10;
-      }
+        doc.setFontSize(18);
+        doc.setFont(undefined, "bold");
+        doc.text("Calcolo costo colf / badante", 12, 43);
 
-      // INFO LAVORATORE: secondaria, non confonde il costo datore
-      // Layout compatto per evitare sovrapposizioni nella parte bassa del PDF.
-      const yInfo = y + 2;
+        doc.setFontSize(10);
+        doc.setFont(undefined, "normal");
+        doc.setTextColor(75, 85, 99);
+        doc.text("Simulazione indicativa basata su CCNL lavoro domestico 2026.", 12, 50);
 
-      doc.setFillColor(248, 250, 252);
-      doc.roundedRect(12, yInfo - 6, 186, 10, 3, 3, "F");
+        // DATI RAPPORTO
+        doc.setFillColor(249, 250, 251);
+        doc.roundedRect(12, 58, 186, 27, 3, 3, "F");
 
-      doc.setTextColor(71, 85, 105);
-      doc.setFontSize(7.4);
-      doc.setFont(undefined, "normal");
-      doc.text(
-        `Informazione lavoratore: contributi trattenuti in busta paga ${euro(window.calcolo.contributiLavMensili)} al mese (${euro(window.calcolo.contributiLavAnnui)} annui).`,
-        16,
-        yInfo
-      );
+        doc.setTextColor(17, 24, 39);
+        doc.setFontSize(11);
+        doc.setFont(undefined, "bold");
+        doc.text("Dati del rapporto", 18, 66);
 
-      // Nota minimi CCNL
-      let yBoxLettura = yInfo + 10;
+        doc.setFont(undefined, "normal");
+        doc.setFontSize(9);
+        doc.text(`Tipo lavoro: ${tipoLavoro}`, 18, 73);
+        doc.text(`Rapporto: ${rapporto}`, 18, 79);
+        doc.text(`Livello CCNL: ${livello}`, 105, 73);
+        doc.text(`Ore settimanali: ${oreSettimanali}`, 105, 79);
 
-      if (window.calcolo.minimoViolato) {
-        const yMinimi = yInfo + 9;
+        // BOX PRINCIPALI - mantiene grafica premium
+        doc.setFillColor(236, 253, 245);
+        doc.roundedRect(12, 94, 42, 38, 3, 3, "F");
+
+        doc.setFillColor(239, 246, 255);
+        doc.roundedRect(58, 94, 42, 38, 3, 3, "F");
 
         doc.setFillColor(255, 247, 237);
-        doc.roundedRect(12, yMinimi, 186, 14, 3, 3, "F");
+        doc.roundedRect(104, 94, 42, 38, 3, 3, "F");
+
+        doc.setFillColor(245, 243, 255);
+        doc.roundedRect(150, 94, 48, 38, 3, 3, "F");
+
+        doc.setFontSize(8);
+        doc.setTextColor(75, 85, 99);
+        doc.text("Netto", 17, 104);
+        doc.text("Costo mese", 63, 104);
+        doc.text("Costo anno", 109, 104);
+        doc.text("Costo orario", 155, 104);
+
+        doc.setFontSize(12);
+        doc.setFont(undefined, "bold");
+        doc.setTextColor(6, 95, 70);
+        doc.text(netto, 17, 119);
+
+        doc.setTextColor(30, 64, 175);
+        doc.text(costoMensile, 63, 119);
 
         doc.setTextColor(154, 52, 18);
-        doc.setFontSize(7);
-        doc.setFont(undefined, "bold");
-        doc.text("Nota minimi CCNL", 16, yMinimi + 5);
+        doc.text(costoAnnuo, 109, 119);
 
+        doc.setTextColor(91, 33, 182);
+        doc.text(`${euro(costoOrarioReale)} / h`, 155, 119);
+
+        // DIFFERENZA
+        doc.setFillColor(254, 242, 242);
+        doc.roundedRect(12, 140, 186, 16, 3, 3, "F");
+        doc.setTextColor(185, 28, 28);
+        doc.setFontSize(10);
+        doc.setFont(undefined, "bold");
+        doc.text(differenza, 18, 150);
+
+        // DETTAGLIO MENSILE/ANNUALE - contributi lavoratore fuori dalla tabella principale
+        doc.setTextColor(17, 24, 39);
+        doc.setFontSize(14);
+        doc.setFont(undefined, "bold");
+        doc.text("Dettaglio mensile", 12, 170);
+        doc.text("Dettaglio annuale", 112, 170);
+
+        const mensile = [
+          ["Retribuzione lorda", euro(window.calcolo.lordoMensile)],
+          ["Contributi datore", euro(window.calcolo.contributiDatMensili)],
+          ["Quota tredicesima", euro(window.calcolo.quotaTredicesimaMensile)],
+          ["Quota TFR", euro(window.calcolo.quotaTfrMensile)],
+          ["Costo totale mensile", euro(window.calcolo.costoMensile)]
+        ];
+
+        const annuale = [
+          ["Retribuzione annua", euro(window.calcolo.retribuzioneAnnua)],
+          ["Contributi datore", euro(window.calcolo.contributiDatAnnui)],
+          ["Tredicesima", euro(window.calcolo.tredicesima)],
+          ["TFR annuo", euro(window.calcolo.tfr)],
+          ["Costo totale annuo", euro(window.calcolo.costoAnnuo)]
+        ];
+
+        let y = 182;
+        for (let i = 0; i < mensile.length; i++) {
+          if (i % 2 === 0) {
+            doc.setFillColor(249, 250, 251);
+            doc.rect(12, y - 6, 86, 9, "F");
+            doc.rect(112, y - 6, 86, 9, "F");
+          }
+
+          doc.setFontSize(8.4);
+          doc.setFont(undefined, "normal");
+          doc.setTextColor(55, 65, 81);
+          doc.text(mensile[i][0], 14, y);
+          doc.text(annuale[i][0], 114, y);
+
+          doc.setFont(undefined, i === mensile.length - 1 ? "bold" : "normal");
+          doc.setTextColor(17, 24, 39);
+          doc.text(mensile[i][1], 98, y, { align: "right" });
+          doc.text(annuale[i][1], 195, y, { align: "right" });
+          y += 10;
+        }
+
+        // INFO LAVORATORE: secondaria, non confonde il costo datore
+        // Layout compatto per evitare sovrapposizioni nella parte bassa del PDF.
+        const yInfo = y + 2;
+
+        doc.setFillColor(248, 250, 252);
+        doc.roundedRect(12, yInfo - 6, 186, 10, 3, 3, "F");
+
+        doc.setTextColor(71, 85, 105);
+        doc.setFontSize(7.4);
         doc.setFont(undefined, "normal");
-        doc.setFontSize(6.8);
         doc.text(
-          "La retribuzione inserita era sotto i minimi contrattuali: il report usa il minimo CCNL stimato.",
+          `Informazione lavoratore: contributi trattenuti in busta paga ${euro(window.calcolo.contributiLavMensili)} al mese (${euro(window.calcolo.contributiLavAnnui)} annui).`,
           16,
-          yMinimi + 11
+          yInfo
         );
 
-        yBoxLettura = yMinimi + 17;
-      }
+        // Nota minimi CCNL
+        let yBoxLettura = yInfo + 10;
 
-      // Come leggere il report
-      doc.setFillColor(239, 246, 255);
-      doc.roundedRect(12, yBoxLettura, 186, 18, 3, 3, "F");
+        if (window.calcolo.minimoViolato) {
+          const yMinimi = yInfo + 9;
 
-      doc.setTextColor(30, 64, 175);
-      doc.setFontSize(7.8);
-      doc.setFont(undefined, "bold");
-      doc.text("Come leggere il report", 16, yBoxLettura + 6);
+          doc.setFillColor(255, 247, 237);
+          doc.roundedRect(12, yMinimi, 186, 14, 3, 3, "F");
 
-      doc.setTextColor(55, 65, 81);
-      doc.setFontSize(6.7);
-      doc.setFont(undefined, "normal");
-      doc.text(
-        "Il costo reale include retribuzione, contributi a carico del datore, tredicesima e TFR.",
-        16,
-        yBoxLettura + 12
-      );
-      doc.text(
-        "Il calcolo ha finalita' informativa e va verificato sul caso specifico.",
-        16,
-        yBoxLettura + 16
-      );
+          doc.setTextColor(154, 52, 18);
+          doc.setFontSize(7);
+          doc.setFont(undefined, "bold");
+          doc.text("Nota minimi CCNL", 16, yMinimi + 5);
 
-      // Footer separato e più in basso
-      doc.setDrawColor(229, 231, 235);
-      doc.line(12, 284, 198, 284);
-      doc.setTextColor(107, 114, 128);
-      doc.setFontSize(6.8);
-      doc.text("Report generato da CostoDomestico.it", 12, 290);
-      doc.text("Simulatore informativo per lavoro domestico", 198, 290, { align: "right" });
+          doc.setFont(undefined, "normal");
+          doc.setFontSize(6.8);
+          doc.text(
+            "La retribuzione inserita era sotto i minimi contrattuali: il report usa il minimo CCNL stimato.",
+            16,
+            yMinimi + 11
+          );
 
-      doc.save("report_costo_lavoro_domestico.pdf");
+          yBoxLettura = yMinimi + 17;
+        }
 
-      if (btn) {
-        btn.disabled = false;
-        btn.innerText = "Scarica ora il report PDF";
+        // Come leggere il report
+        doc.setFillColor(239, 246, 255);
+        doc.roundedRect(12, yBoxLettura, 186, 18, 3, 3, "F");
+
+        doc.setTextColor(30, 64, 175);
+        doc.setFontSize(7.8);
+        doc.setFont(undefined, "bold");
+        doc.text("Come leggere il report", 16, yBoxLettura + 6);
+
+        doc.setTextColor(55, 65, 81);
+        doc.setFontSize(6.7);
+        doc.setFont(undefined, "normal");
+        doc.text(
+          "Il costo reale include retribuzione, contributi a carico del datore, tredicesima e TFR.",
+          16,
+          yBoxLettura + 12
+        );
+        doc.text(
+          "Il calcolo ha finalita' informativa e va verificato sul caso specifico.",
+          16,
+          yBoxLettura + 16
+        );
+
+        // Footer separato e più in basso
+        doc.setDrawColor(229, 231, 235);
+        doc.line(12, 284, 198, 284);
+        doc.setTextColor(107, 114, 128);
+        doc.setFontSize(6.8);
+        doc.text("Report generato da CostoDomestico.it", 12, 290);
+        doc.text("Simulatore informativo per lavoro domestico", 198, 290, { align: "right" });
+
+        scaricaDocumentoPDF(doc);
+
+      } catch (errore) {
+        console.error("Errore generazione PDF:", errore);
+        alert("Si è verificato un problema durante la generazione del PDF. Riprova o ricarica la pagina.");
+      } finally {
+        preparaBottoneDownload(false);
       }
     }
 
@@ -1639,7 +1685,6 @@ function ripristinaDatiDopoPagamento() {
         generaPDF();
       } catch (e) {
         console.log("Download automatico bloccato:", e);
-pdfGiaGenerato = false;
       }
 
       setTimeout(() => {
