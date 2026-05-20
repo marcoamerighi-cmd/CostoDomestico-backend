@@ -191,57 +191,91 @@
   </div>
 
   <script>
-    let redirectEseguito = false;
 
-    function salvaOrdineCostoDomestico() {
+let redirectEseguito = false;
 
-      if (localStorage.getItem("ordine_costo_domestico_salvato") === "1") {
+function salvaOrdineCostoDomestico() {
+
+    if (localStorage.getItem("ordine_costo_domestico_salvato") === "1") {
         return;
-      }
+    }
 
-      localStorage.setItem(
+    localStorage.setItem(
         "ordine_costo_domestico_salvato",
         "1"
-      );
+    );
 
-      fetch("https://costodomestico-backend.onrender.com/salva-ordine-costo-domestico", {
+    fetch("https://costodomestico-backend.onrender.com/salva-ordine-costo-domestico", {
         method: "POST",
         headers: {
-          "Content-Type": "application/json"
+            "Content-Type":"application/json"
         },
         body: JSON.stringify({
-          email_cliente: localStorage.getItem("email_cliente") || "",
-          nome_cliente: "",
-          cognome_cliente: ""
+            email_cliente: localStorage.getItem("email_cliente") || "",
+            nome_cliente: "",
+            cognome_cliente: ""
         })
-      }).catch(function(error) {
-        console.log("Errore salvataggio ordine:", error);
-      });
+    }).catch(error=>{
+        console.log(error);
+    });
+}
+
+function scaricaReport() {
+
+    salvaOrdineCostoDomestico();
+
+    const pdfUrl =
+      localStorage.getItem("pdf_url");
+
+    if(pdfUrl){
+
+        const link =
+          document.createElement("a");
+
+        link.href = pdfUrl;
+
+        link.download =
+          "report_costodomestico.pdf";
+
+        document.body.appendChild(link);
+
+        link.click();
+
+        document.body.removeChild(link);
+
+    }else{
+
+        alert(
+          "Report non trovato. Torna al calcolatore e rigenera il report."
+        );
     }
+}
 
-    function tornaAlCalcolatore(downloadAutomatico = false) {
+function tornaAlCalcolatore(downloadAutomatico=false){
 
-      salvaOrdineCostoDomestico();
+    salvaOrdineCostoDomestico();
 
-      if (redirectEseguito && downloadAutomatico) {
+    if (redirectEseguito && downloadAutomatico){
         return;
-      }
-
-      if (downloadAutomatico) {
-        redirectEseguito = true;
-      }
-
-      const url = downloadAutomatico
-        ? "https://costodomestico.it/?paid=1&download=1&success=1"
-        : "https://costodomestico.it/?paid=1&success=1";
-
-      window.location.href = url;
     }
 
-    setTimeout(() => {
-      tornaAlCalcolatore(true);
-    }, 3000);
-  </script>
+    if(downloadAutomatico){
+        redirectEseguito=true;
+    }
+
+    const url=
+    "https://costodomestico.it/?paid=1&success=1";
+
+    window.location.href=url;
+}
+
+setTimeout(()=>{
+
+    scaricaReport();
+
+},2000);
+
+</script>
 
 
 <script>
