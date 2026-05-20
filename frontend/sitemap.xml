@@ -62,4 +62,9 @@
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
 </url>
+<url>
+    <loc>https://costodomestico.it/calcolo-tfr-badante</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+</url>
 </urlset>
