@@ -1577,7 +1577,7 @@ function suggerisciLivello() {
         doc.text("Report generato da CostoDomestico.it", 12, 290);
         doc.text("Simulatore informativo per lavoro domestico", 198, 290, { align: "right" });
 
-        scaricaDocumentoPDF(doc);
+        doc.save("report_costo_lavoro_domestico.pdf");
 
       } catch (errore) {
         console.error("Errore generazione PDF:", errore);
