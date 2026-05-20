@@ -1577,6 +1577,15 @@ if(btn){
       doc.text("Simulatore informativo per lavoro domestico", 198, 290, { align: "right" });
 
       doc.save("report_costo_lavoro_domestico.pdf");
+      pdfGiaGenerato = false;
+
+      if(btn){
+
+          btn.disabled=false;
+
+          btn.innerText=
+          "Scarica ora il report PDF";
+      }
     }
 
 function vaiAlPagamento() {
@@ -1618,15 +1627,6 @@ function testPDF() {
   if (!conferma) return;
 
   generaPDF();
-  pdfGiaGenerato = false;
-
-if(btn){
-
-    btn.disabled=false;
-
-    btn.innerText=
-    "Scarica ora il report PDF";
-}
 }
 
 
