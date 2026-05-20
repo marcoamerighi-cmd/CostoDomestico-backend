@@ -885,11 +885,6 @@
   </p>
 </div>
 
-  <div id="floatingDownloadPagamento" class="paid-floating-download">
-    <strong>Report pronto ✅</strong>
-    <button onclick="generaPDF()">Scarica report PDF</button>
-  </div>
-
   
   <div id="cookieBanner" class="cookie-banner">
     <p>
@@ -1630,19 +1625,14 @@ function testPDF() {
 }
 
 
+  function mostraDownloadPagamento() {
+    const box = document.getElementById("boxDownloadPagamento");
 
-function mostraDownloadPagamento() {
-  const box = document.getElementById("boxDownloadPagamento");
-  if (box) {
-    box.classList.remove("hidden");
-    box.scrollIntoView({ behavior: "smooth", block: "center" });
+    if (box) {
+      box.classList.remove("hidden");
+      box.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
   }
-
-  const floating = document.getElementById("floatingDownloadPagamento");
-  if (floating) {
-    floating.classList.remove("show");
-  }
-}
 
 function pulisciParametroPaidDopoDownload() {
   if (window.history && window.location.search.includes("paid=1")) {
