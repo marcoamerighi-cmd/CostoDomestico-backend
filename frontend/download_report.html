@@ -10,7 +10,7 @@
             font-family: Arial, sans-serif;
             background-color: #f4f6f9;
             margin: 0;
-            padding: 40px;
+            padding: 30px 16px;
             color: #333;
         }
 
@@ -29,7 +29,7 @@
         }
 
         .success {
-            font-size: 80px;
+            font-size: 72px;
             margin-bottom: 20px;
         }
 
@@ -41,7 +41,7 @@
             border-radius: 12px;
         }
 
-        button {
+        button, .secondary-link {
             width: 100%;
             background-color: #1f3c88;
             color: white;
@@ -51,23 +51,43 @@
             font-size: 18px;
             font-weight: bold;
             cursor: pointer;
-            margin-top: 20px;
+            margin-top: 18px;
+            display: block;
+            text-decoration: none;
+            box-sizing: border-box;
         }
 
-        button:hover {
+        button:hover, .secondary-link:hover {
             background-color: #162d66;
+        }
+
+        .secondary-link {
+            background-color: #16a34a;
+        }
+
+        .secondary-link:hover {
+            background-color: #0f7a35;
         }
 
         .email-note {
             margin-top: 25px;
             color: #666;
             font-size: 14px;
+            line-height: 1.5;
         }
 
         .loading {
             margin-top: 15px;
             color: #1f3c88;
             font-weight: bold;
+            line-height: 1.5;
+        }
+
+        .small-note {
+            margin-top: 12px;
+            font-size: 13px;
+            color: #6b7280;
+            line-height: 1.5;
         }
     </style>
 </head>
@@ -98,11 +118,24 @@
         </p>
 
         <button onclick="scaricaSoloPdf()">
-            Scarica il report PDF
+            Scarica di nuovo il report PDF
         </button>
+
+        <button onclick="apriPdfNuovaScheda()">
+            Apri PDF in una nuova scheda
+        </button>
+
+        <a class="secondary-link" href="/tfr-tool">
+            Torna al calcolo TFR
+        </a>
 
         <div class="loading" id="loading_text">
             Preparazione PDF...
+        </div>
+
+        <div class="small-note">
+            Da cellulare, se il file si apre nel browser, usa il menu del telefono
+            per salvarlo o condividerlo.
         </div>
 
     </div>
@@ -115,18 +148,10 @@
 
 <script>
 
-    let downloadGiaEseguito = false;
-
     let emailGiaInviata =
         localStorage.getItem("email_report_tfr_inviata") === "1";
 
-    async function scaricaManuale() {
-
-        if (downloadGiaEseguito) {
-            return;
-        }
-
-        downloadGiaEseguito = true;
+    function recuperaRichiesta() {
 
         const richiestaSalvata =
             localStorage.getItem("richiesta_tfr");
@@ -137,64 +162,98 @@
                 "Dati del report non trovati.\n\nEffettua nuovamente il calcolo TFR."
             );
 
-            return;
+            return null;
         }
 
-        const richiesta =
-            JSON.parse(richiestaSalvata);
+        return JSON.parse(richiestaSalvata);
+    }
+
+    async function generaBlobPdf(inviaEmail) {
+
+        const richiesta = recuperaRichiesta();
+
+        if (!richiesta) {
+            return null;
+        }
+
+        const risposta = await fetch(
+            "https://costodomestico-backend.onrender.com/genera-pdf-tfr",
+            {
+                method: "POST",
+
+                headers: {
+                    "Content-Type": "application/json"
+                },
+
+                body: JSON.stringify({
+                    ...richiesta,
+                    email_cliente: inviaEmail
+                        ? richiesta.email_cliente
+                        : ""
+                })
+            }
+        );
+
+        if (!risposta.ok) {
+            throw new Error("Errore generazione PDF");
+        }
+
+        return await risposta.blob();
+    }
+
+    function scaricaBlob(blob) {
+
+        const url =
+            window.URL.createObjectURL(blob);
+
+        const link =
+            document.createElement("a");
+
+        link.href = url;
+
+        link.download =
+            "report_tfr_costodomestico.pdf";
+
+        document.body.appendChild(link);
+
+        link.click();
+
+        document.body.removeChild(link);
+
+        setTimeout(() => {
+            window.URL.revokeObjectURL(url);
+        }, 3000);
+    }
+
+    async function scaricaManuale() {
 
         try {
 
-            const risposta = await fetch(
-                "https://costodomestico-backend.onrender.com/genera-pdf-tfr",
-                {
-                    method: "POST",
+            const deveInviareEmail =
+                !emailGiaInviata;
 
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-
-                    body: JSON.stringify({
-                        ...richiesta,
-                        email_cliente: emailGiaInviata
-                            ? ""
-                            : richiesta.email_cliente
-                    })
-                }
+            const blob = await generaBlobPdf(
+                deveInviareEmail
             );
 
-            const blob =
-                await risposta.blob();
+            if (!blob) {
+                return;
+            }
 
-            const url =
-                window.URL.createObjectURL(blob);
+            scaricaBlob(blob);
 
-            const link =
-                document.createElement("a");
+            if (deveInviareEmail) {
+                localStorage.setItem(
+                    "email_report_tfr_inviata",
+                    "1"
+                );
 
-            link.href = url;
-
-            link.download =
-                "report_tfr_costodomestico.pdf";
-
-            document.body.appendChild(link);
-
-            link.click();
-
-            document.body.removeChild(link);
-
-            window.URL.revokeObjectURL(url);
-
-            localStorage.setItem(
-                "email_report_tfr_inviata",
-                "1"
-            );
-
-            emailGiaInviata = true;
+                emailGiaInviata = true;
+            }
 
             document.getElementById("loading_text")
                 .textContent =
-                "PDF scaricato correttamente. Una copia è stata inviata via email.";
+                "PDF generato correttamente. Puoi scaricarlo di nuovo con il pulsante.";
 
         } catch (errore) {
 
@@ -212,64 +271,23 @@
 
     async function scaricaSoloPdf() {
 
-        const richiestaSalvata =
-            localStorage.getItem("richiesta_tfr");
-
-        if (!richiestaSalvata) {
-
-            alert(
-                "Dati del report non trovati.\n\nEffettua nuovamente il calcolo TFR."
-            );
-
-            return;
-        }
-
-        const richiesta =
-            JSON.parse(richiestaSalvata);
-
         try {
-
-            const risposta = await fetch(
-                "https://costodomestico-backend.onrender.com/genera-pdf-tfr",
-                {
-                    method: "POST",
-
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-
-                    body: JSON.stringify({
-                        ...richiesta,
-                        email_cliente: ""
-                    })
-                }
-            );
-
-            const blob =
-                await risposta.blob();
-
-            const url =
-                window.URL.createObjectURL(blob);
-
-            const link =
-                document.createElement("a");
-
-            link.href = url;
-
-            link.download =
-                "report_tfr_costodomestico.pdf";
-
-            document.body.appendChild(link);
-
-            link.click();
-
-            document.body.removeChild(link);
-
-            window.URL.revokeObjectURL(url);
 
             document.getElementById("loading_text")
                 .textContent =
-                "PDF scaricato manualmente.";
+                "Preparazione nuovo download PDF...";
+
+            const blob = await generaBlobPdf(false);
+
+            if (!blob) {
+                return;
+            }
+
+            scaricaBlob(blob);
+
+            document.getElementById("loading_text")
+                .textContent =
+                "PDF scaricato nuovamente.";
 
         } catch (errore) {
 
@@ -278,6 +296,47 @@
             document.getElementById("loading_text")
                 .textContent =
                 "Errore durante il download manuale del PDF.";
+
+            alert(
+                "Errore durante il download manuale del PDF."
+            );
+        }
+    }
+
+    async function apriPdfNuovaScheda() {
+
+        try {
+
+            document.getElementById("loading_text")
+                .textContent =
+                "Apertura PDF in nuova scheda...";
+
+            const blob = await generaBlobPdf(false);
+
+            if (!blob) {
+                return;
+            }
+
+            const url =
+                window.URL.createObjectURL(blob);
+
+            window.open(url, "_blank");
+
+            document.getElementById("loading_text")
+                .textContent =
+                "PDF aperto in una nuova scheda.";
+
+        } catch (errore) {
+
+            console.error(errore);
+
+            document.getElementById("loading_text")
+                .textContent =
+                "Errore durante l'apertura del PDF.";
+
+            alert(
+                "Errore durante l'apertura del PDF."
+            );
         }
     }
 
