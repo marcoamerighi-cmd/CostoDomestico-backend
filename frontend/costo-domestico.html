@@ -1301,29 +1301,17 @@ function suggerisciLivello() {
     }
 
     function scaricaDocumentoPDF(doc) {
-      const nomeFile = "report_costo_lavoro_domestico.pdf";
+  const nomeFile = "report_costo_lavoro_domestico.pdf";
 
-      try {
-        const blob = doc.output("blob");
-        const url = URL.createObjectURL(blob);
-        const link = document.createElement("a");
-
-        link.href = url;
-        link.download = nomeFile;
-        link.style.display = "none";
-
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-
-        setTimeout(() => {
-          URL.revokeObjectURL(url);
-        }, 3000);
-      } catch (erroreBlob) {
-        console.log("Download tramite blob non riuscito, uso doc.save:", erroreBlob);
-        doc.save(nomeFile);
-      }
-    }
+  try {
+    console.log("Sto salvando PDF...");
+    doc.save(nomeFile);
+    console.log("PDF salvato");
+  } catch (errore) {
+    console.error("Errore PDF:", errore);
+    alert("Errore durante la generazione del PDF: " + errore.message);
+  }
+}
 
     async function generaPDF() {
       const btn = preparaBottoneDownload(true);
