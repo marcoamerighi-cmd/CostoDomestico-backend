@@ -404,6 +404,66 @@ def crea_checkout_tfr(richiesta: RichiestaCheckoutTFR):
 
     return {"checkout_url": sessione.url}
 
+@app.get("/download-costo-domestico")
+def pagina_download_costo_domestico(request: Request):
+
+    session_id = request.query_params.get("session_id")
+
+    if session_id:
+        aggiorna_stato_ordine(
+            sessione_stripe=session_id,
+            stato="pagato"
+        )
+
+    return FileResponse(
+        path=str(FRONTEND_DIR / "download_costo_domestico.html"),
+        media_type="text/html"
+    )
+
+
+@app.post("/crea-checkout-costo-domestico")
+def crea_checkout_costo_domestico(
+    richiesta: RichiestaOrdineCostoDomestico
+):
+
+    sessione = stripe.checkout.Session.create(
+        payment_method_types=["card"],
+        mode="payment",
+
+        customer_email=richiesta.email_cliente or None,
+        customer_creation="always",
+
+        line_items=[
+            {
+                "price_data": {
+                    "currency": "eur",
+                    "product_data": {
+                        "name": "Report Costo Domestico - CostoDomestico.it"
+                    },
+                    "unit_amount": 990
+                },
+                "quantity": 1
+            }
+        ],
+
+        metadata={
+            "prodotto": "Costo Domestico",
+            "email_cliente": richiesta.email_cliente,
+            "nome_cliente": richiesta.nome_cliente,
+            "cognome_cliente": richiesta.cognome_cliente
+        },
+
+        success_url=(
+            "https://costodomestico.it/download_costo_domestico.html"
+            "?session_id={CHECKOUT_SESSION_ID}"
+        ),
+
+        cancel_url="https://costodomestico.it/costo-domestico.html"
+    )
+
+    return {
+        "checkout_url": sessione.url
+    }
 
 @app.post("/salva-ordine-costo-domestico")
 def salva_ordine_costo_domestico(

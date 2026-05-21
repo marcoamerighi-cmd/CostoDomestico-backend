@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Download Report Costo Domestico - CostoDomestico</title>
+  <meta name="robots" content="noindex, nofollow">
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f6f9;
+      margin: 0;
+      padding: 30px 16px;
+      color: #333;
+    }
+
+    .container {
+      max-width: 650px;
+      margin: auto;
+      background: white;
+      padding: 35px;
+      border-radius: 12px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+      text-align: center;
+    }
+
+    h1 { color: #1f3c88; }
+
+    .success {
+      font-size: 72px;
+      margin-bottom: 20px;
+    }
+
+    .download-box {
+      margin-top: 30px;
+      background: #f8fafc;
+      border: 1px solid #dbe3ec;
+      padding: 25px;
+      border-radius: 12px;
+    }
+
+    button, .secondary-link {
+      width: 100%;
+      background-color: #1f3c88;
+      color: white;
+      border: none;
+      padding: 16px;
+      border-radius: 8px;
+      font-size: 18px;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 18px;
+      display: block;
+      text-decoration: none;
+      box-sizing: border-box;
+    }
+
+    button:hover, .secondary-link:hover { background-color: #162d66; }
+
+    .secondary-link { background-color: #16a34a; }
+    .secondary-link:hover { background-color: #0f7a35; }
+
+    .email-note {
+      margin-top: 25px;
+      color: #666;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .loading {
+      margin-top: 15px;
+      color: #1f3c88;
+      font-weight: bold;
+      line-height: 1.5;
+    }
+
+    .small-note {
+      margin-top: 12px;
+      font-size: 13px;
+      color: #6b7280;
+      line-height: 1.5;
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="container">
+  <div class="success">✅</div>
+
+  <h1>Pagamento completato</h1>
+
+  <p>Il report Costo Domestico è pronto.</p>
+
+  <div class="download-box">
+    <h3>Download automatico in corso...</h3>
+
+    <p>
+      Se il download non parte automaticamente,
+      utilizza il pulsante qui sotto.
+    </p>
+
+    <button onclick="scaricaReportCostoDomestico()">
+      Scarica di nuovo il report PDF
+    </button>
+
+    <button onclick="apriPdfNuovaScheda()">
+      Apri PDF in una nuova scheda
+    </button>
+
+    <a class="secondary-link" href="/costo-domestico.html">
+      Torna al calcolo Costo Domestico
+    </a>
+
+    <div class="loading" id="loading_text">
+      Preparazione PDF...
+    </div>
+
+    <div class="small-note">
+      Da cellulare, se il file si apre nel browser, usa il menu del telefono
+      per salvarlo o condividerlo.
+    </div>
+  </div>
+
+  <div class="email-note">
+    Conserva il PDF scaricato. Se hai inserito l'email durante il pagamento,
+    Stripe conserva la ricevuta del pagamento.
+  </div>
+</div>
+
+<script>
+  let ultimoDoc = null;
+
+  function euro(value) {
+    const numeroPulito = Number(value);
+    return new Intl.NumberFormat("it-IT", {
+      style: "currency",
+      currency: "EUR"
+    }).format(isNaN(numeroPulito) ? 0 : numeroPulito);
+  }
+
+  function leggiDatiReport() {
+    const datiSalvati = localStorage.getItem("report_costo_domestico");
+
+    if (!datiSalvati) {
+      alert(
+        "Dati del report non trovati.\n\n" +
+        "Torna al calcolatore, esegui nuovamente il calcolo e ripeti il pagamento."
+      );
+      return null;
+    }
+
+    return JSON.parse(datiSalvati);
+  }
+
+  function creaDocumentoPDF() {
+    const dati = leggiDatiReport();
+    if (!dati) return null;
+
+    if (!window.jspdf || !window.jspdf.jsPDF) {
+      alert("Libreria PDF non caricata. Ricarica la pagina e riprova.");
+      return null;
+    }
+
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+
+    const calcolo = dati.calcolo || {};
+    const netto = dati.netto || "€ 0,00";
+    const costoMensile = dati.costoMensile || "€ 0,00";
+    const costoAnnuo = dati.costoAnnuo || "€ 0,00";
+    const differenza = dati.differenza || "";
+    const tipoLavoro = dati.tipoLavoro || "Lavoro domestico";
+    const rapporto = dati.rapporto || "";
+    const livello = dati.livello || "";
+    const oreSettimanali = dati.oreSettimanali || "";
+    const oreMensiliVal = Number(calcolo.oreMensili || 0) || (Number(oreSettimanali) * 4.333);
+    const costoOrarioReale = oreMensiliVal > 0 ? Number(calcolo.costoMensile || 0) / oreMensiliVal : 0;
+    const dataReport = new Date().toLocaleDateString("it-IT");
+
+    doc.setFillColor(37, 99, 235);
+    doc.rect(0, 0, 210, 30, "F");
+
+    doc.setFont(undefined, "bold");
+    doc.setFontSize(19);
+    doc.setTextColor(255, 255, 255);
+    doc.text("CostoDomestico", 12, 14);
+    doc.setTextColor(34, 197, 94);
+    doc.text(".it", 67, 14);
+
+    doc.setFont(undefined, "normal");
+    doc.setFontSize(9);
+    doc.setTextColor(219, 234, 254);
+    doc.text("Report costo lavoro domestico", 12, 22);
+
+    doc.setFontSize(8);
+    doc.setTextColor(255, 255, 255);
+    doc.text(`Generato il ${dataReport}`, 198, 15, { align: "right" });
+
+    doc.setTextColor(17, 24, 39);
+    doc.setFontSize(18);
+    doc.setFont(undefined, "bold");
+    doc.text("Calcolo costo colf / badante", 12, 43);
+
+    doc.setFontSize(10);
+    doc.setFont(undefined, "normal");
+    doc.setTextColor(75, 85, 99);
+    doc.text("Simulazione indicativa basata su CCNL lavoro domestico 2026.", 12, 50);
+
+    doc.setFillColor(249, 250, 251);
+    doc.roundedRect(12, 58, 186, 27, 3, 3, "F");
+
+    doc.setTextColor(17, 24, 39);
+    doc.setFontSize(11);
+    doc.setFont(undefined, "bold");
+    doc.text("Dati del rapporto", 18, 66);
+
+    doc.setFont(undefined, "normal");
+    doc.setFontSize(9);
+    doc.text(`Tipo lavoro: ${tipoLavoro}`, 18, 73);
+    doc.text(`Rapporto: ${rapporto}`, 18, 79);
+    doc.text(`Livello CCNL: ${livello}`, 105, 73);
+    doc.text(`Ore settimanali: ${oreSettimanali}`, 105, 79);
+
+    doc.setFillColor(236, 253, 245);
+    doc.roundedRect(12, 94, 42, 38, 3, 3, "F");
+    doc.setFillColor(239, 246, 255);
+    doc.roundedRect(58, 94, 42, 38, 3, 3, "F");
+    doc.setFillColor(255, 247, 237);
+    doc.roundedRect(104, 94, 42, 38, 3, 3, "F");
+    doc.setFillColor(245, 243, 255);
+    doc.roundedRect(150, 94, 48, 38, 3, 3, "F");
+
+    doc.setFontSize(8);
+    doc.setTextColor(75, 85, 99);
+    doc.text("Netto", 17, 104);
+    doc.text("Costo mese", 63, 104);
+    doc.text("Costo anno", 109, 104);
+    doc.text("Costo orario", 155, 104);
+
+    doc.setFontSize(12);
+    doc.setFont(undefined, "bold");
+    doc.setTextColor(6, 95, 70);
+    doc.text(netto, 17, 119);
+    doc.setTextColor(30, 64, 175);
+    doc.text(costoMensile, 63, 119);
+    doc.setTextColor(154, 52, 18);
+    doc.text(costoAnnuo, 109, 119);
+    doc.setTextColor(91, 33, 182);
+    doc.text(`${euro(costoOrarioReale)} / h`, 155, 119);
+
+    doc.setFillColor(254, 242, 242);
+    doc.roundedRect(12, 140, 186, 16, 3, 3, "F");
+    doc.setTextColor(185, 28, 28);
+    doc.setFontSize(10);
+    doc.setFont(undefined, "bold");
+    doc.text(differenza, 18, 150);
+
+    doc.setTextColor(17, 24, 39);
+    doc.setFontSize(14);
+    doc.setFont(undefined, "bold");
+    doc.text("Dettaglio mensile", 12, 170);
+    doc.text("Dettaglio annuale", 112, 170);
+
+    const mensile = [
+      ["Retribuzione lorda", euro(calcolo.lordoMensile)],
+      ["Contributi datore", euro(calcolo.contributiDatMensili)],
+      ["Quota tredicesima", euro(calcolo.quotaTredicesimaMensile)],
+      ["Quota TFR", euro(calcolo.quotaTfrMensile)],
+      ["Costo totale mensile", euro(calcolo.costoMensile)]
+    ];
+
+    const annuale = [
+      ["Retribuzione annua", euro(calcolo.retribuzioneAnnua)],
+      ["Contributi datore", euro(calcolo.contributiDatAnnui)],
+      ["Tredicesima", euro(calcolo.tredicesima)],
+      ["TFR annuo", euro(calcolo.tfr)],
+      ["Costo totale annuo", euro(calcolo.costoAnnuo)]
+    ];
+
+    let y = 182;
+    for (let i = 0; i < mensile.length; i++) {
+      if (i % 2 === 0) {
+        doc.setFillColor(249, 250, 251);
+        doc.rect(12, y - 6, 86, 9, "F");
+        doc.rect(112, y - 6, 86, 9, "F");
+      }
+
+      doc.setFontSize(8.4);
+      doc.setFont(undefined, "normal");
+      doc.setTextColor(55, 65, 81);
+      doc.text(mensile[i][0], 14, y);
+      doc.text(annuale[i][0], 114, y);
+
+      doc.setFont(undefined, i === mensile.length - 1 ? "bold" : "normal");
+      doc.setTextColor(17, 24, 39);
+      doc.text(mensile[i][1], 98, y, { align: "right" });
+      doc.text(annuale[i][1], 195, y, { align: "right" });
+      y += 10;
+    }
+
+    const yInfo = y + 2;
+    doc.setFillColor(248, 250, 252);
+    doc.roundedRect(12, yInfo - 6, 186, 10, 3, 3, "F");
+
+    doc.setTextColor(71, 85, 105);
+    doc.setFontSize(7.4);
+    doc.setFont(undefined, "normal");
+    doc.text(
+      `Informazione lavoratore: contributi trattenuti in busta paga ${euro(calcolo.contributiLavMensili)} al mese (${euro(calcolo.contributiLavAnnui)} annui).`,
+      16,
+      yInfo
+    );
+
+    let yBoxLettura = yInfo + 10;
+
+    if (calcolo.minimoViolato) {
+      const yMinimi = yInfo + 9;
+      doc.setFillColor(255, 247, 237);
+      doc.roundedRect(12, yMinimi, 186, 14, 3, 3, "F");
+      doc.setTextColor(154, 52, 18);
+      doc.setFontSize(7);
+      doc.setFont(undefined, "bold");
+      doc.text("Nota minimi CCNL", 16, yMinimi + 5);
+      doc.setFont(undefined, "normal");
+      doc.setFontSize(6.8);
+      doc.text(
+        "La retribuzione inserita era sotto i minimi contrattuali: il report usa il minimo CCNL stimato.",
+        16,
+        yMinimi + 11
+      );
+      yBoxLettura = yMinimi + 17;
+    }
+
+    doc.setFillColor(239, 246, 255);
+    doc.roundedRect(12, yBoxLettura, 186, 18, 3, 3, "F");
+
+    doc.setTextColor(30, 64, 175);
+    doc.setFontSize(7.8);
+    doc.setFont(undefined, "bold");
+    doc.text("Come leggere il report", 16, yBoxLettura + 6);
+
+    doc.setTextColor(55, 65, 81);
+    doc.setFontSize(6.7);
+    doc.setFont(undefined, "normal");
+    doc.text("Il costo reale include retribuzione, contributi a carico del datore, tredicesima e TFR.", 16, yBoxLettura + 12);
+    doc.text("Il calcolo ha finalita' informativa e va verificato sul caso specifico.", 16, yBoxLettura + 16);
+
+    doc.setDrawColor(229, 231, 235);
+    doc.line(12, 284, 198, 284);
+    doc.setTextColor(107, 114, 128);
+    doc.setFontSize(6.8);
+    doc.text("Report generato da CostoDomestico.it", 12, 290);
+    doc.text("Simulatore informativo per lavoro domestico", 198, 290, { align: "right" });
+
+    ultimoDoc = doc;
+    return doc;
+  }
+
+  function scaricaReportCostoDomestico() {
+    const loading = document.getElementById("loading_text");
+
+    try {
+      if (loading) loading.innerText = "Generazione PDF in corso...";
+
+      const doc = creaDocumentoPDF();
+      if (!doc) return;
+
+      doc.save("report_costo_lavoro_domestico.pdf");
+
+      if (loading) loading.innerText = "PDF pronto. Se non lo vedi, controlla la cartella Download.";
+    } catch (errore) {
+      console.error("Errore download PDF:", errore);
+      if (loading) loading.innerText = "Errore durante la generazione del PDF.";
+      alert("Errore durante la generazione del PDF: " + errore.message);
+    }
+  }
+
+  function apriPdfNuovaScheda() {
+    try {
+      const doc = ultimoDoc || creaDocumentoPDF();
+      if (!doc) return;
+
+      const blob = doc.output("blob");
+      const url = URL.createObjectURL(blob);
+      window.open(url, "_blank");
+    } catch (errore) {
+      console.error("Errore apertura PDF:", errore);
+      alert("Non è stato possibile aprire il PDF in una nuova scheda.");
+    }
+  }
+
+  window.addEventListener("load", function() {
+    setTimeout(() => {
+      scaricaReportCostoDomestico();
+    }, 900);
+  });
+</script>
+
+</body>
+</html>

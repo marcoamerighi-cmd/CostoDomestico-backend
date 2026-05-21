@@ -1301,17 +1301,15 @@ function suggerisciLivello() {
     }
 
     function scaricaDocumentoPDF(doc) {
-  const nomeFile = "report_costo_lavoro_domestico.pdf";
+      const nomeFile = "report_costo_lavoro_domestico.pdf";
 
-  try {
-    console.log("Sto salvando PDF...");
-    doc.save(nomeFile);
-    console.log("PDF salvato");
-  } catch (errore) {
-    console.error("Errore PDF:", errore);
-    alert("Errore durante la generazione del PDF: " + errore.message);
-  }
-}
+      try {
+        doc.save(nomeFile);
+      } catch (errore) {
+        console.error("Errore PDF:", errore);
+        alert("Errore durante la generazione del PDF: " + errore.message);
+      }
+    }
 
     async function generaPDF() {
       const btn = preparaBottoneDownload(true);
@@ -1565,7 +1563,7 @@ function suggerisciLivello() {
         doc.text("Report generato da CostoDomestico.it", 12, 290);
         doc.text("Simulatore informativo per lavoro domestico", 198, 290, { align: "right" });
 
-        doc.save("report_costo_lavoro_domestico.pdf");
+        scaricaDocumentoPDF(doc);
 
       } catch (errore) {
         console.error("Errore generazione PDF:", errore);
@@ -1575,33 +1573,99 @@ function suggerisciLivello() {
       }
     }
 
-function vaiAlPagamento() {
-  localStorage.setItem("tipoLavoro", document.getElementById("tipoLavoro").value);
-  localStorage.setItem("rapporto", document.getElementById("rapporto").value);
-  localStorage.setItem("livello", document.getElementById("livello").value);
-  localStorage.setItem("ore", document.getElementById("ore").value);
-  localStorage.setItem("usaPagaPattuita", document.getElementById("usaPagaPattuita").value);
+async function vaiAlPagamento() {
+  const bottonePagamento = document.querySelector(".paywall button");
 
-  if (document.getElementById("pagaPattuita")) {
-    localStorage.setItem("pagaPattuita", document.getElementById("pagaPattuita").value);
+  try {
+    if (!window.calcolo) {
+      calcola();
+    }
+
+    if (!window.calcolo) {
+      alert("Prima esegui il calcolo.");
+      return;
+    }
+
+    localStorage.setItem("tipoLavoro", document.getElementById("tipoLavoro").value);
+    localStorage.setItem("rapporto", document.getElementById("rapporto").value);
+    localStorage.setItem("livello", document.getElementById("livello").value);
+    localStorage.setItem("ore", document.getElementById("ore").value);
+    localStorage.setItem("usaPagaPattuita", document.getElementById("usaPagaPattuita").value);
+
+    if (document.getElementById("pagaPattuita")) {
+      localStorage.setItem("pagaPattuita", document.getElementById("pagaPattuita").value);
+    }
+
+    if (document.getElementById("pagaNettaOraria")) {
+      localStorage.setItem("pagaNettaOraria", document.getElementById("pagaNettaOraria").value);
+    }
+
+    if (document.getElementById("nettoMensileConcordato")) {
+      localStorage.setItem("nettoMensileConcordato", document.getElementById("nettoMensileConcordato").value);
+    }
+
+    const datiReportCostoDomestico = {
+      tipoLavoro: document.getElementById("tipoLavoro").selectedOptions[0].text,
+      rapporto: document.getElementById("rapporto").selectedOptions[0].text,
+      livello: document.getElementById("livello").value,
+      oreSettimanali: document.getElementById("ore").value,
+      netto: document.getElementById("nettoMensile").innerText,
+      costoMensile: document.getElementById("costoMensile").innerText,
+      costoAnnuo: document.getElementById("costoAnnuo").innerText,
+      differenza: document.getElementById("differenza").innerText,
+      fraseFinale: document.getElementById("fraseFinale").innerText,
+      calcolo: window.calcolo
+    };
+
+    localStorage.setItem(
+      "report_costo_domestico",
+      JSON.stringify(datiReportCostoDomestico)
+    );
+
+    if (typeof gtag === "function") {
+      gtag('event', 'begin_checkout', {
+        currency: 'EUR',
+        value: 9.90
+      });
+    }
+
+    if (bottonePagamento) {
+      bottonePagamento.disabled = true;
+      bottonePagamento.innerText = "Apertura pagamento sicuro...";
+    }
+
+    const risposta = await fetch(
+      "https://costodomestico-backend.onrender.com/crea-checkout-costo-domestico",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          email_cliente: localStorage.getItem("email_cliente") || "",
+          nome_cliente: localStorage.getItem("nome_cliente") || "",
+          cognome_cliente: localStorage.getItem("cognome_cliente") || ""
+        })
+      }
+    );
+
+    const dati = await risposta.json();
+
+    if (!risposta.ok || !dati.checkout_url) {
+      throw new Error("Checkout non creato");
+    }
+
+    window.location.href = dati.checkout_url;
+
+  } catch (errore) {
+    console.error("Errore apertura checkout:", errore);
+    alert("Non è stato possibile aprire il pagamento. Riprova tra qualche secondo.");
+
+    if (bottonePagamento) {
+      bottonePagamento.disabled = false;
+      bottonePagamento.innerText = "Scarica report professionale - 9,90€";
+    }
   }
-
-  if (document.getElementById("pagaNettaOraria")) {
-    localStorage.setItem("pagaNettaOraria", document.getElementById("pagaNettaOraria").value);
-  }
-
-  if (document.getElementById("nettoMensileConcordato")) {
-    localStorage.setItem("nettoMensileConcordato", document.getElementById("nettoMensileConcordato").value);
-  }
-
-  if (typeof gtag === "function") {
-    gtag('event', 'begin_checkout', {
-      currency: 'EUR',
-      value: 9.90
-    });
-  }
-
-  window.location.href = "https://buy.stripe.com/00w7sLfK55hWdINbNr48000";
 }
 
 function testPDF() {
