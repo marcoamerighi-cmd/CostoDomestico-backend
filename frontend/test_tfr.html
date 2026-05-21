@@ -51,6 +51,17 @@
             font-size: 15px;
         }
 
+        .date-row {
+    display: grid;
+    grid-template-columns: 1fr 1.4fr 1fr;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.date-row select {
+    margin-bottom: 0;
+}
+
         .helper-text {
             font-size: 14px;
             color: #666;
@@ -441,10 +452,20 @@ e scarica un report PDF professionale.
     </p>
 
     <label>Data assunzione</label>
-    <input id="data_assunzione" type="date" onchange="generaAnnualita()">
+    <div class="date-row">
+      <select id="assunzione_giorno" onchange="aggiornaDateTFR()"></select>
+      <select id="assunzione_mese" onchange="aggiornaDateTFR()"></select>
+      <select id="assunzione_anno" onchange="aggiornaDateTFR()"></select>
+    </div>
+    <input id="data_assunzione" type="hidden">
 
     <label>Data cessazione</label>
-    <input id="data_cessazione" type="date" onchange="generaAnnualita()">
+    <div class="date-row">
+      <select id="cessazione_giorno" onchange="aggiornaDateTFR()"></select>
+      <select id="cessazione_mese" onchange="aggiornaDateTFR()"></select>
+      <select id="cessazione_anno" onchange="aggiornaDateTFR()"></select>
+    </div>
+    <input id="data_cessazione" type="hidden">
 
     <label>Ore settimanali</label>
     <input id="ore_settimanali" type="number">
@@ -656,6 +677,64 @@ e scarica un report PDF professionale.
         return mesiUtili;
     }
 
+function popolaSelectDateTFR() {
+    const mesi = [
+        "Gennaio", "Febbraio", "Marzo", "Aprile",
+        "Maggio", "Giugno", "Luglio", "Agosto",
+        "Settembre", "Ottobre", "Novembre", "Dicembre"
+    ];
+
+    const annoCorrente = new Date().getFullYear();
+
+    function popola(prefix) {
+        const giorno = document.getElementById(prefix + "_giorno");
+        const mese = document.getElementById(prefix + "_mese");
+        const anno = document.getElementById(prefix + "_anno");
+
+        giorno.innerHTML = '<option value="">Giorno</option>';
+        mese.innerHTML = '<option value="">Mese</option>';
+        anno.innerHTML = '<option value="">Anno</option>';
+
+        for (let g = 1; g <= 31; g++) {
+            giorno.innerHTML += `<option value="${String(g).padStart(2, "0")}">${g}</option>`;
+        }
+
+        mesi.forEach((nome, index) => {
+            const valore = String(index + 1).padStart(2, "0");
+            mese.innerHTML += `<option value="${valore}">${nome}</option>`;
+        });
+
+        for (let a = annoCorrente; a >= 1970; a--) {
+            anno.innerHTML += `<option value="${a}">${a}</option>`;
+        }
+    }
+
+    popola("assunzione");
+    popola("cessazione");
+}
+
+function aggiornaDateTFR() {
+    const ag = document.getElementById("assunzione_giorno").value;
+    const am = document.getElementById("assunzione_mese").value;
+    const aa = document.getElementById("assunzione_anno").value;
+
+    const cg = document.getElementById("cessazione_giorno").value;
+    const cm = document.getElementById("cessazione_mese").value;
+    const ca = document.getElementById("cessazione_anno").value;
+
+    if (ag && am && aa) {
+        document.getElementById("data_assunzione").value = `${aa}-${am}-${ag}`;
+    }
+
+    if (cg && cm && ca) {
+        document.getElementById("data_cessazione").value = `${ca}-${cm}-${cg}`;
+    }
+
+    generaAnnualita();
+}
+
+popolaSelectDateTFR();
+
     function generaAnnualita() {
         const dataAssunzioneValue =
             document.getElementById("data_assunzione").value;
@@ -825,7 +904,10 @@ e scarica un report PDF professionale.
     );
 
     window.location.href = "https://costodomestico-backend.onrender.com/checkout-tfr";
-}
+
+    }
+
+    
 </script>
 
 </body>
