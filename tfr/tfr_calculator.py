@@ -1,7 +1,7 @@
 from datetime import date
 import calendar
 
-from tfr.coefficienti_tfr import trova_coefficiente_tfr
+from tfr.coefficienti_tfr import get_coefficiente_tfr
 
 
 def calcola_quota_tfr(retribuzione_utile_annua: float) -> float:
@@ -148,10 +148,10 @@ def calcola_rivalutazione_tfr(
         anno = riga["anno"]
         quota_tfr = riga["quota_tfr"]
 
-        coefficiente_anno = trova_coefficiente_tfr(
-            anno=anno,
-            mese=12
-        )
+        coefficiente_anno = get_coefficiente_tfr(
+    anno=anno,
+    mese=12
+)
 
         rivalutazione_anno = round(
             tfr_accantonato * coefficiente_anno / 100,

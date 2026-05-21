@@ -136,3 +136,33 @@ def trova_coefficiente_tfr(
         anno_corrente -= 1
 
     return 0
+
+def get_ultimo_coefficiente_disponibile() -> float:
+    anni_disponibili = sorted(COEFFICIENTI_TFR.keys())
+
+    ultimo_anno = anni_disponibili[-1]
+    mesi_disponibili = sorted(COEFFICIENTI_TFR[ultimo_anno].keys())
+
+    ultimo_mese = mesi_disponibili[-1]
+
+    return COEFFICIENTI_TFR[ultimo_anno][ultimo_mese]
+
+
+def get_coefficiente_tfr(anno: int, mese: int) -> float:
+    if anno in COEFFICIENTI_TFR:
+        mesi_anno = COEFFICIENTI_TFR[anno]
+
+        if mese in mesi_anno:
+            return mesi_anno[mese]
+
+        mesi_precedenti = [
+            mese_disponibile
+            for mese_disponibile in mesi_anno.keys()
+            if mese_disponibile <= mese
+        ]
+
+        if mesi_precedenti:
+            ultimo_mese_disponibile = max(mesi_precedenti)
+            return mesi_anno[ultimo_mese_disponibile]
+
+    return get_ultimo_coefficiente_disponibile()
