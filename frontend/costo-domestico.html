@@ -1393,7 +1393,11 @@ function suggerisciLivello() {
         doc.setFontSize(10);
         doc.setFont(undefined, "normal");
         doc.setTextColor(75, 85, 99);
-        doc.text("Simulazione indicativa basata su CCNL lavoro domestico 2026.", 12, 50);
+        doc.text(
+    `Simulazione indicativa basata su CCNL lavoro domestico ${CONFIG.getAnno()}.`,
+    12,
+    50
+);
 
         // DATI RAPPORTO
         doc.setFillColor(249, 250, 251);
@@ -1794,6 +1798,8 @@ function ripristinaDatiDopoPagamento() {
 
   document.addEventListener('DOMContentLoaded', mostraCookieBanner);
 </script>
+
+<script src="/js/config.js"></script>
 
 </body>
 </html>
