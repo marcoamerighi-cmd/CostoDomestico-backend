@@ -726,25 +726,6 @@ def pagina_tfr_tool():
     )
 
 
-@app.get("/{nome_pagina}")
-def pagina_frontend_generica(nome_pagina: str):
-
-    percorso = FRONTEND_DIR / f"{nome_pagina}.html"
-
-    if not percorso.exists():
-        percorso = FRONTEND_DIR / nome_pagina
-
-    if not percorso.exists():
-        return {
-            "detail": "Pagina non trovata"
-        }
-
-    return FileResponse(
-        path=str(percorso),
-        media_type="text/html"
-    )
-
-
 @app.delete("/elimina-ordini-senza-email")
 def elimina_ordini_senza_email():
 
@@ -770,3 +751,24 @@ def elimina_ordini_senza_email():
         "success": True,
         "ordini_eliminati": eliminati
     }
+
+
+@app.get("/{nome_pagina}")
+def pagina_frontend_generica(nome_pagina: str):
+
+    percorso = FRONTEND_DIR / f"{nome_pagina}.html"
+
+    if not percorso.exists():
+        percorso = FRONTEND_DIR / nome_pagina
+
+    if not percorso.exists():
+        return {
+            "detail": "Pagina non trovata"
+        }
+
+    return FileResponse(
+        path=str(percorso),
+        media_type="text/html"
+    )
+
+
