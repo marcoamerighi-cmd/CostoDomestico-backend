@@ -360,25 +360,22 @@ def crea_checkout_tfr(richiesta: RichiestaCheckoutTFR):
             "unit_amount": 790
         }
 
-    customer_id = None
-
-    if email_cliente:
-        customer = stripe.Customer.create(
-            email=email_cliente,
-            name=nome_completo or None,
-            metadata={
-                "email_cliente": email_cliente,
-                "nome_cliente": nome_cliente,
-                "cognome_cliente": cognome_cliente,
-                "nome_completo": nome_completo
-            }
-        )
-        customer_id = customer.id
 
     parametri_sessione = {
         "payment_method_types": ["card"],
         "mode": "payment",
         "billing_address_collection": "auto",
+        "custom_fields": [
+    {
+        "key": "nome_completo",
+        "label": {
+            "type": "custom",
+            "custom": "Nome completo"
+        },
+        "type": "text",
+        "optional": False
+    }
+],
         "line_items": [
             line_item
         ],
@@ -395,10 +392,7 @@ def crea_checkout_tfr(richiesta: RichiestaCheckoutTFR):
         ),
         "cancel_url": "https://costodomestico.it/tfr-tool"
     }
-
-    if customer_id:
-        parametri_sessione["customer"] = customer_id
-    elif email_cliente:
+    if email_cliente:
         parametri_sessione["customer_email"] = email_cliente
         parametri_sessione["customer_creation"] = "always"
     else:
@@ -407,7 +401,6 @@ def crea_checkout_tfr(richiesta: RichiestaCheckoutTFR):
     sessione = stripe.checkout.Session.create(
         **parametri_sessione
     )
-
     salva_ordine(
         email_cliente=email_cliente,
         nome_cliente=nome_cliente,
