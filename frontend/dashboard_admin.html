@@ -506,7 +506,6 @@
     caricaDashboard();
 
     async function eliminaOrdiniSenzaEmail() {
-
     const conferma = confirm(
         "Vuoi eliminare tutti gli ordini senza email?"
     );
@@ -522,13 +521,20 @@
 
     const dati = await risposta.json();
 
+    console.log("Risposta elimina senza email:", dati);
+
+    if (!dati.success) {
+        alert("Errore eliminazione ordini senza email.");
+        return;
+    }
+
     alert(
         "Ordini eliminati: " +
         dati.ordini_eliminati
     );
 
     caricaOrdini();
-}
+    }
 </script>
 
 </body>

@@ -647,21 +647,20 @@ async def webhook(request: Request):
     return await gestisci_webhook_stripe(request)
 
 
-@app.delete("/elimina-ordini-email")
-def elimina_ordini_email(email: str):
-    ordini = leggi_ordini()
-    eliminati = 0
+@app.delete("/elimina-ordini-senza-email")
+def elimina_ordini_senza_email():
 
-    import psycopg2
     from database.ordini_repository import get_connessione
 
     conn = get_connessione()
     cur = conn.cursor()
 
-    cur.execute(
-        "DELETE FROM ordini WHERE LOWER(email_cliente) = LOWER(%s)",
-        (email,)
-    )
+    cur.execute("""
+        DELETE
+        FROM ordini
+        WHERE email_cliente IS NULL
+        OR TRIM(email_cliente) = ''
+    """)
 
     eliminati = cur.rowcount
 
@@ -671,7 +670,6 @@ def elimina_ordini_email(email: str):
 
     return {
         "success": True,
-        "email": email,
         "ordini_eliminati": eliminati
     }
 
@@ -745,3 +743,30 @@ def pagina_frontend_generica(nome_pagina: str):
         path=str(percorso),
         media_type="text/html"
     )
+
+
+@app.delete("/elimina-ordini-senza-email")
+def elimina_ordini_senza_email():
+
+    from database.ordini_repository import get_connessione
+
+    conn = get_connessione()
+    cur = conn.cursor()
+
+    cur.execute("""
+        DELETE
+        FROM ordini
+        WHERE email_cliente IS NULL
+        OR TRIM(email_cliente) = ''
+    """)
+
+    eliminati = cur.rowcount
+
+    conn.commit()
+    cur.close()
+    conn.close()
+
+    return {
+        "success": True,
+        "ordini_eliminati": eliminati
+    }
