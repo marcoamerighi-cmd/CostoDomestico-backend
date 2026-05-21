@@ -181,6 +181,10 @@
         Elimina ordini email cercata
     </button>
 
+    <button onclick="eliminaOrdiniSenzaEmail()" style="background:#dc2626;">
+        Elimina ordini senza email
+    </button>
+
     <button onclick="logoutAdmin()" style="background:#374151;">
         Logout
     </button>
@@ -500,6 +504,31 @@
     }
 
     caricaDashboard();
+
+    async function eliminaOrdiniSenzaEmail() {
+
+    const conferma = confirm(
+        "Vuoi eliminare tutti gli ordini senza email?"
+    );
+
+    if (!conferma) return;
+
+    const risposta = await fetch(
+        "https://costodomestico-backend.onrender.com/elimina-ordini-senza-email",
+        {
+            method: "DELETE"
+        }
+    );
+
+    const dati = await risposta.json();
+
+    alert(
+        "Ordini eliminati: " +
+        dati.ordini_eliminati
+    );
+
+    caricaOrdini();
+}
 </script>
 
 </body>
