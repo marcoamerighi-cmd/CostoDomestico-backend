@@ -109,7 +109,7 @@ def contributo_lavoratore_orario(
     ore_settimanali: float,
     tempo_determinato: bool = False
 ) -> float:
-    tabella = trova_tabella_contributiva(anno)
+    tabella = get_contributi_domestici(anno)
 
     if ore_settimanali > 24:
         return tabella["oltre_24_ore"]["quota_lavoratore"]
@@ -122,3 +122,25 @@ def contributo_lavoratore_orario(
             return fascia["quota_lavoratore"]
 
     return tabella["fino_24_ore"][-1]["quota_lavoratore"]
+
+def get_anno_contributi_disponibile(anno: int) -> int:
+    anni_disponibili = sorted(CONTRIBUTI_DOMESTICI.keys())
+
+    if anno in CONTRIBUTI_DOMESTICI:
+        return anno
+
+    anni_precedenti = [
+        anno_disponibile
+        for anno_disponibile in anni_disponibili
+        if anno_disponibile <= anno
+    ]
+
+    if anni_precedenti:
+        return anni_precedenti[-1]
+
+    return anni_disponibili[0]
+
+
+def get_contributi_domestici(anno: int) -> dict:
+    anno_disponibile = get_anno_contributi_disponibile(anno)
+    return CONTRIBUTI_DOMESTICI[anno_disponibile]
