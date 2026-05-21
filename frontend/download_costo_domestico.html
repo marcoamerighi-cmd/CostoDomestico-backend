@@ -208,7 +208,11 @@
     doc.setFontSize(10);
     doc.setFont(undefined, "normal");
     doc.setTextColor(75, 85, 99);
-    doc.text("Simulazione indicativa basata su CCNL lavoro domestico 2026.", 12, 50);
+    doc.text(
+    `Simulazione indicativa basata su CCNL lavoro domestico ${CONFIG.getAnno()}.`,
+    12,
+    50
+);
 
     doc.setFillColor(249, 250, 251);
     doc.roundedRect(12, 58, 186, 27, 3, 3, "F");
@@ -399,6 +403,8 @@
     }, 900);
   });
 </script>
+
+<script src="/js/config.js"></script>
 
 </body>
 </html>
