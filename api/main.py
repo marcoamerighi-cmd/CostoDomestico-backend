@@ -455,18 +455,21 @@ def crea_checkout_costo_domestico(
             }
         ],
 
-        line_items=[
-            {
-                "price_data": {
-                    "currency": "eur",
-                    "product_data": {
-                        "name": "Report Costo Domestico - CostoDomestico.it"
-                    },
-                    "unit_amount": 990
-                },
-                "quantity": 1
-            }
-        ],
+                line_items=[
+                    {
+                        "price_data": {
+                            "currency": "eur",
+                            "product_data": {
+                                "name": "Report Costo Domestico - CostoDomestico.it",
+                                "images": [
+                                      "https://costodomestico.it/favicon-512.png"
+                                ]
+                            },
+                            "unit_amount": 990
+                        },
+                        "quantity": 1
+                    }
+                ],
 
         metadata={
             "prodotto": "Costo Domestico",
