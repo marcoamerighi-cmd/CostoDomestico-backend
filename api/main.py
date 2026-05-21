@@ -341,7 +341,10 @@ def crea_checkout_tfr(richiesta: RichiestaCheckoutTFR):
         line_item["price_data"] = {
             "currency": "eur",
             "product_data": {
-                "name": "Report Professionale TFR - CostoDomestico.it"
+                "name": "Report Costo Domestico - CostoDomestico.it",
+                "images": [
+                      "https://costodomestico.it/favicon-512.png"
+                ]
             },
             "unit_amount": 790
         }

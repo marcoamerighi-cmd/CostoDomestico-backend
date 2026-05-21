@@ -605,6 +605,12 @@
         Inserisci pochi dati e scopri quanto percepisce il lavoratore e qual è il costo reale per il datore.
       </p>
 
+      <label>Email per ricevere il report</label>
+<input id="email_cliente" type="email" placeholder="esempio@email.it">
+<p class="small-note">
+  L'email verrà usata per il pagamento e per ricevere il report.
+</p>
+
       <label>Tipo di lavoro</label>
       <select id="tipoLavoro" onchange="suggerisciLivello()">
         <option value="colf">Colf / pulizie casa</option>
@@ -1586,6 +1592,7 @@ async function vaiAlPagamento() {
       return;
     }
 
+    localStorage.setItem("email_cliente",document.getElementById("email_cliente")?.value || "");
     localStorage.setItem("tipoLavoro", document.getElementById("tipoLavoro").value);
     localStorage.setItem("rapporto", document.getElementById("rapporto").value);
     localStorage.setItem("livello", document.getElementById("livello").value);
