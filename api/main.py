@@ -96,6 +96,13 @@ class RichiestaCheckoutTFR(BaseModel):
     email_cliente: str = ""
     nome_cliente: str = ""
     cognome_cliente: str = ""
+    nome_completo_cliente: str = ""
+
+    # Campi opzionali che possono arrivare dalla pagina TFR.
+    # Non sono obbligatori per Stripe, ma evitano errori se il frontend li invia.
+    nome_datore: str = ""
+    cognome_datore: str = ""
+    dati_calcolo: dict | None = None
 
 
 class RichiestaOrdineCostoDomestico(BaseModel):
@@ -326,10 +333,14 @@ def genera_pdf(richiesta: RichiestaTFR):
 @app.post("/crea-checkout-tfr")
 def crea_checkout_tfr(richiesta: RichiestaCheckoutTFR):
 
+    email_cliente = (richiesta.email_cliente or "").strip()
+    nome_cliente = (richiesta.nome_cliente or richiesta.nome_datore or "").strip()
+    cognome_cliente = (richiesta.cognome_cliente or richiesta.cognome_datore or "").strip()
+
     nome_completo = (
-        f"{richiesta.nome_cliente} {richiesta.cognome_cliente}"
-        .strip()
-    )
+        richiesta.nome_completo_cliente
+        or f"{nome_cliente} {cognome_cliente}"
+    ).strip()
 
     line_item = {
         "quantity": 1
@@ -341,58 +352,66 @@ def crea_checkout_tfr(richiesta: RichiestaCheckoutTFR):
         line_item["price_data"] = {
             "currency": "eur",
             "product_data": {
-                "name": "Report Costo Domestico - CostoDomestico.it",
+                "name": "Report TFR Colf e Badanti - CostoDomestico.it",
                 "images": [
-                      "https://costodomestico.it/favicon-512.png?v=2"
+                    "https://costodomestico.it/favicon-512.png?v=2"
                 ]
             },
             "unit_amount": 790
         }
 
-    sessione = stripe.checkout.Session.create(
-        payment_method_types=["card"],
-        mode="payment",
+    customer_id = None
 
-        customer_email=richiesta.email_cliente or None,
-        customer_creation="always",
-
-        billing_address_collection="auto",
-
-        custom_fields=[
-            {
-                "key": "nome_completo",
-                "label": {
-                    "type": "custom",
-                    "custom": "Nome completo"
-                },
-                "type": "text",
-                "optional": False
+    if email_cliente:
+        customer = stripe.Customer.create(
+            email=email_cliente,
+            name=nome_completo or None,
+            metadata={
+                "email_cliente": email_cliente,
+                "nome_cliente": nome_cliente,
+                "cognome_cliente": cognome_cliente,
+                "nome_completo": nome_completo
             }
-        ],
+        )
+        customer_id = customer.id
 
-        line_items=[
+    parametri_sessione = {
+        "payment_method_types": ["card"],
+        "mode": "payment",
+        "billing_address_collection": "auto",
+        "line_items": [
             line_item
         ],
-
-        metadata={
+        "metadata": {
             "prodotto": "Report Professionale TFR",
-            "email_cliente": richiesta.email_cliente,
-            "nome_cliente": richiesta.nome_cliente,
-            "cognome_cliente": richiesta.cognome_cliente,
+            "email_cliente": email_cliente,
+            "nome_cliente": nome_cliente,
+            "cognome_cliente": cognome_cliente,
             "nome_completo": nome_completo
         },
-
-        success_url=(
+        "success_url": (
             "https://costodomestico-backend.onrender.com/download-report"
             "?session_id={CHECKOUT_SESSION_ID}"
         ),
-        cancel_url="https://costodomestico-backend.onrender.com/checkout-tfr"
+        "cancel_url": "https://costodomestico.it/tfr-tool"
+    }
+
+    if customer_id:
+        parametri_sessione["customer"] = customer_id
+    elif email_cliente:
+        parametri_sessione["customer_email"] = email_cliente
+        parametri_sessione["customer_creation"] = "always"
+    else:
+        parametri_sessione["customer_creation"] = "always"
+
+    sessione = stripe.checkout.Session.create(
+        **parametri_sessione
     )
 
     salva_ordine(
-        email_cliente=richiesta.email_cliente,
-        nome_cliente=richiesta.nome_cliente,
-        cognome_cliente=richiesta.cognome_cliente,
+        email_cliente=email_cliente,
+        nome_cliente=nome_cliente,
+        cognome_cliente=cognome_cliente,
         prodotto="Report Professionale TFR",
         importo=7.90,
         stato="checkout_creato",
@@ -400,12 +419,16 @@ def crea_checkout_tfr(richiesta: RichiestaCheckoutTFR):
     )
 
     salva_o_aggiorna_cliente(
-        email=richiesta.email_cliente,
-        nome=richiesta.nome_cliente,
-        cognome=richiesta.cognome_cliente
+        email=email_cliente,
+        nome=nome_cliente,
+        cognome=cognome_cliente
     )
 
-    return {"checkout_url": sessione.url}
+    return {
+        "checkout_url": sessione.url,
+        "url": sessione.url,
+        "session_url": sessione.url
+    }
 
 @app.get("/download-costo-domestico")
 def pagina_download_costo_domestico(request: Request):

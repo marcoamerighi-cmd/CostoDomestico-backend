@@ -868,6 +868,24 @@ popolaSelectDateTFR();
         };
     }
 
+    function validaDatiCliente() {
+        const nomeDatore = document.getElementById("nome_datore").value.trim();
+        const cognomeDatore = document.getElementById("cognome_datore").value.trim();
+        const emailCliente = document.getElementById("email_cliente").value.trim();
+
+        if (!nomeDatore || !cognomeDatore || !emailCliente) {
+            alert("Inserisci nome, cognome ed email del datore di lavoro prima di scaricare il report.");
+            return false;
+        }
+
+        if (!emailCliente.includes("@") || !emailCliente.includes(".")) {
+            alert("Inserisci un indirizzo email valido per ricevere il report.");
+            return false;
+        }
+
+        return true;
+    }
+
     async function calcolaTFR() {
         const richiesta = costruisciRichiesta();
 
@@ -882,7 +900,25 @@ popolaSelectDateTFR();
             }
         );
 
+        if (!risposta.ok) {
+            alert("Errore durante il calcolo TFR. Controlla i dati inseriti e riprova.");
+            return;
+        }
+
         const dati = await risposta.json();
+
+        window.calcoloTFR = dati;
+        window.richiestaTFR = richiesta;
+
+        localStorage.setItem(
+            "richiesta_tfr",
+            JSON.stringify(richiesta)
+        );
+
+        localStorage.setItem(
+            "calcolo_tfr",
+            JSON.stringify(dati)
+        );
 
         document.getElementById("risultato").style.display = "block";
         document.getElementById("nome_lavoratore").textContent = dati.lavoratore;
@@ -893,21 +929,75 @@ popolaSelectDateTFR();
             dati.liquidazione.totale_da_liquidare;
     }
 
-    function scaricaPDF() {
-    const richiesta = costruisciRichiesta();
-    localStorage.removeItem(
-        "email_report_tfr_inviata"
-    );
-    localStorage.setItem(
-        "richiesta_tfr",
-        JSON.stringify(richiesta)
-    );
+    async function scaricaPDF() {
+        if (!validaDatiCliente()) {
+            return;
+        }
 
-    window.location.href = "https://costodomestico-backend.onrender.com/checkout-tfr";
+        const richiesta = window.richiestaTFR || costruisciRichiesta();
 
+        const nomeCliente = document.getElementById("nome_datore").value.trim();
+        const cognomeCliente = document.getElementById("cognome_datore").value.trim();
+        const emailCliente = document.getElementById("email_cliente").value.trim();
+        const nomeCompletoCliente = `${nomeCliente} ${cognomeCliente}`.trim();
+
+        const richiestaCheckout = {
+            ...richiesta,
+
+            nome_cliente: nomeCliente,
+            cognome_cliente: cognomeCliente,
+            nome_completo_cliente: nomeCompletoCliente,
+            email_cliente: emailCliente,
+
+            nome_datore: nomeCliente,
+            cognome_datore: cognomeCliente,
+
+            dati_calcolo: window.calcoloTFR || null
+        };
+
+        localStorage.removeItem("email_report_tfr_inviata");
+
+        localStorage.setItem(
+            "richiesta_tfr",
+            JSON.stringify(richiestaCheckout)
+        );
+
+        try {
+            const risposta = await fetch(
+                "https://costodomestico-backend.onrender.com/crea-checkout-tfr",
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(richiestaCheckout)
+                }
+            );
+
+            if (!risposta.ok) {
+                throw new Error("Errore nella creazione del pagamento.");
+            }
+
+            const dati = await risposta.json();
+
+            const urlCheckout =
+                dati.url ||
+                dati.checkout_url ||
+                dati.session_url;
+
+            if (!urlCheckout) {
+                throw new Error("URL Stripe non ricevuto dal server.");
+            }
+
+            window.location.href = urlCheckout;
+
+        } catch (errore) {
+            console.error(errore);
+            alert("Non è stato possibile aprire il pagamento Stripe. Riprova tra poco.");
+        }
     }
 
-    
+
 </script>
 
 </body>
