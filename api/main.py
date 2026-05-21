@@ -343,7 +343,7 @@ def crea_checkout_tfr(richiesta: RichiestaCheckoutTFR):
             "product_data": {
                 "name": "Report Costo Domestico - CostoDomestico.it",
                 "images": [
-                      "https://costodomestico.it/favicon-512.png"
+                      "https://costodomestico.it/favicon-512.png?v=2"
                 ]
             },
             "unit_amount": 790
