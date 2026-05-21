@@ -426,12 +426,31 @@ def crea_checkout_costo_domestico(
     richiesta: RichiestaOrdineCostoDomestico
 ):
 
+    nome_completo = (
+        f"{richiesta.nome_cliente} {richiesta.cognome_cliente}"
+        .strip()
+    )
+
     sessione = stripe.checkout.Session.create(
         payment_method_types=["card"],
         mode="payment",
 
         customer_email=richiesta.email_cliente or None,
         customer_creation="always",
+
+        billing_address_collection="auto",
+
+        custom_fields=[
+            {
+                "key": "nome_completo",
+                "label": {
+                    "type": "custom",
+                    "custom": "Nome completo"
+                },
+                "type": "text",
+                "optional": False
+            }
+        ],
 
         line_items=[
             {
@@ -450,7 +469,8 @@ def crea_checkout_costo_domestico(
             "prodotto": "Costo Domestico",
             "email_cliente": richiesta.email_cliente,
             "nome_cliente": richiesta.nome_cliente,
-            "cognome_cliente": richiesta.cognome_cliente
+            "cognome_cliente": richiesta.cognome_cliente,
+            "nome_completo": nome_completo
         },
 
         success_url=(
@@ -459,6 +479,22 @@ def crea_checkout_costo_domestico(
         ),
 
         cancel_url="https://costodomestico.it/costo-domestico.html"
+    )
+
+    salva_ordine(
+        email_cliente=richiesta.email_cliente,
+        nome_cliente=richiesta.nome_cliente,
+        cognome_cliente=richiesta.cognome_cliente,
+        prodotto="Costo Domestico",
+        importo=9.90,
+        stato="checkout_creato",
+        sessione_stripe=sessione.id
+    )
+
+    salva_o_aggiorna_cliente(
+        email=richiesta.email_cliente,
+        nome=richiesta.nome_cliente,
+        cognome=richiesta.cognome_cliente
     )
 
     return {
