@@ -88,7 +88,7 @@
         const password = document.getElementById("password").value;
 
         const risposta = await fetch(
-            "/login-admin",
+            "https://costodomestico-backend.onrender.com/login-admin",
             {
                 method: "POST",
                 headers: {
@@ -104,7 +104,7 @@
 
         if (dati.success) {
             localStorage.setItem("admin_token", dati.token);
-            window.location.href = "/dashboard-admin";
+            window.location.href = "dashboard_admin.html";
         } else {
             document.getElementById("errore").innerText =
                 "Password non corretta";
