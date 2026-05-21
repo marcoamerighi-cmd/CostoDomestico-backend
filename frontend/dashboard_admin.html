@@ -33,6 +33,7 @@
             padding: 24px;
             box-shadow: 0 4px 14px rgba(0,0,0,0.08);
             text-align: center;
+            min-width: 260px;
         }
 
         .card strong {
@@ -45,6 +46,11 @@
             font-size: 30px;
             font-weight: bold;
             color: #1f3c88;
+            display: block;
+            max-width: 100%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
         }
 
         .filters {
@@ -161,7 +167,7 @@
 
     <div class="card">
         <strong>Ultimo cliente</strong>
-        <span id="ultimo_cliente" style="font-size:16px;">-</span>
+        <span id="ultimo_cliente" style="font-size:14px;">-</span>
     </div>
 
 </div>
@@ -171,8 +177,8 @@
         Esporta CSV
     </button>
 
-    <button onclick="eliminaOrdiniTest()" style="background:#dc2626;">
-        Elimina ordini test
+    <button onclick="eliminaOrdiniEmail()" style="background:#f97316;">
+        Elimina ordini email cercata
     </button>
 
     <button onclick="logoutAdmin()" style="background:#374151;">
@@ -461,6 +467,36 @@
         );
 
         caricaDashboard();
+    }
+
+    async function eliminaOrdiniEmail() {
+        const email = document.getElementById("ricerca").value.trim();
+
+        if (!email) {
+            alert("Inserisci prima l'email nella casella di ricerca.");
+            return;
+        }
+
+        const conferma = confirm(
+            "Vuoi eliminare tutti gli ordini associati a questa email?\n\n" + email
+        );
+
+        if (!conferma) {
+            return;
+        }
+
+        const risposta = await fetch(
+            "https://costodomestico-backend.onrender.com/elimina-ordini-email?email=" + encodeURIComponent(email),
+            {
+                method: "DELETE"
+            }
+        );
+
+        const dati = await risposta.json();
+
+        alert("Ordini eliminati: " + dati.ordini_eliminati);
+
+        caricaOrdini();
     }
 
     caricaDashboard();

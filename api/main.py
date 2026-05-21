@@ -647,12 +647,31 @@ async def webhook(request: Request):
     return await gestisci_webhook_stripe(request)
 
 
-@app.delete("/elimina-ordini-test")
-def elimina_ordini_test_endpoint():
-    eliminati = elimina_ordini_test()
+@app.delete("/elimina-ordini-email")
+def elimina_ordini_email(email: str):
+    ordini = leggi_ordini()
+    eliminati = 0
+
+    import psycopg2
+    from database.ordini_repository import get_connessione
+
+    conn = get_connessione()
+    cur = conn.cursor()
+
+    cur.execute(
+        "DELETE FROM ordini WHERE LOWER(email_cliente) = LOWER(%s)",
+        (email,)
+    )
+
+    eliminati = cur.rowcount
+
+    conn.commit()
+    cur.close()
+    conn.close()
 
     return {
         "success": True,
+        "email": email,
         "ordini_eliminati": eliminati
     }
 
