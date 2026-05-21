@@ -394,13 +394,13 @@ def crea_checkout_tfr(richiesta: RichiestaCheckoutTFR):
     }
     if email_cliente:
         parametri_sessione["customer_email"] = email_cliente
-        parametri_sessione["customer_creation"] = "always"
-    else:
-        parametri_sessione["customer_creation"] = "always"
+
+    parametri_sessione["customer_creation"] = "always"
 
     sessione = stripe.checkout.Session.create(
         **parametri_sessione
     )
+
     salva_ordine(
         email_cliente=email_cliente,
         nome_cliente=nome_cliente,
