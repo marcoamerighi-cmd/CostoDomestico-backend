@@ -367,18 +367,6 @@ def crea_checkout_tfr(richiesta: RichiestaCheckoutTFR):
             }
         ],
 
-        custom_fields=[
-            {
-                "key": "nome_completo",
-                "label": {
-                    "type": "custom",
-                    "custom": "Nome completo"
-                },
-                "type": "text",
-                "optional": False
-            }
-        ],
-
         line_items=[
             line_item
         ],
