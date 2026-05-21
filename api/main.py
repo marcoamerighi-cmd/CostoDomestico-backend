@@ -387,7 +387,7 @@ def crea_checkout_tfr(richiesta: RichiestaCheckoutTFR):
             "nome_completo": nome_completo
         },
         "success_url": (
-            "https://costodomestico-backend.onrender.com/download-report"
+            "https://costodomestico.it/download-report"
             "?session_id={CHECKOUT_SESSION_ID}"
         ),
         "cancel_url": "https://costodomestico.it/tfr-tool"
