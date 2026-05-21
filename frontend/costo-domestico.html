@@ -881,27 +881,10 @@
   <br><a href="/privacy-policy.html">Privacy Policy</a> · <a href="/cookie-policy.html">Cookie Policy</a></footer>
 
   <script>
-    const pagheConviventi = {
-      DS: 1682.42,
-      D: 1612.20,
-      CS: 1193.84,
-      C: 1123.63,
-      BS: 1053.39,
-      B: 983.16,
-      AS: 958.55,
-      A: 908.10
-    };
 
-    const pagheNonConviventi = {
-      DS: 9.97,
-      D: 9.57,
-      CS: 8.30,
-      C: 7.86,
-      BS: 7.45,
-      B: 7.01,
-      AS: 6.76,
-      A: 6.51
-    };
+    const pagheConviventi = getPagheConviventi();
+
+    const pagheNonConviventi = getPagheNonConviventi();
 
     const contributiInps = {
       fino24: [
@@ -1800,6 +1783,7 @@ function ripristinaDatiDopoPagamento() {
 </script>
 
 <script src="/js/config.js"></script>
+<script src="/js/ccnl.js"></script>
 
 </body>
 </html>
