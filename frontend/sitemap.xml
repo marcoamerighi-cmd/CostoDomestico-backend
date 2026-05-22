@@ -121,4 +121,16 @@
 <priority>0.8</priority>
 </url>
 
+<url>
+<loc>https://costodomestico.it/costo-colf-40-ore.html</loc>
+<changefreq>monthly</changefreq>
+<priority>0.8</priority>
+</url>
+
+<url>
+<loc>https://costodomestico.it/costo-badante-30-ore.html</loc>
+<changefreq>monthly</changefreq>
+<priority>0.8</priority>
+</url>
+
 </urlset>
