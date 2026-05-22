@@ -376,6 +376,19 @@
       const doc = creaDocumentoPDF();
       if (!doc) return;
 
+if (typeof gtag === "function") {
+  gtag("event", "purchase", {
+    transaction_id: Date.now().toString(),
+    currency: "EUR",
+    value: 9.90
+  });
+
+  gtag("event", "pdf_download", {
+    currency: "EUR",
+    value: 9.90
+  });
+}
+
       doc.save("report_costo_lavoro_domestico.pdf");
 
       if (loading) loading.innerText = "PDF pronto. Se non lo vedi, controlla la cartella Download.";

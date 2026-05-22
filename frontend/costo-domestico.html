@@ -1087,6 +1087,12 @@ if (!ore) {
     alert("⚠️ Inserisci le ore settimanali");
     return;
 }
+if (typeof gtag === "function") {
+    gtag("event", "click_calcola", {
+        event_category: "Costo Domestico",
+        event_label: "Calcola costo reale"
+    });
+}
       const livello = document.getElementById("livello").value;
       const oreSettimanali = Number(document.getElementById("ore").value) || 0;
       const usaPagaPattuita = document.getElementById("usaPagaPattuita").value;
@@ -1646,6 +1652,13 @@ async function vaiAlPagamento() {
       fraseFinale: document.getElementById("fraseFinale").innerText,
       calcolo: window.calcolo
     };
+
+if (typeof gtag === "function") {
+    gtag('event', 'click_stripe', {
+        event_category: 'Pagamento',
+        event_label: 'Apre checkout Stripe'
+    });
+}
 
     localStorage.setItem(
       "report_costo_domestico",
