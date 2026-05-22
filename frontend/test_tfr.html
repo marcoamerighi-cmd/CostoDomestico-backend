@@ -910,7 +910,14 @@ popolaSelectDateTFR();
 
         const dati = await risposta.json();
 
-        window.calcoloTFR = dati;
+if (typeof gtag === "function") {
+    gtag("event", "click_calcola_tfr", {
+        event_category: "TFR",
+        event_label: "Calcola TFR"
+    });
+}
+
+window.calcoloTFR = dati;
         window.richiestaTFR = richiesta;
 
         localStorage.setItem(
@@ -991,6 +998,19 @@ popolaSelectDateTFR();
             if (!urlCheckout) {
                 throw new Error("URL Stripe non ricevuto dal server.");
             }
+
+if (typeof gtag === "function") {
+
+    gtag("event", "click_stripe_tfr", {
+        event_category: "Pagamento TFR",
+        event_label: "Apre Stripe TFR"
+    });
+
+    gtag("event", "begin_checkout_tfr", {
+        currency: "EUR",
+        value: 7.90
+    });
+}
 
             window.location.href = urlCheckout;
 

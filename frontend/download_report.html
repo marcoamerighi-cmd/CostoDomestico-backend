@@ -206,27 +206,41 @@
 
     function scaricaBlob(blob) {
 
-        const url =
-            window.URL.createObjectURL(blob);
+    const url =
+        window.URL.createObjectURL(blob);
 
-        const link =
-            document.createElement("a");
+    const link =
+        document.createElement("a");
 
-        link.href = url;
+    link.href = url;
 
-        link.download =
-            "report_tfr_costodomestico.pdf";
+    link.download =
+        "report_tfr_costodomestico.pdf";
 
-        document.body.appendChild(link);
+    document.body.appendChild(link);
 
-        link.click();
+    if (typeof gtag === "function") {
 
-        document.body.removeChild(link);
+        gtag("event", "purchase_tfr", {
+            transaction_id: Date.now().toString(),
+            currency: "EUR",
+            value: 7.90
+        });
 
-        setTimeout(() => {
-            window.URL.revokeObjectURL(url);
-        }, 3000);
+        gtag("event", "pdf_download_tfr", {
+            currency: "EUR",
+            value: 7.90
+        });
     }
+
+    link.click();
+
+    document.body.removeChild(link);
+
+    setTimeout(() => {
+        window.URL.revokeObjectURL(url);
+    }, 3000);
+}
 
     async function scaricaManuale() {
 
