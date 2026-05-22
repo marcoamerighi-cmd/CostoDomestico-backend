@@ -615,31 +615,37 @@
 </p>
 
       <label>Tipo di lavoro</label>
-      <select id="tipoLavoro" onchange="suggerisciLivello()">
-        <option value="colf">Colf / pulizie casa</option>
-        <option value="babysitter">Babysitter</option>
-        <option value="badante_auto">Badante persona autosufficiente</option>
-        <option value="badante_non_auto">Badante persona non autosufficiente</option>
-      </select>
+<select id="tipoLavoro" onchange="suggerisciLivello()">
+    <option value="" selected>Seleziona tipo lavoro</option>
+    <option value="colf">Colf / pulizie casa</option>
+    <option value="babysitter">Babysitter</option>
+    <option value="badante_auto">Badante persona autosufficiente</option>
+    <option value="badante_non_auto">Badante persona non autosufficiente</option>
+</select>
 
       <label>Tipo rapporto</label>
-      <select id="rapporto" onchange="gestisciCampoPagaPattuita()">
-        <option value="convivente">Convivente</option>
-        <option value="non_convivente">Non convivente</option>
-      </select>
+<select id="rapporto" onchange="gestisciCampoPagaPattuita()">
+    <option value="" selected>Seleziona tipo rapporto</option>
+    <option value="convivente">Convivente</option>
+    <option value="non_convivente">Non convivente</option>
+</select>
 
       <label>Livello CCNL</label>
-      <select id="livello">
-        <option value="A">A</option>
-        <option value="AS">AS</option>
-        <option value="B">B</option>
-        <option value="BS">BS</option>
-        <option value="C">C</option>
-        <option value="CS">CS</option>
-        <option value="D">D</option>
-        <option value="DS">DS</option>
-      </select>
-      <p class="small-note">Il livello viene suggerito automaticamente, ma puoi modificarlo.</p>
+<select id="livello">
+    <option value="" selected>Seleziona livello</option>
+    <option value="A">A</option>
+    <option value="AS">AS</option>
+    <option value="B">B</option>
+    <option value="BS">BS</option>
+    <option value="C">C</option>
+    <option value="CS">CS</option>
+    <option value="D">D</option>
+    <option value="DS">DS</option>
+</select>
+
+<small>
+Il livello viene suggerito automaticamente, ma puoi modificarlo.
+</small>
 
       <label>Ore settimanali</label>
       <input id="ore" type="number" value="" min="1" step="0.5" oninput="aggiornaCampiNonConviventeDaOre()">
@@ -929,7 +935,7 @@
 
     function aggiornaNettoMensileDaOrario() {
       if (aggiornamentoAutomaticoPaga) return;
-
+      
       const rapporto = document.getElementById("rapporto").value;
       if (rapporto !== "non_convivente") return;
 
@@ -974,14 +980,23 @@
     }
 
 function suggerisciLivello() {
+
       const tipo = document.getElementById("tipoLavoro").value;
-      let livello = "B";
+
+      if (!tipo) {
+          document.getElementById("livello").value = "";
+          return;
+      }
+
+      let livello = "";
+
       if (tipo === "colf") livello = "B";
       if (tipo === "babysitter") livello = "BS";
       if (tipo === "badante_auto") livello = "CS";
       if (tipo === "badante_non_auto") livello = "DS";
+
       document.getElementById("livello").value = livello;
-    }
+}
 
     function gestisciCampoPagaPattuita() {
       const scelta = document.getElementById("usaPagaPattuita").value;
@@ -1053,7 +1068,25 @@ function suggerisciLivello() {
     }
 
     function calcola() {
-      const rapporto = document.getElementById("rapporto").value;
+      
+      const tipoLavoro = document.getElementById("tipoLavoro").value;
+const rapporto = document.getElementById("rapporto").value;
+const ore = document.getElementById("ore").value;
+
+if (!tipoLavoro) {
+    alert("⚠️ Seleziona il tipo di lavoro");
+    return;
+}
+
+if (!rapporto) {
+    alert("⚠️ Seleziona il tipo di rapporto");
+    return;
+}
+
+if (!ore) {
+    alert("⚠️ Inserisci le ore settimanali");
+    return;
+}
       const livello = document.getElementById("livello").value;
       const oreSettimanali = Number(document.getElementById("ore").value) || 0;
       const usaPagaPattuita = document.getElementById("usaPagaPattuita").value;
