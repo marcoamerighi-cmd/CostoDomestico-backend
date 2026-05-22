@@ -367,7 +367,7 @@
     return doc;
   }
 
-  function scaricaReportCostoDomestico() {
+  async function scaricaReportCostoDomestico() {
     const loading = document.getElementById("loading_text");
 
     try {
@@ -388,7 +388,26 @@ if (typeof gtag === "function") {
     value: 9.90
   });
 }
+const pdfBase64 = doc.output("datauristring").split(",")[1];
 
+const emailCliente =
+    localStorage.getItem("email_cliente") ||
+    localStorage.getItem("email_report") ||
+    "";
+
+if (emailCliente) {
+    await fetch("https://costodomestico-backend.onrender.com/invia-email-costo-domestico", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            email_cliente: emailCliente,
+            nome_file: "report_costo_lavoro_domestico.pdf",
+            pdf_base64: pdfBase64
+        })
+    });
+}
       doc.save("report_costo_lavoro_domestico.pdf");
 
       if (loading) loading.innerText = "PDF pronto. Se non lo vedi, controlla la cartella Download.";

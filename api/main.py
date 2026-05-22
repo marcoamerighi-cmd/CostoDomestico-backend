@@ -11,7 +11,10 @@ from fastapi.responses import FileResponse
 from pydantic import BaseModel
 
 from api.stripe_config import STRIPE_SECRET_KEY
-from api.email_service import invia_report_tfr_email
+from api.email_service import (
+    invia_report_tfr_email,
+    invia_report_costo_domestico_email
+)
 from api.stripe_webhook_config import STRIPE_WEBHOOK_SECRET
 
 from tfr.tfr_models import LavoratoreDomestico, ContrattoDomestico
@@ -522,6 +525,36 @@ def crea_checkout_costo_domestico(
     return {
         "checkout_url": sessione.url
     }
+class RichiestaInvioEmailCostoDomestico(BaseModel):
+    email_cliente: str
+    nome_cliente: str = ""
+    nome_file: str = "report_costo_lavoro_domestico.pdf"
+    pdf_base64: str
+
+
+@app.post("/invia-email-costo-domestico")
+def invia_email_costo_domestico(
+    richiesta: RichiestaInvioEmailCostoDomestico
+):
+    if not richiesta.email_cliente:
+        return {"ok": False, "errore": "Email cliente mancante"}
+
+    percorso_pdf = PDF_DIR / richiesta.nome_file
+
+    import base64
+
+    contenuto_pdf = base64.b64decode(richiesta.pdf_base64)
+
+    with open(percorso_pdf, "wb") as file:
+        file.write(contenuto_pdf)
+
+    invia_report_costo_domestico_email(
+        destinatario=richiesta.email_cliente,
+        percorso_pdf=str(percorso_pdf),
+        nome_file=richiesta.nome_file
+    )
+
+    return {"ok": True}
 
 @app.post("/salva-ordine-costo-domestico")
 def salva_ordine_costo_domestico(
