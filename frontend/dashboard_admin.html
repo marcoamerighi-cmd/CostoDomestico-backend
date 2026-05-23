@@ -10,104 +10,142 @@
         body {
             font-family: Arial, sans-serif;
             background: #f4f6f9;
-            padding: 30px;
+            padding: 24px;
             color: #333;
         }
 
         h1 {
             color: #1f3c88;
             text-align: center;
-            margin-bottom: 35px;
+            margin-bottom: 24px;
+        }
+
+        h2 {
+            color: #1f3c88;
+            margin-top: 34px;
+            margin-bottom: 12px;
+        }
+
+        .topbar {
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 18px;
         }
 
         .stats {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-            gap: 18px;
-            margin-bottom: 35px;
+            grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+            gap: 12px;
+            margin-bottom: 24px;
         }
 
         .card {
-    background: white;
-    border-radius: 14px;
-    padding: 12px;
-    min-height: 80px;
-    min-width: 180px;
-
-    display:flex;
-    flex-direction:column;
-    justify-content:center;
-    align-items:center;
-
-    box-shadow: 0 2px 10px rgba(0,0,0,0.08);
-    text-align:center;
-}
+            background: white;
+            border-radius: 14px;
+            padding: 12px;
+            min-height: 76px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+            text-align: center;
+        }
 
         .card strong {
-    font-size:14px;
-    color:#555;
-    text-align:center;
-    line-height:1.2;
-}
+            font-size: 13px;
+            color: #555;
+            line-height: 1.2;
+        }
 
         .card span {
-    font-size:28px;
-    font-weight:bold;
-    color:#1e3a8a;
-    margin-top:8px;
-}
+            font-size: 25px;
+            font-weight: bold;
+            color: #1e3a8a;
+            margin-top: 7px;
+            max-width: 100%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
 
+        .section-box {
+            background: white;
+            border-radius: 14px;
+            padding: 18px;
+            margin-bottom: 24px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+        }
+
+        .actions,
         .filters {
             display: flex;
             flex-wrap: wrap;
-            gap: 14px;
-            margin-bottom: 25px;
+            gap: 10px;
+            margin-bottom: 20px;
         }
 
         .filters input,
         .filters select {
-            padding: 12px;
+            padding: 10px;
             border-radius: 10px;
             border: 1px solid #ccc;
-            min-width: 220px;
-            font-size: 15px;
-        }
-
-        .actions {
-            margin-bottom: 25px;
-            display: flex;
-            gap: 12px;
-            flex-wrap: wrap;
+            min-width: 210px;
+            font-size: 14px;
         }
 
         button {
-    background: #16a34a;
-    color: white;
-    border: none;
-    padding: 10px 18px;
-    border-radius: 10px;
-    font-size: 14px;
-    font-weight: bold;
-    cursor: pointer;
-}
+            background: #16a34a;
+            color: white;
+            border: none;
+            padding: 10px 16px;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        button:hover {
+            opacity: 0.9;
+        }
+
+        .btn-orange {
+            background: #f97316;
+        }
+
+        .btn-red {
+            background: #dc2626;
+        }
+
+        .btn-gray {
+            background: #374151;
+        }
 
         table {
             width: 100%;
             border-collapse: collapse;
             background: white;
-            margin-top: 25px;
+            margin-top: 12px;
+            border-radius: 14px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
         }
 
         th {
             background: #1f3c88;
             color: white;
-            padding: 12px;
+            padding: 10px;
+            font-size: 13px;
         }
 
         td {
-            padding: 10px;
+            padding: 9px;
             border-bottom: 1px solid #ddd;
-            font-size: 14px;
+            font-size: 13px;
+            max-width: 180px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
         }
 
         tr:hover {
@@ -115,18 +153,23 @@
         }
 
         canvas {
-            background: white;
-            border-radius: 14px;
-            padding: 20px;
-            margin-top: 35px;
-            box-shadow: 0 4px 14px rgba(0,0,0,0.08);
+            width: 100% !important;
+            max-height: 320px;
         }
-        td {
-    max-width: 180px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-}
+
+        @media (max-width: 768px) {
+            body {
+                padding: 14px;
+            }
+
+            .stats {
+                grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            }
+
+            .card span {
+                font-size: 21px;
+            }
+        }
     </style>
 </head>
 
@@ -147,127 +190,43 @@
 
 <h1>Dashboard Admin - CostoDomestico</h1>
 
-<div style="text-align:right; margin-bottom:20px;">
-    <button onclick="logoutAdmin()" style="background:#dc2626;">
-        Logout
-    </button>
+<div class="topbar">
+    <button onclick="logoutAdmin()" class="btn-red">Logout</button>
 </div>
 
 <div class="stats">
-
-    <div class="card">
-        <strong>Ordini totali</strong>
-        <span id="totale_ordini">0</span>
-    </div>
-
-    <div class="card">
-        <strong>Incasso totale</strong>
-        <span id="incasso_totale">€ 0,00</span>
-    </div>
-
-    <div class="card">
-        <strong>Ordini oggi</strong>
-        <span id="ordini_oggi">0</span>
-    </div>
-
-    <div class="card">
-        <strong>Ordini ultimi 7 giorni</strong>
-        <span id="ordini_7_giorni">0</span>
-    </div>
-
-    <div class="card">
-        <strong>Fatturato oggi</strong>
-        <span id="fatturato_oggi">€ 0,00</span>
-    </div>
-
-    <div class="card">
-        <strong>Fatturato mese</strong>
-        <span id="fatturato_mese">€ 0,00</span>
-    </div>
-
-    <div class="card">
-        <strong>Ticket medio</strong>
-        <span id="ticket_medio">€ 0,00</span>
-    </div>
-
-    <div class="card">
-        <strong>Prodotti venduti</strong>
-        <span id="totale_prodotti">0</span>
-    </div>
-
-    <div class="card">
-        <strong>Ordini pagati</strong>
-        <span id="ordini_pagati">0</span>
-    </div>
-
-    <div class="card">
-        <strong>Ultimo cliente</strong>
-        <span id="ultimo_cliente" style="font-size:14px;">-</span>
-    </div>
-
-    <div class="card">
-    <strong>Calcoli eseguiti</strong>
-    <span id="kpi_calcoli">0</span>
+    <div class="card"><strong>Ordini totali</strong><span id="totale_ordini">0</span></div>
+    <div class="card"><strong>Incasso totale</strong><span id="incasso_totale">€ 0,00</span></div>
+    <div class="card"><strong>Ordini oggi</strong><span id="ordini_oggi">0</span></div>
+    <div class="card"><strong>Ordini ultimi 7 giorni</strong><span id="ordini_7_giorni">0</span></div>
+    <div class="card"><strong>Fatturato oggi</strong><span id="fatturato_oggi">€ 0,00</span></div>
+    <div class="card"><strong>Fatturato mese</strong><span id="fatturato_mese">€ 0,00</span></div>
+    <div class="card"><strong>Ticket medio</strong><span id="ticket_medio">€ 0,00</span></div>
+    <div class="card"><strong>Prodotti venduti</strong><span id="totale_prodotti">0</span></div>
+    <div class="card"><strong>Ordini pagati</strong><span id="ordini_pagati">0</span></div>
+    <div class="card"><strong>Ultimo cliente</strong><span id="ultimo_cliente" style="font-size:13px;">-</span></div>
+    <div class="card"><strong>Calcoli eseguiti</strong><span id="kpi_calcoli">0</span></div>
+    <div class="card"><strong>Checkout avviati</strong><span id="kpi_checkout">0</span></div>
+    <div class="card"><strong>Acquisti funnel</strong><span id="kpi_acquisti">0</span></div>
+    <div class="card"><strong>Conversione Calcolo → Checkout</strong><span id="kpi_conversione">0%</span></div>
+    <div class="card"><strong>Conversione Checkout → Acquisto</strong><span id="kpi_conversione_acquisto">0%</span></div>
+    <div class="card"><strong>Proiezione fatturato mese</strong><span id="kpi_proiezione_mese">€ 0,00</span></div>
 </div>
 
-<div class="card">
-    <strong>Checkout avviati</strong>
-    <span id="kpi_checkout">0</span>
+<div class="section-box">
+    <h2>Funnel conversioni</h2>
+    <canvas id="graficoFunnel"></canvas>
 </div>
 
-<div class="card">
-    <strong>Acquisti funnel</strong>
-    <span id="kpi_acquisti">0</span>
-</div>
-
-<div class="card">
-    <strong>Conversione Calcolo → Checkout</strong>
-    <span id="kpi_conversione">0%</span>
-</div>
-
-<div class="card">
-    <strong>Conversione Checkout → Acquisto</strong>
-    <span id="kpi_conversione_acquisto">0%</span>
-</div>
-
-<div class="card">
-    <strong>Proiezione fatturato mese</strong>
-    <span id="kpi_proiezione_mese">€ 0,00</span>
-</div>
-
-</div> 
-
-<h2 style="margin-top:35px;">
-    Funnel conversioni
-</h2>
-
-<canvas id="graficoFunnel"></canvas>
 <div class="actions">
-    <button onclick="esportaCSV()">
-        Esporta CSV
-    </button>
-
-    <button onclick="eliminaOrdiniEmail()" style="background:#f97316;">
-        Elimina ordini email cercata
-    </button>
-
-    <button onclick="eliminaOrdiniSenzaEmail()" style="background:#dc2626;">
-        Elimina ordini senza email
-    </button>
-
-    <button onclick="logoutAdmin()" style="background:#374151;">
-        Logout
-    </button>
+    <button onclick="esportaCSV()">Esporta CSV</button>
+    <button onclick="eliminaOrdiniEmail()" class="btn-orange">Elimina ordini email cercata</button>
+    <button onclick="eliminaOrdiniSenzaEmail()" class="btn-red">Elimina ordini senza email</button>
+    <button onclick="logoutAdmin()" class="btn-gray">Logout</button>
 </div>
 
 <div class="filters">
-
-    <input
-        type="text"
-        id="ricerca"
-        placeholder="Cerca cliente/email"
-        oninput="filtraOrdini()"
-    >
+    <input type="text" id="ricerca" placeholder="Cerca cliente/email" oninput="filtraOrdini()">
 
     <select id="filtro_stato" onchange="filtraOrdini()">
         <option value="">Tutti gli stati</option>
@@ -280,7 +239,6 @@
         <option value="Report Professionale TFR">TFR</option>
         <option value="Costo Domestico">Costo Domestico</option>
     </select>
-
 </div>
 
 <h2>Storico ordini</h2>
@@ -298,13 +256,10 @@
             <th>Data</th>
         </tr>
     </thead>
-
     <tbody id="tabella_ordini"></tbody>
 </table>
 
-<h2 style="margin-top:50px;">
-    Clienti Registrati
-</h2>
+<h2>Clienti Registrati</h2>
 
 <table>
     <thead>
@@ -316,13 +271,10 @@
             <th>Data Creazione</th>
         </tr>
     </thead>
-
     <tbody id="tabella-clienti"></tbody>
 </table>
 
-<h2 style="margin-top:50px;">
-    Top prodotti venduti
-</h2>
+<h2>Top prodotti venduti</h2>
 
 <table>
     <thead>
@@ -332,17 +284,13 @@
             <th>Incasso</th>
         </tr>
     </thead>
-
     <tbody id="tabella_top_prodotti"></tbody>
 </table>
 
-
-
-<h2 style="margin-top:40px;">
-    Vendite
-</h2>
-
-<canvas id="graficoVendite"></canvas>
+<div class="section-box">
+    <h2>Vendite</h2>
+    <canvas id="graficoVendite"></canvas>
+</div>
 
 <script>
     let tuttiOrdini = [];
@@ -350,78 +298,95 @@
     let graficoFunnel = null;
 
     function euro(valore) {
-        return new Intl.NumberFormat(
-            "it-IT",
-            {
-                style: "currency",
-                currency: "EUR"
-            }
-        ).format(valore || 0);
+        return new Intl.NumberFormat("it-IT", {
+            style: "currency",
+            currency: "EUR"
+        }).format(valore || 0);
     }
 
     async function caricaDashboard() {
-    const risposta = await fetch(
-        "https://costodomestico-backend.onrender.com/storico-ordini"
-    );
+        const risposta = await fetch(
+            "https://costodomestico-backend.onrender.com/storico-ordini"
+        );
 
-    tuttiOrdini = await risposta.json();
+        tuttiOrdini = await risposta.json();
 
-    aggiornaDashboard(tuttiOrdini);
-    creaGrafico(tuttiOrdini);
-    await caricaClienti();
-    await caricaFunnelInterno();
-}
-
-async function caricaFunnelInterno() {
-    const risposta = await fetch(
-        "https://costodomestico-backend.onrender.com/analytics-funnel-interno"
-    );
-
-    const dati = await risposta.json();
-
-    if (!dati.success) {
-        return;
+        aggiornaDashboard(tuttiOrdini);
+        creaGrafico(tuttiOrdini);
+        await caricaClienti();
+        await caricaFunnelInterno();
     }
 
-    const eventi = dati.eventi || {};
+    async function caricaFunnelInterno() {
+        const risposta = await fetch(
+            "https://costodomestico-backend.onrender.com/analytics-funnel-interno"
+        );
 
-    const calcoli =
-        (eventi.click_calcola || 0) +
-        (eventi.click_calcola_tfr || 0);
+        const dati = await risposta.json();
 
-    const checkout =
-        (eventi.begin_checkout || 0) +
-        (eventi.begin_checkout_tfr || 0);
+        if (!dati.success) return;
 
-    const acquisti =
-        (eventi.purchase || 0) +
-        (eventi.purchase_tfr || 0);
+        const eventi = dati.eventi || {};
 
-    const conversione =
-        calcoli > 0
-            ? ((checkout / calcoli) * 100).toFixed(2)
-            : "0.00";
+        const calcoli =
+            (eventi.click_calcola || 0) +
+            (eventi.click_calcola_tfr || 0);
 
-    document.getElementById("kpi_calcoli").textContent = calcoli;
-    document.getElementById("kpi_checkout").textContent = checkout;
-    document.getElementById("kpi_acquisti").textContent = acquisti;
-    document.getElementById("kpi_conversione").textContent = conversione + "%";
-    const conversioneAcquisto =
-    checkout > 0
-        ? ((acquisti / checkout) * 100).toFixed(2)
-        : "0.00";
+        const checkout =
+            (eventi.begin_checkout || 0) +
+            (eventi.begin_checkout_tfr || 0);
 
-document.getElementById(
-    "kpi_conversione_acquisto"
-).textContent =
-    conversioneAcquisto + "%";
+        const acquisti =
+            (eventi.purchase || 0) +
+            (eventi.purchase_tfr || 0);
 
-creaGraficoFunnel(
-    calcoli,
-    checkout,
-    acquisti
-);
-}
+        const conversione =
+            calcoli > 0
+                ? ((checkout / calcoli) * 100).toFixed(2)
+                : "0.00";
+
+        const conversioneAcquisto =
+            checkout > 0
+                ? ((acquisti / checkout) * 100).toFixed(2)
+                : "0.00";
+
+        document.getElementById("kpi_calcoli").textContent = calcoli;
+        document.getElementById("kpi_checkout").textContent = checkout;
+        document.getElementById("kpi_acquisti").textContent = acquisti;
+        document.getElementById("kpi_conversione").textContent = conversione + "%";
+        document.getElementById("kpi_conversione_acquisto").textContent =
+            conversioneAcquisto + "%";
+
+        creaGraficoFunnel(calcoli, checkout, acquisti);
+    }
+
+    function creaGraficoFunnel(calcoli, checkout, acquisti) {
+        if (graficoFunnel) {
+            graficoFunnel.destroy();
+        }
+
+        graficoFunnel = new Chart(
+            document.getElementById("graficoFunnel"),
+            {
+                type: "bar",
+                data: {
+                    labels: ["Calcoli", "Checkout", "Acquisti"],
+                    datasets: [{
+                        label: "Funnel conversioni",
+                        data: [calcoli, checkout, acquisti]
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    }
+                }
+            }
+        );
+    }
 
     async function caricaClienti() {
         const rispostaClienti = await fetch(
@@ -481,9 +446,7 @@ creaGraficoFunnel(
 
         const ordiniUltimi7Giorni = ordiniPagatiArray.filter(ordine => {
             if (!ordine.data_ordine) return false;
-
             const dataOrdine = new Date(ordine.data_ordine);
-
             return dataOrdine >= setteGiorniFa && dataOrdine <= oggi;
         });
 
@@ -500,7 +463,6 @@ creaGraficoFunnel(
 
         const ordiniMese = ordiniPagatiArray.filter(ordine => {
             if (!ordine.data_ordine) return false;
-
             const dataOrdine = new Date(ordine.data_ordine);
 
             return (
@@ -517,23 +479,21 @@ creaGraficoFunnel(
         document.getElementById("fatturato_mese").textContent =
             euro(fatturatoMese);
 
-            const giornoDelMese = oggi.getDate();
+        const giornoDelMese = oggi.getDate();
 
-const giorniNelMese = new Date(
-    annoCorrente,
-    meseCorrente + 1,
-    0
-).getDate();
+        const giorniNelMese = new Date(
+            annoCorrente,
+            meseCorrente + 1,
+            0
+        ).getDate();
 
-const proiezioneMese =
-    giornoDelMese > 0
-        ? (fatturatoMese / giornoDelMese) * giorniNelMese
-        : 0;
+        const proiezioneMese =
+            giornoDelMese > 0
+                ? (fatturatoMese / giornoDelMese) * giorniNelMese
+                : 0;
 
-document.getElementById(
-    "kpi_proiezione_mese"
-).textContent =
-    euro(proiezioneMese);
+        document.getElementById("kpi_proiezione_mese").textContent =
+            euro(proiezioneMese);
 
         const ticketMedio =
             ordiniPagatiArray.length > 0
@@ -576,36 +536,40 @@ document.getElementById(
             `;
         });
 
-        const prodotti = {};
-
-ordiniPagatiArray.forEach(ordine => {
-    const prodotto = ordine.prodotto || "Non specificato";
-
-    if (!prodotti[prodotto]) {
-        prodotti[prodotto] = {
-            ordini: 0,
-            incasso: 0
-        };
+        aggiornaTopProdotti(ordiniPagatiArray);
     }
 
-    prodotti[prodotto].ordini += 1;
-    prodotti[prodotto].incasso += Number(ordine.importo || 0);
-});
+    function aggiornaTopProdotti(ordiniPagatiArray) {
+        const prodotti = {};
 
-let htmlProdotti = "";
+        ordiniPagatiArray.forEach(ordine => {
+            const prodotto = ordine.prodotto || "Non specificato";
 
-Object.keys(prodotti).forEach(prodotto => {
-    htmlProdotti += `
-        <tr>
-            <td>${prodotto}</td>
-            <td>${prodotti[prodotto].ordini}</td>
-            <td>${euro(prodotti[prodotto].incasso)}</td>
-        </tr>
-    `;
-});
+            if (!prodotti[prodotto]) {
+                prodotti[prodotto] = {
+                    ordini: 0,
+                    incasso: 0
+                };
+            }
 
-document.getElementById("tabella_top_prodotti").innerHTML = htmlProdotti;
+            prodotti[prodotto].ordini += 1;
+            prodotti[prodotto].incasso += Number(ordine.importo || 0);
+        });
 
+        let htmlProdotti = "";
+
+        Object.keys(prodotti).forEach(prodotto => {
+            htmlProdotti += `
+                <tr>
+                    <td>${prodotto}</td>
+                    <td>${prodotti[prodotto].ordini}</td>
+                    <td>${euro(prodotti[prodotto].incasso)}</td>
+                </tr>
+            `;
+        });
+
+        document.getElementById("tabella_top_prodotti").innerHTML =
+            htmlProdotti;
     }
 
     function filtraOrdini() {
@@ -667,6 +631,9 @@ document.getElementById("tabella_top_prodotti").innerHTML = htmlProdotti;
                         label: "Vendite €",
                         data: Object.values(venditePerData)
                     }]
+                },
+                options: {
+                    responsive: true
                 }
             }
         );
@@ -722,9 +689,7 @@ document.getElementById("tabella_top_prodotti").innerHTML = htmlProdotti;
             "Vuoi eliminare tutti gli ordini associati a questa email?\n\n" + email
         );
 
-        if (!conferma) {
-            return;
-        }
+        if (!conferma) return;
 
         const risposta = await fetch(
             "https://costodomestico-backend.onrender.com/elimina-ordini-email?email=" + encodeURIComponent(email),
@@ -769,10 +734,7 @@ document.getElementById("tabella_top_prodotti").innerHTML = htmlProdotti;
             return;
         }
 
-        alert(
-            "Ordini eliminati: " +
-            dati.ordini_eliminati
-        );
+        alert("Ordini eliminati: " + dati.ordini_eliminati);
 
         caricaDashboard();
     }
