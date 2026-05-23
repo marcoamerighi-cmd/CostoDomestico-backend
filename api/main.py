@@ -775,6 +775,14 @@ def pagina_tfr_tool():
     )
 
 
+@app.get("/test-deploy.html")
+def pagina_test_deploy():
+    return FileResponse(
+        path=str(FRONTEND_DIR / "test-deploy.html"),
+        media_type="text/html"
+    )
+
+
 @app.delete("/elimina-ordini-senza-email")
 def elimina_ordini_senza_email():
 
