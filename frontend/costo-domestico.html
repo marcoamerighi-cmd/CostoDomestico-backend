@@ -1319,6 +1319,13 @@ if (typeof gtag === "function") {
         costoAnnuo
       };
 
+if (typeof gtag === "function") {
+  gtag('event', 'simulazione_eseguita', {
+    event_category: 'Calcolo',
+    event_label: 'CostoDomestico'
+  });
+}
+
       document.getElementById("output").classList.remove("hidden");
 
       const warningMinimi = document.getElementById("warningMinimi");
