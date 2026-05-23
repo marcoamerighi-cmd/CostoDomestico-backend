@@ -1448,6 +1448,8 @@ if (typeof gtag === "function") {
           });
         }
 
+        tracciaEventoBackend("pdf_download");
+
         const { jsPDF } = window.jspdf;
         const doc = new jsPDF();
 
@@ -1750,6 +1752,8 @@ if (typeof gtag === "function") {
         value: 9.90
       });
     }
+
+    tracciaEventoBackend("begin_checkout");
 
     if (bottonePagamento) {
       bottonePagamento.disabled = true;
