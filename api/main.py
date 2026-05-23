@@ -5,7 +5,7 @@ import os
 
 import stripe
 
-from fastapi import FastAPI, Request
+from fastapi import FastAPI, Request, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse
 from pydantic import BaseModel
@@ -811,6 +811,23 @@ def pagina_contributi_badante_54_ore():
 def pagina_tfr_tool():
     return FileResponse(
         path=str(FRONTEND_DIR / "test_tfr.html"),
+        media_type="text/html"
+    )
+
+
+@app.get("/{nome_file}.html")
+def pagina_html(nome_file: str):
+
+    percorso = FRONTEND_DIR / f"{nome_file}.html"
+
+    if not percorso.exists():
+        raise HTTPException(
+            status_code=404,
+            detail="Pagina non trovata"
+        )
+
+    return FileResponse(
+        path=str(percorso),
         media_type="text/html"
     )
 
