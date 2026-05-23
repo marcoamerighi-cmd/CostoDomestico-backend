@@ -8,6 +8,7 @@ import stripe
 from fastapi import FastAPI, Request, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse
+from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 
 from api.stripe_config import STRIPE_SECRET_KEY
@@ -45,6 +46,11 @@ stripe.api_key = STRIPE_SECRET_KEY
 
 app = FastAPI()
 
+app.mount(
+    "/js",
+    StaticFiles(directory=str(FRONTEND_DIR / "js")),
+    name="js"
+)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
