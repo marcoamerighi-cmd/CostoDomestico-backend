@@ -304,6 +304,22 @@
     <tbody id="tabella-clienti"></tbody>
 </table>
 
+<h2 style="margin-top:50px;">
+    Top prodotti venduti
+</h2>
+
+<table>
+    <thead>
+        <tr>
+            <th>Prodotto</th>
+            <th>Ordini pagati</th>
+            <th>Incasso</th>
+        </tr>
+    </thead>
+
+    <tbody id="tabella_top_prodotti"></tbody>
+</table>
+
 <h2 style="margin-top:40px;">
     Vendite
 </h2>
@@ -534,6 +550,37 @@ document.getElementById(
                 </tr>
             `;
         });
+
+        const prodotti = {};
+
+ordiniPagatiArray.forEach(ordine => {
+    const prodotto = ordine.prodotto || "Non specificato";
+
+    if (!prodotti[prodotto]) {
+        prodotti[prodotto] = {
+            ordini: 0,
+            incasso: 0
+        };
+    }
+
+    prodotti[prodotto].ordini += 1;
+    prodotti[prodotto].incasso += Number(ordine.importo || 0);
+});
+
+let htmlProdotti = "";
+
+Object.keys(prodotti).forEach(prodotto => {
+    htmlProdotti += `
+        <tr>
+            <td>${prodotto}</td>
+            <td>${prodotti[prodotto].ordini}</td>
+            <td>${euro(prodotti[prodotto].incasso)}</td>
+        </tr>
+    `;
+});
+
+document.getElementById("tabella_top_prodotti").innerHTML = htmlProdotti;
+
     }
 
     function filtraOrdini() {
