@@ -824,6 +824,14 @@ async def gestisci_webhook_stripe(request: Request):
             stato="pagato"
         )
 
+        metadata = sessione.get("metadata", {})
+        prodotto = metadata.get("prodotto", "").lower()
+
+        if "tfr" in prodotto:
+            salva_evento_funnel("purchase_tfr")
+        else:
+            salva_evento_funnel("purchase")
+
     return {
         "success": True
     }
