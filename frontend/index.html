@@ -182,11 +182,20 @@
         }
 
         footer{
-text-align:center;
+display:block !important;
+width:100%;
+padding:35px 15px;
+text-align:center !important;
 font-size:13px;
 color:#6b7280;
-padding:35px 15px;
 line-height:1.9;
+}
+
+footer div{
+display:block !important;
+width:100%;
+text-align:center !important;
+margin-bottom:6px;
 }
 
 footer a{
@@ -198,17 +207,17 @@ footer a:hover{
 text-decoration:underline;
 }
 
-        @media (max-width: 700px) {
-            .hero h1 {
-                font-size: 34px;
-            }
+@media (max-width:700px){
 
-            footer {
-                flex-direction: column;
-                gap: 10px;
-                text-align: center;
-            }
-        }
+.hero h1{
+font-size:34px;
+}
+
+footer{
+padding:30px 15px;
+}
+
+}
     </style>
 
     <!-- Google tag (gtag.js) -->
