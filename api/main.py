@@ -42,7 +42,10 @@ from database.ordini_repository import (
     salva_ordine,
     leggi_ordini,
     aggiorna_stato_ordine,
-    elimina_ordini_test
+    elimina_ordini_test,
+    crea_tabella_funnel,
+    salva_evento_funnel,
+    leggi_eventi_funnel
 )
 from database.clienti_repository import (
     crea_tabella_clienti,
@@ -57,6 +60,7 @@ stripe.api_key = STRIPE_SECRET_KEY
 
 app = FastAPI()
 
+crea_tabella_funnel()
 
 app.add_middleware(
     CORSMiddleware,
@@ -738,8 +742,7 @@ async def track_event(request: Request):
 
     evento = dati.get("evento")
 
-    if evento in eventi_funnel:
-        eventi_funnel[evento] += 1
+    salva_evento_funnel(evento)
 
     return {
         "success": True
@@ -751,7 +754,7 @@ def analytics_funnel_interno():
 
     return {
         "success": True,
-        "eventi": eventi_funnel
+        "eventi": leggi_eventi_funnel()
     }
 
 @app.get("/storico-ordini")

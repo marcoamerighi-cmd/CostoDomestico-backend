@@ -140,3 +140,62 @@ def elimina_ordini_test():
     conn.close()
 
     return eliminati
+
+def crea_tabella_funnel():
+
+    conn = get_connessione()
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS funnel_eventi (
+            id SERIAL PRIMARY KEY,
+            evento VARCHAR(100),
+            data_evento TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        )
+    """)
+
+    conn.commit()
+    cursor.close()
+    conn.close()
+
+
+def salva_evento_funnel(evento):
+
+    conn = get_connessione()
+    cursor = conn.cursor()
+
+    cursor.execute(
+        """
+        INSERT INTO funnel_eventi (evento)
+        VALUES (%s)
+        """,
+        (evento,)
+    )
+
+    conn.commit()
+    cursor.close()
+    conn.close()
+
+
+def leggi_eventi_funnel():
+
+    conn = get_connessione()
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        SELECT evento, COUNT(*)
+        FROM funnel_eventi
+        GROUP BY evento
+    """)
+
+    risultati = cursor.fetchall()
+
+    cursor.close()
+    conn.close()
+
+    eventi = {}
+
+    for evento, totale in risultati:
+        eventi[evento] = totale
+
+    return eventi
