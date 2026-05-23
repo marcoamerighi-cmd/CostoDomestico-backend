@@ -767,14 +767,6 @@ def ordini_cliente(email: str):
     return risultato
 
 
-@app.get("/tfr-tool")
-def pagina_tfr_tool():
-    return FileResponse(
-        path=str(FRONTEND_DIR / "test_tfr.html"),
-        media_type="text/html"
-    )
-
-
 @app.get("/contributi-lavoro-domestico-2026.html")
 def pagina_contributi_lavoro_domestico_2026():
     return FileResponse(
@@ -815,31 +807,12 @@ def pagina_contributi_badante_54_ore():
     )
 
 
-@app.delete("/elimina-ordini-senza-email")
-def elimina_ordini_senza_email():
-
-    from database.ordini_repository import get_connessione
-
-    conn = get_connessione()
-    cur = conn.cursor()
-
-    cur.execute("""
-        DELETE
-        FROM ordini
-        WHERE email_cliente IS NULL
-        OR TRIM(email_cliente) = ''
-    """)
-
-    eliminati = cur.rowcount
-
-    conn.commit()
-    cur.close()
-    conn.close()
-
-    return {
-        "success": True,
-        "ordini_eliminati": eliminati
-    }
+@app.get("/tfr-tool")
+def pagina_tfr_tool():
+    return FileResponse(
+        path=str(FRONTEND_DIR / "test_tfr.html"),
+        media_type="text/html"
+    )
 
 
 @app.get("/{nome_pagina}")
