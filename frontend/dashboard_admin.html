@@ -194,6 +194,26 @@
         <span id="ultimo_cliente" style="font-size:14px;">-</span>
     </div>
 
+    <div class="card">
+    <strong>Calcoli eseguiti</strong>
+    <span id="kpi_calcoli">0</span>
+</div>
+
+<div class="card">
+    <strong>Checkout avviati</strong>
+    <span id="kpi_checkout">0</span>
+</div>
+
+<div class="card">
+    <strong>Acquisti funnel</strong>
+    <span id="kpi_acquisti">0</span>
+</div>
+
+<div class="card">
+    <strong>Conversione Calcolo → Checkout</strong>
+    <span id="kpi_conversione">0%</span>
+</div>
+
 </div>
 
 <div class="actions">
@@ -295,16 +315,53 @@
     }
 
     async function caricaDashboard() {
-        const risposta = await fetch(
-            "https://costodomestico-backend.onrender.com/storico-ordini"
-        );
+    const risposta = await fetch(
+        "https://costodomestico-backend.onrender.com/storico-ordini"
+    );
 
-        tuttiOrdini = await risposta.json();
+    tuttiOrdini = await risposta.json();
 
-        aggiornaDashboard(tuttiOrdini);
-        creaGrafico(tuttiOrdini);
-        await caricaClienti();
+    aggiornaDashboard(tuttiOrdini);
+    creaGrafico(tuttiOrdini);
+    await caricaClienti();
+    await caricaFunnelInterno();
+}
+
+async function caricaFunnelInterno() {
+    const risposta = await fetch(
+        "https://costodomestico-backend.onrender.com/analytics-funnel-interno"
+    );
+
+    const dati = await risposta.json();
+
+    if (!dati.success) {
+        return;
     }
+
+    const eventi = dati.eventi || {};
+
+    const calcoli =
+        (eventi.click_calcola || 0) +
+        (eventi.click_calcola_tfr || 0);
+
+    const checkout =
+        (eventi.begin_checkout || 0) +
+        (eventi.begin_checkout_tfr || 0);
+
+    const acquisti =
+        (eventi.purchase || 0) +
+        (eventi.purchase_tfr || 0);
+
+    const conversione =
+        calcoli > 0
+            ? ((checkout / calcoli) * 100).toFixed(2)
+            : "0.00";
+
+    document.getElementById("kpi_calcoli").textContent = calcoli;
+    document.getElementById("kpi_checkout").textContent = checkout;
+    document.getElementById("kpi_acquisti").textContent = acquisti;
+    document.getElementById("kpi_conversione").textContent = conversione + "%";
+}
 
     async function caricaClienti() {
         const rispostaClienti = await fetch(
