@@ -719,6 +719,32 @@ async def stripe_webhook(request: Request):
 async def webhook(request: Request):
     return await gestisci_webhook_stripe(request)
 
+@app.delete("/elimina-ordini-email")
+def elimina_ordini_email(email: str):
+    import sqlite3
+
+    email_pulita = email.strip().lower()
+
+    conn = sqlite3.connect("database.db")
+    cursor = conn.cursor()
+
+    cursor.execute(
+        """
+        DELETE FROM ordini
+        WHERE LOWER(TRIM(email_cliente)) = ?
+        """,
+        (email_pulita,)
+    )
+
+    ordini_eliminati = cursor.rowcount
+
+    conn.commit()
+    conn.close()
+
+    return {
+        "success": True,
+        "ordini_eliminati": ordini_eliminati
+    }
 
 @app.delete("/elimina-ordini-senza-email")
 def elimina_ordini_senza_email():
