@@ -591,6 +591,27 @@ text-decoration:underline;
   gtag('config', 'G-3LF3S9S7LB', {
     'anonymize_ip': true
   });
+  async function tracciaEventoBackend(evento) {
+
+    try {
+
+        await fetch(
+            "https://costodomestico-backend.onrender.com/track-event",
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    evento: evento
+                })
+            }
+        );
+
+    } catch(e) {
+        console.log("Errore tracking:", e);
+    }
+}
 </script>
 
 </head>
@@ -1140,6 +1161,8 @@ if (typeof gtag === "function") {
         event_label: "Calcola costo reale"
     });
 }
+
+    tracciaEventoBackend("click_calcola");
       const livello = document.getElementById("livello").value;
       const oreSettimanali = Number(document.getElementById("ore").value) || 0;
       const usaPagaPattuita = document.getElementById("usaPagaPattuita").value;
