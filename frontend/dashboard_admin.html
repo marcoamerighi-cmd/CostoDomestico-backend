@@ -320,6 +320,12 @@
     <tbody id="tabella_top_prodotti"></tbody>
 </table>
 
+<h2 style="margin-top:50px;">
+    Funnel conversioni
+</h2>
+
+<canvas id="graficoFunnel"></canvas>
+
 <h2 style="margin-top:40px;">
     Vendite
 </h2>
@@ -329,6 +335,7 @@
 <script>
     let tuttiOrdini = [];
     let graficoVendite = null;
+    let graficoFunnel = null;
 
     function euro(valore) {
         return new Intl.NumberFormat(
@@ -396,6 +403,12 @@ document.getElementById(
     "kpi_conversione_acquisto"
 ).textContent =
     conversioneAcquisto + "%";
+
+creaGraficoFunnel(
+    calcoli,
+    checkout,
+    acquisti
+);
 }
 
     async function caricaClienti() {
