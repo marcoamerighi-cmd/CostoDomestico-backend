@@ -156,8 +156,28 @@
     </div>
 
     <div class="card">
-        <strong>Prodotti venduti</strong>
-        <span id="totale_prodotti">0</span>
+        <strong>Ordini oggi</strong>
+        <span id="ordini_oggi">0</span>
+    </div>
+
+    <div class="card">
+        <strong>Ordini ultimi 7 giorni</strong>
+        <span id="ordini_7_giorni">0</span>
+    </div>
+
+    <div class="card">
+        <strong>Fatturato oggi</strong>
+        <span id="fatturato_oggi">€ 0,00</span>
+    </div>
+
+    <div class="card">
+        <strong>Fatturato mese</strong>
+        <span id="fatturato_mese">€ 0,00</span>
+    </div>
+
+    <div class="card">
+        <strong>Ticket medio</strong>
+        <span id="ticket_medio">€ 0,00</span>
     </div>
 
     <div class="card">
@@ -307,53 +327,113 @@
     }
 
     function aggiornaDashboard(ordini) {
-        document.getElementById("totale_ordini").textContent = ordini.length;
+    document.getElementById("totale_ordini").textContent = ordini.length;
 
-        const incassoTotale = ordini.reduce(
-            (totale, ordine) => totale + Number(ordine.importo || 0),
-            0
+    const oggi = new Date();
+    const oggiStringa = oggi.toISOString().split("T")[0];
+
+    const setteGiorniFa = new Date();
+    setteGiorniFa.setDate(oggi.getDate() - 7);
+
+    const meseCorrente = oggi.getMonth();
+    const annoCorrente = oggi.getFullYear();
+
+    const ordiniPagatiArray = ordini.filter(
+        ordine => ordine.stato === "pagato"
+    );
+
+    const incassoTotale = ordiniPagatiArray.reduce(
+        (totale, ordine) => totale + Number(ordine.importo || 0),
+        0
+    );
+
+    document.getElementById("incasso_totale").textContent =
+        euro(incassoTotale);
+
+    const ordiniOggi = ordiniPagatiArray.filter(ordine => {
+        if (!ordine.data_ordine) return false;
+        return ordine.data_ordine.split("T")[0] === oggiStringa;
+    });
+
+    document.getElementById("ordini_oggi").textContent =
+        ordiniOggi.length;
+
+    const ordiniUltimi7Giorni = ordiniPagatiArray.filter(ordine => {
+        if (!ordine.data_ordine) return false;
+
+        const dataOrdine = new Date(ordine.data_ordine);
+
+        return dataOrdine >= setteGiorniFa && dataOrdine <= oggi;
+    });
+
+    document.getElementById("ordini_7_giorni").textContent =
+        ordiniUltimi7Giorni.length;
+
+    const fatturatoOggi = ordiniOggi.reduce(
+        (totale, ordine) => totale + Number(ordine.importo || 0),
+        0
+    );
+
+    document.getElementById("fatturato_oggi").textContent =
+        euro(fatturatoOggi);
+
+    const ordiniMese = ordiniPagatiArray.filter(ordine => {
+        if (!ordine.data_ordine) return false;
+
+        const dataOrdine = new Date(ordine.data_ordine);
+
+        return (
+            dataOrdine.getMonth() === meseCorrente &&
+            dataOrdine.getFullYear() === annoCorrente
         );
+    });
 
-        document.getElementById("incasso_totale").textContent =
-            euro(incassoTotale);
+    const fatturatoMese = ordiniMese.reduce(
+        (totale, ordine) => totale + Number(ordine.importo || 0),
+        0
+    );
 
-        document.getElementById("totale_prodotti").textContent =
-            ordini.length;
+    document.getElementById("fatturato_mese").textContent =
+        euro(fatturatoMese);
 
-        const ordiniPagati = ordini.filter(
-            ordine => ordine.stato === "pagato"
-        ).length;
+    const ticketMedio =
+        ordiniPagatiArray.length > 0
+            ? incassoTotale / ordiniPagatiArray.length
+            : 0;
 
-        document.getElementById("ordini_pagati").textContent =
-            ordiniPagati;
+    document.getElementById("ticket_medio").textContent =
+        euro(ticketMedio);
 
-        const ultimoCliente =
-            ordini.length > 0
-                ? ordini[0].email_cliente
-                : "-";
+    document.getElementById("ordini_pagati").textContent =
+        ordiniPagatiArray.length;
 
-        document.getElementById("ultimo_cliente").textContent =
-            ultimoCliente;
+    const ultimoCliente =
+        ordini.length > 0
+            ? ordini[0].email_cliente
+            : "-";
 
-        const tabella = document.getElementById("tabella_ordini");
+    document.getElementById("ultimo_cliente").textContent =
+        ultimoCliente;
 
-        tabella.innerHTML = "";
+    const tabella = document.getElementById("tabella_ordini");
 
-        ordini.forEach(ordine => {
-            tabella.innerHTML += `
-                <tr>
-                    <td>${ordine.id}</td>
-                    <td>${ordine.email_cliente}</td>
-                    <td>${ordine.nome_cliente}</td>
-                    <td>${ordine.cognome_cliente}</td>
-                    <td>${ordine.prodotto}</td>
-                    <td>${euro(ordine.importo)}</td>
-                    <td>${ordine.stato}</td>
-                    <td>${ordine.data_ordine}</td>
-                </tr>
-            `;
-        });
-    }
+    tabella.innerHTML = "";
+
+    ordini.forEach(ordine => {
+        tabella.innerHTML += `
+            <tr>
+                <td>${ordine.id}</td>
+                <td>${ordine.email_cliente}</td>
+                <td>${ordine.nome_cliente}</td>
+                <td>${ordine.cognome_cliente}</td>
+                <td>${ordine.prodotto}</td>
+                <td>${euro(ordine.importo)}</td>
+                <td>${ordine.stato}</td>
+                <td>${ordine.data_ordine}</td>
+            </tr>
+        `;
+    });
+}
 
     function filtraOrdini() {
         const testo = document.getElementById("ricerca").value.toLowerCase();
