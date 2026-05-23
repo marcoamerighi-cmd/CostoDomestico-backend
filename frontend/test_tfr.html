@@ -1053,8 +1053,8 @@ if (typeof gtag === "function") {
     });
 }
 
-tracciaEventoBackend("click_stripe_tfr");
-tracciaEventoBackend("begin_checkout_tfr");
+await tracciaEventoBackend("click_stripe_tfr");
+await tracciaEventoBackend("begin_checkout_tfr");
 
 window.location.href = urlCheckout;
 
