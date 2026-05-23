@@ -32,6 +32,30 @@
             margin-bottom: 18px;
         }
 
+        .admin-header {
+    background: white;
+    border-radius: 16px;
+    padding: 18px 22px;
+    margin-bottom: 24px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.admin-header h1 {
+    margin: 0;
+    color: #1f3c88;
+    text-align: left;
+}
+
+.admin-header p {
+    margin: 4px 0 0;
+    color: #64748b;
+    font-size: 14px;
+}
+
         .stats {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
@@ -188,29 +212,34 @@
     }
 </script>
 
-<h1>Dashboard Admin - CostoDomestico</h1>
+<div class="admin-header">
+    <div>
+        <h1>Dashboard Admin</h1>
+        <p>CostoDomestico.it</p>
+    </div>
 
-<div class="topbar">
-    <button onclick="logoutAdmin()" class="btn-red">Logout</button>
+    <button onclick="logoutAdmin()" class="btn-red">
+        Logout
+    </button>
 </div>
 
 <div class="stats">
-    <div class="card"><strong>Ordini totali</strong><span id="totale_ordini">0</span></div>
-    <div class="card"><strong>Incasso totale</strong><span id="incasso_totale">€ 0,00</span></div>
-    <div class="card"><strong>Ordini oggi</strong><span id="ordini_oggi">0</span></div>
-    <div class="card"><strong>Ordini ultimi 7 giorni</strong><span id="ordini_7_giorni">0</span></div>
-    <div class="card"><strong>Fatturato oggi</strong><span id="fatturato_oggi">€ 0,00</span></div>
-    <div class="card"><strong>Fatturato mese</strong><span id="fatturato_mese">€ 0,00</span></div>
-    <div class="card"><strong>Ticket medio</strong><span id="ticket_medio">€ 0,00</span></div>
-    <div class="card"><strong>Prodotti venduti</strong><span id="totale_prodotti">0</span></div>
-    <div class="card"><strong>Ordini pagati</strong><span id="ordini_pagati">0</span></div>
-    <div class="card"><strong>Ultimo cliente</strong><span id="ultimo_cliente" style="font-size:13px;">-</span></div>
-    <div class="card"><strong>Calcoli eseguiti</strong><span id="kpi_calcoli">0</span></div>
-    <div class="card"><strong>Checkout avviati</strong><span id="kpi_checkout">0</span></div>
-    <div class="card"><strong>Acquisti funnel</strong><span id="kpi_acquisti">0</span></div>
-    <div class="card"><strong>Conversione Calcolo → Checkout</strong><span id="kpi_conversione">0%</span></div>
-    <div class="card"><strong>Conversione Checkout → Acquisto</strong><span id="kpi_conversione_acquisto">0%</span></div>
-    <div class="card"><strong>Proiezione fatturato mese</strong><span id="kpi_proiezione_mese">€ 0,00</span></div>
+    <div class="card"><strong>📦 Ordini totali</strong><span id="totale_ordini">0</span></div>
+    <div class="card"><strong>💰 Incasso totale</strong><span id="incasso_totale">€ 0,00</span></div>
+    <div class="card"><strong>📅 Ordini oggi</strong><span id="ordini_oggi">0</span></div>
+    <div class="card"><strong>📆 Ordini ultimi 7 giorni</strong><span id="ordini_7_giorni">0</span></div>
+    <div class="card"><strong>💶 Fatturato oggi</strong><span id="fatturato_oggi">€ 0,00</span></div>
+    <div class="card"><strong>📈 Fatturato mese</strong><span id="fatturato_mese">€ 0,00</span></div>
+    <div class="card"><strong>🧾 Ticket medio</strong><span id="ticket_medio">€ 0,00</span></div>
+    <div class="card"><strong>🛒 Prodotti venduti</strong><span id="totale_prodotti">0</span></div>
+    <div class="card"><strong>✅ Ordini pagati</strong><span id="ordini_pagati">0</span></div>
+    <div class="card"><strong>👤 Ultimo cliente</strong><span id="ultimo_cliente" style="font-size:13px;">-</span></div>
+    <div class="card"><strong>🧮 Calcoli eseguiti</strong><span id="kpi_calcoli">0</span></div>
+    <div class="card"><strong>💳 Checkout avviati</strong><span id="kpi_checkout">0</span></div>
+    <div class="card"><strong>🎯 Acquisti funnel</strong><span id="kpi_acquisti">0</span></div>
+    <div class="card"><strong>📊 Conversione Calcolo → Checkout</strong><span id="kpi_conversione">0%</span></div>
+    <div class="card"><strong>🚀 Conversione Checkout → Acquisto</strong><span id="kpi_conversione_acquisto">0%</span></div>
+    <div class="card"><strong>📆 Proiezione fatturato mese</strong><span id="kpi_proiezione_mese">€ 0,00</span></div>
 </div>
 
 <div class="section-box">
