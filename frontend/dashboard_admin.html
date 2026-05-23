@@ -214,6 +214,16 @@
     <span id="kpi_conversione">0%</span>
 </div>
 
+<div class="card">
+    <strong>Conversione Checkout → Acquisto</strong>
+    <span id="kpi_conversione_acquisto">0%</span>
+</div>
+
+<div class="card">
+    <strong>Proiezione fatturato mese</strong>
+    <span id="kpi_proiezione_mese">€ 0,00</span>
+</div>
+
 </div>
 
 <div class="actions">
@@ -361,6 +371,15 @@ async function caricaFunnelInterno() {
     document.getElementById("kpi_checkout").textContent = checkout;
     document.getElementById("kpi_acquisti").textContent = acquisti;
     document.getElementById("kpi_conversione").textContent = conversione + "%";
+    const conversioneAcquisto =
+    checkout > 0
+        ? ((acquisti / checkout) * 100).toFixed(2)
+        : "0.00";
+
+document.getElementById(
+    "kpi_conversione_acquisto"
+).textContent =
+    conversioneAcquisto + "%";
 }
 
     async function caricaClienti() {
@@ -456,6 +475,24 @@ async function caricaFunnelInterno() {
 
         document.getElementById("fatturato_mese").textContent =
             euro(fatturatoMese);
+
+            const giornoDelMese = oggi.getDate();
+
+const giorniNelMese = new Date(
+    annoCorrente,
+    meseCorrente + 1,
+    0
+).getDate();
+
+const proiezioneMese =
+    giornoDelMese > 0
+        ? (fatturatoMese / giornoDelMese) * giorniNelMese
+        : 0;
+
+document.getElementById(
+    "kpi_proiezione_mese"
+).textContent =
+    euro(proiezioneMese);
 
         const ticketMedio =
             ordiniPagatiArray.length > 0
