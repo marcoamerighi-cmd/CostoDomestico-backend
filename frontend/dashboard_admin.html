@@ -33,7 +33,7 @@
             padding: 24px;
             box-shadow: 0 4px 14px rgba(0,0,0,0.08);
             text-align: center;
-            min-width: 260px;
+            min-width: 220px;
         }
 
         .card strong {
@@ -43,11 +43,10 @@
         }
 
         .card span {
-            font-size: 30px;
+            font-size: 28px;
             font-weight: bold;
             color: #1f3c88;
             display: block;
-            max-width: 100%;
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
@@ -178,6 +177,11 @@
     <div class="card">
         <strong>Ticket medio</strong>
         <span id="ticket_medio">€ 0,00</span>
+    </div>
+
+    <div class="card">
+        <strong>Prodotti venduti</strong>
+        <span id="totale_prodotti">0</span>
     </div>
 
     <div class="card">
@@ -327,113 +331,116 @@
     }
 
     function aggiornaDashboard(ordini) {
-    document.getElementById("totale_ordini").textContent = ordini.length;
+        document.getElementById("totale_ordini").textContent = ordini.length;
 
-    const oggi = new Date();
-    const oggiStringa = oggi.toISOString().split("T")[0];
+        const oggi = new Date();
+        const oggiStringa = oggi.toISOString().split("T")[0];
 
-    const setteGiorniFa = new Date();
-    setteGiorniFa.setDate(oggi.getDate() - 7);
+        const setteGiorniFa = new Date();
+        setteGiorniFa.setDate(oggi.getDate() - 7);
 
-    const meseCorrente = oggi.getMonth();
-    const annoCorrente = oggi.getFullYear();
+        const meseCorrente = oggi.getMonth();
+        const annoCorrente = oggi.getFullYear();
 
-    const ordiniPagatiArray = ordini.filter(
-        ordine => ordine.stato === "pagato"
-    );
-
-    const incassoTotale = ordiniPagatiArray.reduce(
-        (totale, ordine) => totale + Number(ordine.importo || 0),
-        0
-    );
-
-    document.getElementById("incasso_totale").textContent =
-        euro(incassoTotale);
-
-    const ordiniOggi = ordiniPagatiArray.filter(ordine => {
-        if (!ordine.data_ordine) return false;
-        return ordine.data_ordine.split("T")[0] === oggiStringa;
-    });
-
-    document.getElementById("ordini_oggi").textContent =
-        ordiniOggi.length;
-
-    const ordiniUltimi7Giorni = ordiniPagatiArray.filter(ordine => {
-        if (!ordine.data_ordine) return false;
-
-        const dataOrdine = new Date(ordine.data_ordine);
-
-        return dataOrdine >= setteGiorniFa && dataOrdine <= oggi;
-    });
-
-    document.getElementById("ordini_7_giorni").textContent =
-        ordiniUltimi7Giorni.length;
-
-    const fatturatoOggi = ordiniOggi.reduce(
-        (totale, ordine) => totale + Number(ordine.importo || 0),
-        0
-    );
-
-    document.getElementById("fatturato_oggi").textContent =
-        euro(fatturatoOggi);
-
-    const ordiniMese = ordiniPagatiArray.filter(ordine => {
-        if (!ordine.data_ordine) return false;
-
-        const dataOrdine = new Date(ordine.data_ordine);
-
-        return (
-            dataOrdine.getMonth() === meseCorrente &&
-            dataOrdine.getFullYear() === annoCorrente
+        const ordiniPagatiArray = ordini.filter(
+            ordine => ordine.stato === "pagato"
         );
-    });
 
-    const fatturatoMese = ordiniMese.reduce(
-        (totale, ordine) => totale + Number(ordine.importo || 0),
-        0
-    );
+        const incassoTotale = ordiniPagatiArray.reduce(
+            (totale, ordine) => totale + Number(ordine.importo || 0),
+            0
+        );
 
-    document.getElementById("fatturato_mese").textContent =
-        euro(fatturatoMese);
+        document.getElementById("incasso_totale").textContent =
+            euro(incassoTotale);
 
-    const ticketMedio =
-        ordiniPagatiArray.length > 0
-            ? incassoTotale / ordiniPagatiArray.length
-            : 0;
+        const ordiniOggi = ordiniPagatiArray.filter(ordine => {
+            if (!ordine.data_ordine) return false;
+            return ordine.data_ordine.split("T")[0] === oggiStringa;
+        });
 
-    document.getElementById("ticket_medio").textContent =
-        euro(ticketMedio);
+        document.getElementById("ordini_oggi").textContent =
+            ordiniOggi.length;
 
-    document.getElementById("ordini_pagati").textContent =
-        ordiniPagatiArray.length;
+        const ordiniUltimi7Giorni = ordiniPagatiArray.filter(ordine => {
+            if (!ordine.data_ordine) return false;
 
-    const ultimoCliente =
-        ordini.length > 0
-            ? ordini[0].email_cliente
-            : "-";
+            const dataOrdine = new Date(ordine.data_ordine);
 
-    document.getElementById("ultimo_cliente").textContent =
-        ultimoCliente;
+            return dataOrdine >= setteGiorniFa && dataOrdine <= oggi;
+        });
 
-    const tabella = document.getElementById("tabella_ordini");
+        document.getElementById("ordini_7_giorni").textContent =
+            ordiniUltimi7Giorni.length;
 
-    tabella.innerHTML = "";
+        const fatturatoOggi = ordiniOggi.reduce(
+            (totale, ordine) => totale + Number(ordine.importo || 0),
+            0
+        );
 
-    ordini.forEach(ordine => {
-        tabella.innerHTML += `
-            <tr>
-                <td>${ordine.id}</td>
-                <td>${ordine.email_cliente}</td>
-                <td>${ordine.nome_cliente}</td>
-                <td>${ordine.cognome_cliente}</td>
-                <td>${ordine.prodotto}</td>
-                <td>${euro(ordine.importo)}</td>
-                <td>${ordine.stato}</td>
-                <td>${ordine.data_ordine}</td>
-            </tr>
-        `;
-    });
-}
+        document.getElementById("fatturato_oggi").textContent =
+            euro(fatturatoOggi);
+
+        const ordiniMese = ordiniPagatiArray.filter(ordine => {
+            if (!ordine.data_ordine) return false;
+
+            const dataOrdine = new Date(ordine.data_ordine);
+
+            return (
+                dataOrdine.getMonth() === meseCorrente &&
+                dataOrdine.getFullYear() === annoCorrente
+            );
+        });
+
+        const fatturatoMese = ordiniMese.reduce(
+            (totale, ordine) => totale + Number(ordine.importo || 0),
+            0
+        );
+
+        document.getElementById("fatturato_mese").textContent =
+            euro(fatturatoMese);
+
+        const ticketMedio =
+            ordiniPagatiArray.length > 0
+                ? incassoTotale / ordiniPagatiArray.length
+                : 0;
+
+        document.getElementById("ticket_medio").textContent =
+            euro(ticketMedio);
+
+        document.getElementById("totale_prodotti").textContent =
+            ordiniPagatiArray.length;
+
+        document.getElementById("ordini_pagati").textContent =
+            ordiniPagatiArray.length;
+
+        const ultimoCliente =
+            ordini.length > 0
+                ? ordini[0].email_cliente
+                : "-";
+
+        document.getElementById("ultimo_cliente").textContent =
+            ultimoCliente;
+
+        const tabella = document.getElementById("tabella_ordini");
+
+        tabella.innerHTML = "";
+
+        ordini.forEach(ordine => {
+            tabella.innerHTML += `
+                <tr>
+                    <td>${ordine.id}</td>
+                    <td>${ordine.email_cliente}</td>
+                    <td>${ordine.nome_cliente}</td>
+                    <td>${ordine.cognome_cliente}</td>
+                    <td>${ordine.prodotto}</td>
+                    <td>${euro(ordine.importo)}</td>
+                    <td>${ordine.stato}</td>
+                    <td>${ordine.data_ordine}</td>
+                </tr>
+            `;
+        });
+    }
 
     function filtraOrdini() {
         const testo = document.getElementById("ricerca").value.toLowerCase();
@@ -467,13 +474,17 @@
         const venditePerData = {};
 
         ordini.forEach(ordine => {
+            if (!ordine.data_ordine) return;
+
             const data = ordine.data_ordine.split("T")[0];
 
             if (!venditePerData[data]) {
                 venditePerData[data] = 0;
             }
 
-            venditePerData[data] += Number(ordine.importo || 0);
+            if (ordine.stato === "pagato") {
+                venditePerData[data] += Number(ordine.importo || 0);
+            }
         });
 
         if (graficoVendite) {
@@ -528,9 +539,21 @@
         URL.revokeObjectURL(url);
     }
 
-    async function eliminaOrdiniTest() {
+    async function eliminaOrdiniEmail() {
+        const email = document.getElementById("ricerca").value.trim();
+
+        if (!email) {
+            alert("Inserisci prima l'email nella casella di ricerca.");
+            return;
+        }
+
+        if (!email.includes("@")) {
+            alert("Inserisci un indirizzo email valido nella casella di ricerca.");
+            return;
+        }
+
         const conferma = confirm(
-            "Vuoi eliminare tutti gli ordini test?"
+            "Vuoi eliminare tutti gli ordini associati a questa email?\n\n" + email
         );
 
         if (!conferma) {
@@ -538,7 +561,7 @@
         }
 
         const risposta = await fetch(
-            "https://costodomestico-backend.onrender.com/elimina-ordini-test",
+            "https://costodomestico-backend.onrender.com/elimina-ordini-email?email=" + encodeURIComponent(email),
             {
                 method: "DELETE"
             }
@@ -546,88 +569,49 @@
 
         const dati = await risposta.json();
 
+        const eliminati =
+            dati.ordini_eliminati ??
+            dati.eliminati ??
+            dati.count ??
+            0;
+
+        alert("Ordini eliminati: " + eliminati);
+
+        document.getElementById("ricerca").value = "";
+
+        caricaDashboard();
+    }
+
+    async function eliminaOrdiniSenzaEmail() {
+        const conferma = confirm(
+            "Vuoi eliminare tutti gli ordini senza email?"
+        );
+
+        if (!conferma) return;
+
+        const risposta = await fetch(
+            "https://costodomestico-backend.onrender.com/elimina-ordini-senza-email",
+            {
+                method: "DELETE"
+            }
+        );
+
+        const dati = await risposta.json();
+
+        if (!dati.success) {
+            alert("Errore eliminazione ordini senza email.");
+            return;
+        }
+
         alert(
-            "Ordini test eliminati: " + dati.ordini_eliminati
+            "Ordini eliminati: " +
+            dati.ordini_eliminati
         );
 
         caricaDashboard();
     }
 
-    async function eliminaOrdiniEmail() {
-    const email = document.getElementById("ricerca").value.trim();
-
-    if (!email) {
-        alert("Inserisci prima l'email nella casella di ricerca.");
-        return;
-    }
-
-    if (!email.includes("@")) {
-        alert("Inserisci un indirizzo email valido nella casella di ricerca.");
-        return;
-    }
-
-    const conferma = confirm(
-        "Vuoi eliminare tutti gli ordini associati a questa email?\n\n" + email
-    );
-
-    if (!conferma) {
-        return;
-    }
-
-    const risposta = await fetch(
-        "https://costodomestico-backend.onrender.com/elimina-ordini-email?email=" + encodeURIComponent(email),
-        {
-            method: "DELETE"
-        }
-    );
-
-    const dati = await risposta.json();
-
-    console.log("Risposta elimina ordini email:", dati);
-
-    const eliminati =
-        dati.ordini_eliminati ??
-        dati.eliminati ??
-        dati.count ??
-        0;
-
-    alert("Ordini eliminati: " + eliminati);
-
-    document.getElementById("ricerca").value = "";
-
     caricaDashboard();
-}
-
-    async function eliminaOrdiniSenzaEmail() {
-    const conferma = confirm(
-        "Vuoi eliminare tutti gli ordini senza email?"
-    );
-
-    if (!conferma) return;
-
-    const risposta = await fetch(
-        "https://costodomestico-backend.onrender.com/elimina-ordini-senza-email",
-        {
-            method: "DELETE"
-        }
-    );
-
-    const dati = await risposta.json();
-
-    console.log("Risposta elimina senza email:", dati);
-
-    if (!dati.success) {
-        alert("Errore eliminazione ordini senza email.");
-        return;
-    }
-
-    alert(
-        "Ordini eliminati: " +
-        dati.ordini_eliminati
-    );
-
-    caricaDashboard();
-    }
 </script>
 
 </body>
