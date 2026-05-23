@@ -1047,17 +1047,16 @@ if (typeof gtag === "function") {
         event_label: "Apre Stripe TFR"
     });
 
-    tracciaEventoBackend("click_stripe_tfr");
-
     gtag("event", "begin_checkout_tfr", {
         currency: "EUR",
         value: 7.90
     });
-
-    tracciaEventoBackend("begin_checkout_tfr");
 }
 
-            window.location.href = urlCheckout;
+tracciaEventoBackend("click_stripe_tfr");
+tracciaEventoBackend("begin_checkout_tfr");
+
+window.location.href = urlCheckout;
 
         } catch (errore) {
             console.error(errore);
