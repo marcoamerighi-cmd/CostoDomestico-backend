@@ -716,6 +716,43 @@ def analytics_funnel():
             "errore": str(errore)
         }
     
+eventi_funnel = {
+    "page_view": 0,
+    "click_calcola": 0,
+    "click_stripe": 0,
+    "begin_checkout": 0,
+    "purchase": 0,
+    "pdf_download": 0,
+    "click_calcola_tfr": 0,
+    "click_stripe_tfr": 0,
+    "begin_checkout_tfr": 0,
+    "purchase_tfr": 0,
+    "pdf_download_tfr": 0
+}
+
+
+@app.post("/track-event")
+async def track_event(request: Request):
+
+    dati = await request.json()
+
+    evento = dati.get("evento")
+
+    if evento in eventi_funnel:
+        eventi_funnel[evento] += 1
+
+    return {
+        "success": True
+    }
+
+
+@app.get("/analytics-funnel-interno")
+def analytics_funnel_interno():
+
+    return {
+        "success": True,
+        "eventi": eventi_funnel
+    }
 
 @app.get("/storico-ordini")
 def storico_ordini():
