@@ -775,6 +775,46 @@ def pagina_tfr_tool():
     )
 
 
+@app.get("/contributi-lavoro-domestico-2026.html")
+def pagina_contributi_lavoro_domestico_2026():
+    return FileResponse(
+        path=str(FRONTEND_DIR / "contributi-lavoro-domestico-2026.html"),
+        media_type="text/html"
+    )
+
+
+@app.get("/scadenza-contributi-colf.html")
+def pagina_scadenza_contributi_colf():
+    return FileResponse(
+        path=str(FRONTEND_DIR / "scadenza-contributi-colf.html"),
+        media_type="text/html"
+    )
+
+
+@app.get("/calcolo-contributi-colf.html")
+def pagina_calcolo_contributi_colf():
+    return FileResponse(
+        path=str(FRONTEND_DIR / "calcolo-contributi-colf.html"),
+        media_type="text/html"
+    )
+
+
+@app.get("/calcolo-contributi-badante.html")
+def pagina_calcolo_contributi_badante():
+    return FileResponse(
+        path=str(FRONTEND_DIR / "calcolo-contributi-badante.html"),
+        media_type="text/html"
+    )
+
+
+@app.get("/contributi-badante-54-ore.html")
+def pagina_contributi_badante_54_ore():
+    return FileResponse(
+        path=str(FRONTEND_DIR / "contributi-badante-54-ore.html"),
+        media_type="text/html"
+    )
+
+
 @app.delete("/elimina-ordini-senza-email")
 def elimina_ordini_senza_email():
 
