@@ -179,6 +179,23 @@ def home():
     )
 
 
+@app.get("/{nome_file}.html")
+def pagina_html(nome_file: str):
+
+    percorso = FRONTEND_DIR / f"{nome_file}.html"
+
+    if not percorso.exists():
+        raise HTTPException(
+            status_code=404,
+            detail="Pagina non trovata"
+        )
+
+    return FileResponse(
+        path=str(percorso),
+        media_type="text/html"
+    )
+
+
 @app.get("/checkout-tfr")
 def pagina_checkout_tfr():
     return FileResponse(
@@ -811,23 +828,6 @@ def pagina_contributi_badante_54_ore():
 def pagina_tfr_tool():
     return FileResponse(
         path=str(FRONTEND_DIR / "test_tfr.html"),
-        media_type="text/html"
-    )
-
-
-@app.get("/{nome_file}.html")
-def pagina_html(nome_file: str):
-
-    percorso = FRONTEND_DIR / f"{nome_file}.html"
-
-    if not percorso.exists():
-        raise HTTPException(
-            status_code=404,
-            detail="Pagina non trovata"
-        )
-
-    return FileResponse(
-        path=str(percorso),
         media_type="text/html"
     )
 
