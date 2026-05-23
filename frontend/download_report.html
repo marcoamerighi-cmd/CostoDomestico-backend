@@ -233,6 +233,9 @@
         });
     }
 
+    tracciaEventoBackend("purchase_tfr");
+    tracciaEventoBackend("pdf_download_tfr");
+
     link.click();
 
     document.body.removeChild(link);
@@ -361,6 +364,27 @@
         scaricaManuale();
     }, 1500);
 
+</script>
+
+<script>
+async function tracciaEventoBackend(evento) {
+    try {
+        await fetch(
+            "https://costodomestico-backend.onrender.com/track-event",
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    evento: evento
+                })
+            }
+        );
+    } catch(e) {
+        console.log("Errore tracking:", e);
+    }
+}
 </script>
 
 </body>
