@@ -46,11 +46,7 @@ stripe.api_key = STRIPE_SECRET_KEY
 
 app = FastAPI()
 
-app.mount(
-    "/js",
-    StaticFiles(directory=str(FRONTEND_DIR / "js")),
-    name="js"
-)
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -65,6 +61,11 @@ crea_tabella_clienti()
 
 BASE_DIR = Path(__file__).resolve().parents[1]
 FRONTEND_DIR = BASE_DIR / "frontend"
+app.mount(
+    "/js",
+    StaticFiles(directory=str(FRONTEND_DIR / "js")),
+    name="js"
+)
 PDF_DIR = BASE_DIR / "pdf_generati"
 PDF_DIR.mkdir(exist_ok=True)
 
