@@ -1,7 +1,0 @@
-fastapi
-uvicorn
-stripe
-resend
-pydantic
-reportlab
-psycopg2-binary

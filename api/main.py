@@ -2,6 +2,17 @@ from datetime import date
 from typing import List
 from pathlib import Path
 import os
+import json
+
+from google.analytics.data_v1beta import BetaAnalyticsDataClient
+from google.analytics.data_v1beta.types import (
+    RunReportRequest,
+    DateRange,
+    Metric,
+    Dimension
+)
+
+from google.oauth2 import service_account
 
 import stripe
 
@@ -637,6 +648,74 @@ def storico_tfr():
 
     return storico
 
+@app.get("/analytics-funnel")
+def analytics_funnel():
+
+    property_id = os.getenv("GA4_PROPERTY_ID")
+    credentials_json = os.getenv("GOOGLE_CREDENTIALS_JSON")
+
+    if not property_id:
+        return {
+            "success": False,
+            "errore": "GA4_PROPERTY_ID mancante"
+        }
+
+    if not credentials_json:
+        return {
+            "success": False,
+            "errore": "GOOGLE_CREDENTIALS_JSON mancante"
+        }
+
+    try:
+
+        credentials_info = json.loads(
+            credentials_json
+        )
+
+        credentials = (
+            service_account.Credentials
+            .from_service_account_info(
+                credentials_info
+            )
+        )
+
+        client = BetaAnalyticsDataClient(
+            credentials=credentials
+        )
+
+        request = RunReportRequest(
+            property=f"properties/{property_id}",
+            dimensions=[Dimension(name="eventName")],
+            metrics=[Metric(name="eventCount")],
+            date_ranges=[
+                DateRange(
+                    start_date="30daysAgo",
+                    end_date="today"
+                )
+            ]
+        )
+
+        response = client.run_report(request)
+
+        eventi = {}
+
+        for row in response.rows:
+            nome = row.dimension_values[0].value
+            valore = int(row.metric_values[0].value)
+            eventi[nome] = valore
+
+        return {
+            "success": True,
+            "eventi": eventi
+        }
+
+    except Exception as errore:
+
+        return {
+            "success": False,
+            "errore": str(errore)
+        }
+    
 
 @app.get("/storico-ordini")
 def storico_ordini():
