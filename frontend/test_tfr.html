@@ -947,6 +947,18 @@ if (typeof gtag === "function") {
 window.calcoloTFR = dati;
         window.richiestaTFR = richiesta;
 
+if (typeof gtag === "function") {
+    gtag('event', 'simulazione_tfr_eseguita', {
+        event_category: 'Calcolo',
+        event_label: 'TFR'
+    });
+}
+
+localStorage.setItem(
+    "richiesta_tfr",
+    JSON.stringify(richiesta)
+);
+
         localStorage.setItem(
             "richiesta_tfr",
             JSON.stringify(richiesta)
