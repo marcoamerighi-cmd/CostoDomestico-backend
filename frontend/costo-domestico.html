@@ -609,6 +609,10 @@ box-shadow:0 2px 8px rgba(0,0,0,0.05);
   });
   async function tracciaEventoBackend(evento) {
 
+    if (localStorage.getItem("escludi_tracking") === "si") {
+        return;
+    }
+
     try {
 
         await fetch(
@@ -628,6 +632,7 @@ box-shadow:0 2px 8px rgba(0,0,0,0.05);
         console.log("Errore tracking:", e);
     }
 }
+
 </script>
 
 </head>

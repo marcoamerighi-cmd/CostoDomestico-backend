@@ -1145,6 +1145,10 @@ support@costodomestico.it
 <script>
 async function tracciaEventoBackend(evento) {
 
+    if (localStorage.getItem("escludi_tracking") === "si") {
+        return;
+    }
+
     try {
 
         await fetch(
@@ -1165,6 +1169,7 @@ async function tracciaEventoBackend(evento) {
     }
 
 }
+
 </script>
 
 </body>

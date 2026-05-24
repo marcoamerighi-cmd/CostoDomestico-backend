@@ -367,6 +367,11 @@
 
 <script>
 async function tracciaEventoBackend(evento) {
+
+    if (localStorage.getItem("escludi_tracking") === "si") {
+        return;
+    }
+
     try {
         await fetch(
             "https://costodomestico-backend.onrender.com/track-event",
@@ -384,6 +389,7 @@ async function tracciaEventoBackend(evento) {
         console.log("Errore tracking:", e);
     }
 }
+
 </script>
 
 </body>
