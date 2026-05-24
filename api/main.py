@@ -899,6 +899,40 @@ def elimina_ordini_senza_email():
         "ordini_eliminati": eliminati
     }
 
+@app.delete("/reset-test-dashboard")
+def reset_test_dashboard():
+
+    conn = get_connessione()
+    cursor = conn.cursor()
+
+    cursor.execute("DELETE FROM ordini")
+    cursor.execute("DELETE FROM clienti")
+
+    global eventi_funnel
+
+    eventi_funnel = {
+        "click_calcola": 0,
+        "click_stripe": 0,
+        "begin_checkout": 0,
+        "purchase": 0,
+        "pdf_download": 0,
+
+        "click_calcola_tfr": 0,
+        "click_stripe_tfr": 0,
+        "begin_checkout_tfr": 0,
+        "purchase_tfr": 0,
+        "pdf_download_tfr": 0
+    }
+
+    conn.commit()
+
+    cursor.close()
+    conn.close()
+
+    return {
+        "success": True,
+        "messaggio": "Dashboard test ripulita"
+    }
 
 @app.get("/immagini/report-tfr-preview.png")
 def immagine_report_tfr_preview():
