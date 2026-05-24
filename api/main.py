@@ -105,6 +105,7 @@ class RichiestaTFR(BaseModel):
     nome_datore: str = ""
     cognome_datore: str = ""
     email_cliente: str = ""
+    session_id: str = ""
 
     nome: str
     cognome: str
@@ -444,6 +445,12 @@ def genera_pdf(richiesta: RichiestaTFR):
     genera_pdf_tfr(
         percorso_file=str(percorso_pdf),
         risultato=risultato
+    )
+
+    if richiesta.session_id:
+      aggiorna_pdf_ordine(
+        sessione_stripe=richiesta.session_id,
+        pdf_file=nome_file
     )
 
     sessione_stripe = getattr(

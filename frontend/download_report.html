@@ -189,11 +189,12 @@
                 },
 
                 body: JSON.stringify({
-                    ...richiesta,
-                    email_cliente: inviaEmail
-                        ? richiesta.email_cliente
-                        : ""
-                })
+            ...richiesta,
+            session_id: sessionId,
+            email_cliente: inviaEmail
+                ? richiesta.email_cliente
+                : ""
+        })
             }
         );
 
