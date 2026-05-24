@@ -392,6 +392,33 @@ color:white;
         display: block;
     }
     
+    .prezzo-report {
+    background: rgba(255,255,255,0.8);
+    border: 1px solid #e5e7eb;
+    padding: 12px;
+    border-radius: 10px;
+    font-size: 18px;
+    font-weight: bold;
+    margin-top: 15px;
+    text-align: center;
+}
+
+.trust-box {
+    display:flex;
+    justify-content:center;
+    gap:20px;
+    margin:20px 0;
+    font-size:14px;
+    flex-wrap:wrap;
+}
+
+.trust-box span{
+    background:white;
+    padding:8px 14px;
+    border-radius:999px;
+    box-shadow:0 2px 8px rgba(0,0,0,0.05);
+}
+
     </style>
 </head>
 
@@ -503,14 +530,26 @@ e scarica un report PDF professionale.
     <label>Anticipi TFR (€)</label>
     <input id="anticipi" type="number">
 
-    <h2>Retribuzioni Annuali Nette</h2>
+    <h2>Retribuzioni nette annuali del lavoratore</h2>
 
-    <p class="helper-text">
-        Inserisci quanto hai pagato al lavoratore come netto annuale.
-        Il sistema convertirà automaticamente il netto in lordo per il calcolo TFR.
-    </p>
+<p class="helper-text">
+    Inserisci quanto hai effettivamente pagato ogni anno al lavoratore.
+    Il sistema convertirà automaticamente il netto in lordo per il calcolo TFR.
+</p>
 
-    <div id="annualita_container"></div>
+    <div id="annualita_container">
+
+    </div>
+
+    <div class="trust-box">
+
+    <span>✔ Nessuna registrazione</span>
+
+    <span>✔ Report immediato</span>
+
+    <span>✔ Pagamento sicuro Stripe</span>
+
+</div>
 
     <button onclick="calcolaTFR()">
         Calcola TFR
@@ -557,6 +596,10 @@ e scarica un report PDF professionale.
                 <li>✔ Rivalutazione inclusa</li>
                 <li>✔ Formato professionale CostoDomestico.it</li>
             </ul>
+
+            <div class="prezzo-report">
+    📄 Report professionale completo: <strong>7,90 €</strong>
+</div>
 
             <div class="prezzo-premium">
                 € 7,90
