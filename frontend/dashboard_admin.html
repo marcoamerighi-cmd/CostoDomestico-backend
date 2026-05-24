@@ -342,6 +342,7 @@
             <th>Importo</th>
             <th>Stato</th>
             <th>Data</th>
+            <th>Sessione</th>
         </tr>
     </thead>
     <tbody id="tabella_ordini"></tbody>
@@ -620,6 +621,7 @@
                     <td>${euro(ordine.importo)}</td>
                     <td>${ordine.stato}</td>
                     <td>${ordine.data_ordine}</td>
+                    <td>${ordine.sessione_stripe}</td>
                 </tr>
             `;
         });
