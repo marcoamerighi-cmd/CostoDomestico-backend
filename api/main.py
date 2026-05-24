@@ -435,16 +435,6 @@ def calcola_tfr(richiesta: RichiestaTFR):
 @app.post("/genera-pdf-tfr")
 def genera_pdf(richiesta: RichiestaTFR):
     risultato = elabora_tfr(richiesta)
-    salva_storico_calcolo(
-    email_cliente=richiesta.email_cliente,
-    tipo="TFR",
-    titolo=f"{richiesta.nome} {richiesta.cognome}",
-    dettaglio=(
-        f"{richiesta.data_assunzione} - "
-        f"{richiesta.data_cessazione}"
-    ),
-    importo=risultato["liquidazione"]["totale_da_liquidare"]
-)
 
     nome_file = (
         f"report_tfr_{richiesta.nome}_{richiesta.cognome}.pdf"
@@ -463,21 +453,31 @@ def genera_pdf(richiesta: RichiestaTFR):
 
     with open(percorso_pdf, "rb") as file:
         pdf_base64 = base64.b64encode(
-        file.read()
-    ).decode()
-
-    if richiesta.session_id:
-
-        with open(percorso_pdf, "rb") as file:
-            pdf_base64 = base64.b64encode(
             file.read()
         ).decode()
 
-    aggiorna_pdf_ordine(
-        sessione_stripe=richiesta.session_id,
-        pdf_file=nome_file,
-        pdf_base64=pdf_base64
-    )
+    if richiesta.session_id:
+        aggiorna_pdf_ordine(
+            sessione_stripe=richiesta.session_id,
+            pdf_file=nome_file,
+            pdf_base64=pdf_base64
+        )
+
+    email_cliente = (
+        richiesta.email_cliente or ""
+    ).lower().strip()
+
+    if email_cliente:
+        salva_storico_calcolo(
+            email_cliente=email_cliente,
+            tipo="TFR",
+            titolo=f"{richiesta.nome} {richiesta.cognome}",
+            dettaglio=(
+                f"{richiesta.data_assunzione} - "
+                f"{richiesta.data_cessazione}"
+            ),
+            importo=risultato["liquidazione"]["totale_da_liquidare"]
+        )
 
     chiave_email = (
         f"{richiesta.email_cliente}_"
