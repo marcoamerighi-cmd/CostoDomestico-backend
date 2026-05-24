@@ -39,6 +39,14 @@ def crea_tabella_ordini():
     except Exception as e:
        print(e)
 
+    try:
+        cursor.execute("""
+        ALTER TABLE ordini
+        ADD COLUMN IF NOT EXISTS pdf_base64 TEXT
+    """)
+    except Exception as e:
+       print(e)
+
     conn.commit()
     cursor.close()
     conn.close()
@@ -99,7 +107,8 @@ def leggi_ordini():
     stato,
     sessione_stripe,
     data_ordine,
-    pdf_file
+    pdf_file,
+    pdf_base64
 FROM ordini
 ORDER BY id DESC
     """)
@@ -118,16 +127,22 @@ def aggiorna_stato_ordine(
 ):
     conn = get_connessione()
     cursor = conn.cursor()
-def aggiorna_pdf_ordine(sessione_stripe: str, pdf_file: str):
+def aggiorna_pdf_ordine(
+    sessione_stripe: str,
+    pdf_file: str,
+    pdf_base64: str = ""
+):
     conn = get_connessione()
     cursor = conn.cursor()
 
     cursor.execute("""
         UPDATE ordini
-        SET pdf_file = %s
+        SET pdf_file = %s,
+            pdf_base64 = %s
         WHERE sessione_stripe = %s
     """, (
         pdf_file,
+        pdf_base64,
         sessione_stripe
     ))
 

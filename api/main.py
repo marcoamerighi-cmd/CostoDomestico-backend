@@ -447,11 +447,20 @@ def genera_pdf(richiesta: RichiestaTFR):
         risultato=risultato
     )
 
+    import base64
+
     if richiesta.session_id:
-        aggiorna_pdf_ordine(
-            sessione_stripe=richiesta.session_id,
-            pdf_file=nome_file
-        )
+
+        with open(percorso_pdf, "rb") as file:
+            pdf_base64 = base64.b64encode(
+            file.read()
+        ).decode()
+
+    aggiorna_pdf_ordine(
+        sessione_stripe=richiesta.session_id,
+        pdf_file=nome_file,
+        pdf_base64=pdf_base64
+    )
 
     chiave_email = (
         f"{richiesta.email_cliente}_"
@@ -1192,13 +1201,17 @@ def ordini_cliente(email: str):
 @app.get("/download-pdf/{ordine_id}")
 def download_pdf(ordine_id: int):
 
+    import base64
+    import tempfile
+
     ordini = leggi_ordini()
 
     for ordine in ordini:
 
         if ordine[0] == ordine_id:
 
-            pdf_file = ordine[9]
+            pdf_file = ordine[9] if len(ordine) > 9 else ""
+            pdf_base64 = ordine[10] if len(ordine) > 10 else ""
 
             if not pdf_file:
                 raise HTTPException(
@@ -1206,16 +1219,24 @@ def download_pdf(ordine_id: int):
                     detail="PDF non disponibile"
                 )
 
-            percorso_pdf = PDF_DIR / pdf_file
-
-            if not percorso_pdf.exists():
+            if not pdf_base64:
                 raise HTTPException(
                     status_code=404,
-                    detail="File PDF non trovato"
+                    detail="PDF non presente in archivio"
                 )
 
+            contenuto_pdf = base64.b64decode(pdf_base64)
+
+            file_temporaneo = tempfile.NamedTemporaryFile(
+                delete=False,
+                suffix=".pdf"
+            )
+
+            file_temporaneo.write(contenuto_pdf)
+            file_temporaneo.close()
+
             return FileResponse(
-                path=str(percorso_pdf),
+                path=file_temporaneo.name,
                 filename=pdf_file,
                 media_type="application/pdf"
             )
