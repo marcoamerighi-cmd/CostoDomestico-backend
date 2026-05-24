@@ -1,6 +1,7 @@
 import os
 from dotenv import load_dotenv
 load_dotenv()
+
 from datetime import datetime
 
 import psycopg2
@@ -26,26 +27,27 @@ def crea_tabella_ordini():
             prodotto TEXT,
             importo REAL,
             stato TEXT,
+            sessione_stripe TEXT,
             data_ordine TEXT,
-            pdf_file TEXT
+            pdf_file TEXT,
+            pdf_base64 TEXT
         )
     """)
 
-    try:
-        cursor.execute("""
+    cursor.execute("""
+        ALTER TABLE ordini
+        ADD COLUMN IF NOT EXISTS sessione_stripe TEXT
+    """)
+
+    cursor.execute("""
         ALTER TABLE ordini
         ADD COLUMN IF NOT EXISTS pdf_file TEXT
     """)
-    except Exception as e:
-       print(e)
 
-    try:
-        cursor.execute("""
+    cursor.execute("""
         ALTER TABLE ordini
         ADD COLUMN IF NOT EXISTS pdf_base64 TEXT
     """)
-    except Exception as e:
-       print(e)
 
     conn.commit()
     cursor.close()
@@ -98,19 +100,19 @@ def leggi_ordini():
 
     cursor.execute("""
         SELECT
-    id,
-    email_cliente,
-    nome_cliente,
-    cognome_cliente,
-    prodotto,
-    importo,
-    stato,
-    sessione_stripe,
-    data_ordine,
-    pdf_file,
-    pdf_base64
-FROM ordini
-ORDER BY id DESC
+            id,
+            email_cliente,
+            nome_cliente,
+            cognome_cliente,
+            prodotto,
+            importo,
+            stato,
+            sessione_stripe,
+            data_ordine,
+            pdf_file,
+            pdf_base64
+        FROM ordini
+        ORDER BY id DESC
     """)
 
     ordini = cursor.fetchall()
@@ -127,6 +129,21 @@ def aggiorna_stato_ordine(
 ):
     conn = get_connessione()
     cursor = conn.cursor()
+
+    cursor.execute("""
+        UPDATE ordini
+        SET stato = %s
+        WHERE sessione_stripe = %s
+    """, (
+        stato,
+        sessione_stripe
+    ))
+
+    conn.commit()
+    cursor.close()
+    conn.close()
+
+
 def aggiorna_pdf_ordine(
     sessione_stripe: str,
     pdf_file: str,
@@ -150,24 +167,26 @@ def aggiorna_pdf_ordine(
     cursor.close()
     conn.close()
 
+
 def elimina_ordini_test():
     conn = get_connessione()
     cursor = conn.cursor()
 
     cursor.execute("""
-        UPDATE ordini
-        SET pdf_file = %s
-        WHERE sessione_stripe = %s
-    """, (
-        pdf_file,
-        sessione_stripe
-    ))
+        DELETE FROM ordini
+        WHERE
+            email_cliente ILIKE '%test%'
+            OR email_cliente ILIKE '%postgres%'
+    """)
+
+    eliminati = cursor.rowcount
 
     conn.commit()
     cursor.close()
     conn.close()
 
     return eliminati
+
 
 def crea_tabella_funnel():
 
@@ -227,6 +246,7 @@ def leggi_eventi_funnel():
         eventi[evento] = totale
 
     return eventi
+
 
 def reset_dashboard_test():
 
