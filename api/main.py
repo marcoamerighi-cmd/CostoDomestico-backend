@@ -460,6 +460,11 @@ def genera_pdf(richiesta: RichiestaTFR):
 
     import base64
 
+    with open(percorso_pdf, "rb") as file:
+        pdf_base64 = base64.b64encode(
+        file.read()
+    ).decode()
+
     if richiesta.session_id:
 
         with open(percorso_pdf, "rb") as file:
