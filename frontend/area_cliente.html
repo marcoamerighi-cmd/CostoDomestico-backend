@@ -101,6 +101,7 @@
                 <th>Importo</th>
                 <th>Stato</th>
                 <th>Data</th>
+                <th>Report</th>
             </tr>
         </thead>
 
@@ -148,11 +149,28 @@
         ordini.forEach(ordine => {
             corpo.innerHTML += `
                 <tr>
-                    <td>${ordine.prodotto}</td>
-                    <td>€ ${Number(ordine.importo).toFixed(2)}</td>
-                    <td>${ordine.stato}</td>
-                    <td>${ordine.data_ordine}</td>
-                </tr>
+    <td>${ordine.prodotto}</td>
+    <td>€ ${Number(ordine.importo).toFixed(2)}</td>
+    <td>${ordine.stato}</td>
+    <td>${new Date(ordine.data_ordine).toLocaleDateString("it-IT")}</td>
+    <td>
+        ${
+            ordine.pdf_file
+            ? `
+            <a href="/download-pdf/${ordine.id}">
+                <button class="btn-download">
+                    Scarica PDF
+                </button>
+            </a>
+            `
+            : `
+            <span style="color:#888">
+                PDF non disponibile
+            </span>
+            `
+        }
+    </td>
+</tr>
             `;
         });
     }

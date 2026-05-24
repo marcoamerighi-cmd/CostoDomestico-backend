@@ -2,6 +2,8 @@ from datetime import date
 from typing import List
 from pathlib import Path
 import os
+from dotenv import load_dotenv
+load_dotenv()
 import json
 
 from google.analytics.data_v1beta import BetaAnalyticsDataClient
@@ -42,6 +44,8 @@ from database.ordini_repository import (
     salva_ordine,
     leggi_ordini,
     aggiorna_stato_ordine,
+    aggiorna_pdf_ordine,
+    get_connessione,
     elimina_ordini_test,
     crea_tabella_funnel,
     salva_evento_funnel,
@@ -141,6 +145,10 @@ class RichiestaLoginAdmin(BaseModel):
     password: str
 
 
+class RichiestaLoginCliente(BaseModel):
+    email_cliente: str
+
+
 def elabora_tfr(richiesta: RichiestaTFR) -> dict:
     annualita_lorde = []
 
@@ -192,6 +200,44 @@ def elabora_tfr(richiesta: RichiestaTFR) -> dict:
         "rivalutazione": risultato_annuale["rivalutazione"],
         "liquidazione": risultato_annuale["liquidazione"]
     }
+
+
+def normalizza_email(email: str) -> str:
+    return (email or "").strip().lower()
+
+
+def aggiorna_pdf_ultimo_ordine_email(email_cliente: str, pdf_file: str):
+    email_pulita = normalizza_email(email_cliente)
+
+    if not email_pulita or not pdf_file:
+        return False
+
+    conn = get_connessione()
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        UPDATE ordini
+        SET pdf_file = %s
+        WHERE id = (
+            SELECT id
+            FROM ordini
+            WHERE LOWER(TRIM(email_cliente)) = %s
+            AND prodotto = 'Costo Domestico'
+            ORDER BY id DESC
+            LIMIT 1
+        )
+    """, (
+        pdf_file,
+        email_pulita
+    ))
+
+    aggiornato = cursor.rowcount > 0
+
+    conn.commit()
+    cursor.close()
+    conn.close()
+
+    return aggiornato
 
 
 @app.get("/")
@@ -275,6 +321,14 @@ def pagina_login_admin():
     )
 
 
+@app.get("/login-cliente")
+def pagina_login_cliente():
+    return FileResponse(
+        path=str(FRONTEND_DIR / "login_cliente.html"),
+        media_type="text/html"
+    )
+
+
 @app.get("/area-cliente")
 def pagina_area_cliente():
     return FileResponse(
@@ -293,6 +347,37 @@ def login_admin(richiesta: RichiestaLoginAdmin):
     return {
         "success": True,
         "token": ADMIN_TOKEN
+    }
+
+
+@app.post("/login-cliente")
+def login_cliente(richiesta: RichiestaLoginCliente):
+    email_pulita = normalizza_email(richiesta.email_cliente)
+
+    if not email_pulita or "@" not in email_pulita:
+        return {
+            "success": False,
+            "errore": "Email non valida"
+        }
+
+    ordini = leggi_ordini()
+    ordini_cliente = [
+        ordine
+        for ordine in ordini
+        if normalizza_email(ordine[1]) == email_pulita
+        and ordine[6] == "pagato"
+    ]
+
+    if not ordini_cliente:
+        return {
+            "success": False,
+            "errore": "Nessun report acquistato trovato per questa email"
+        }
+
+    return {
+        "success": True,
+        "email_cliente": email_pulita,
+        "token": email_pulita
     }
 
 
@@ -570,6 +655,7 @@ class RichiestaInvioEmailCostoDomestico(BaseModel):
     nome_cliente: str = ""
     nome_file: str = "report_costo_lavoro_domestico.pdf"
     pdf_base64: str
+    sessione_stripe: str = ""
 
 
 @app.post("/invia-email-costo-domestico")
@@ -593,6 +679,17 @@ def invia_email_costo_domestico(
         percorso_pdf=str(percorso_pdf),
         nome_file=richiesta.nome_file
     )
+
+    if richiesta.sessione_stripe:
+        aggiorna_pdf_ordine(
+            sessione_stripe=richiesta.sessione_stripe,
+            pdf_file=richiesta.nome_file
+        )
+    else:
+        aggiorna_pdf_ultimo_ordine_email(
+            email_cliente=richiesta.email_cliente,
+            pdf_file=richiesta.nome_file
+        )
 
     return {"ok": True}
 
@@ -774,10 +871,103 @@ def storico_ordini():
             "importo": ordine[5],
             "stato": ordine[6],
             "sessione_stripe": ordine[7],
-            "data_ordine": ordine[8]
+            "data_ordine": ordine[8],
+            "pdf_file": ordine[9] if len(ordine) > 9 else None
         })
 
     return risultato
+
+
+@app.get("/api/cliente/report")
+def api_cliente_report(email: str):
+    email_pulita = normalizza_email(email)
+
+    if not email_pulita:
+        return {
+            "success": False,
+            "errore": "Email mancante",
+            "report": []
+        }
+
+    ordini = leggi_ordini()
+    report = []
+
+    for ordine in ordini:
+        email_ordine = normalizza_email(ordine[1])
+        stato = ordine[6]
+        pdf_file = ordine[9] if len(ordine) > 9 else None
+
+        if email_ordine == email_pulita and stato == "pagato":
+            report.append({
+                "id": ordine[0],
+                "email_cliente": ordine[1],
+                "nome_cliente": ordine[2],
+                "cognome_cliente": ordine[3],
+                "prodotto": ordine[4],
+                "importo": ordine[5],
+                "stato": stato,
+                "sessione_stripe": ordine[7],
+                "data_ordine": ordine[8],
+                "pdf_file": pdf_file,
+                "download_url": (
+                    f"/download-report-cliente/{ordine[0]}"
+                    if pdf_file
+                    else None
+                )
+            })
+
+    return {
+        "success": True,
+        "email_cliente": email_pulita,
+        "report": report
+    }
+
+
+@app.get("/download-report-cliente/{ordine_id}")
+def download_report_cliente(ordine_id: int):
+    ordini = leggi_ordini()
+
+    ordine_trovato = None
+
+    for ordine in ordini:
+        if ordine[0] == ordine_id:
+            ordine_trovato = ordine
+            break
+
+    if not ordine_trovato:
+        raise HTTPException(
+            status_code=404,
+            detail="Ordine non trovato"
+        )
+
+    stato = ordine_trovato[6]
+    pdf_file = ordine_trovato[9] if len(ordine_trovato) > 9 else None
+
+    if stato != "pagato":
+        raise HTTPException(
+            status_code=403,
+            detail="Ordine non pagato"
+        )
+
+    if not pdf_file:
+        raise HTTPException(
+            status_code=404,
+            detail="PDF non collegato all'ordine"
+        )
+
+    percorso_pdf = PDF_DIR / pdf_file
+
+    if not percorso_pdf.exists():
+        raise HTTPException(
+            status_code=404,
+            detail="File PDF non trovato"
+        )
+
+    return FileResponse(
+        path=str(percorso_pdf),
+        filename=pdf_file,
+        media_type="application/pdf"
+    )
 
 
 @app.get("/clienti")
@@ -958,7 +1148,8 @@ def ordini_cliente(email: str):
                 "importo": ordine[5],
                 "stato": ordine[6],
                 "sessione_stripe": ordine[7],
-                "data_ordine": ordine[8]
+                "data_ordine": ordine[8],
+                "pdf_file": ordine[9] if len(ordine) > 9 else None
             })
 
     return risultato

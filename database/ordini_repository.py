@@ -1,4 +1,6 @@
 import os
+from dotenv import load_dotenv
+load_dotenv()
 from datetime import datetime
 
 import psycopg2
@@ -24,10 +26,18 @@ def crea_tabella_ordini():
             prodotto TEXT,
             importo REAL,
             stato TEXT,
-            sessione_stripe TEXT,
-            data_ordine TEXT
+            data_ordine TEXT,
+            pdf_file TEXT
         )
     """)
+
+    try:
+        cursor.execute("""
+        ALTER TABLE ordini
+        ADD COLUMN IF NOT EXISTS pdf_file TEXT
+    """)
+    except Exception as e:
+       print(e)
 
     conn.commit()
     cursor.close()
@@ -107,7 +117,22 @@ def aggiorna_stato_ordine(
 ):
     conn = get_connessione()
     cursor = conn.cursor()
+def aggiorna_pdf_ordine(sessione_stripe: str, pdf_file: str):
+    conn = get_connessione()
+    cursor = conn.cursor()
 
+    cursor.execute("""
+        UPDATE ordini
+        SET pdf_file = %s
+        WHERE sessione_stripe = %s
+    """, (
+        pdf_file,
+        sessione_stripe
+    ))
+
+    conn.commit()
+    cursor.close()
+    conn.close()
     cursor.execute("""
         UPDATE ordini
         SET stato = %s
