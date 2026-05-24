@@ -49,6 +49,22 @@ def crea_tabella_ordini():
         ADD COLUMN IF NOT EXISTS pdf_base64 TEXT
     """)
 
+    cursor.execute("""
+    CREATE TABLE IF NOT EXISTS storico_calcoli (
+        id SERIAL PRIMARY KEY,
+
+        email_cliente TEXT,
+        tipo TEXT,
+
+        titolo TEXT,
+        dettaglio TEXT,
+
+        importo REAL,
+
+        data_calcolo TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    )
+""")
+
     conn.commit()
     cursor.close()
     conn.close()
@@ -121,6 +137,67 @@ def leggi_ordini():
     conn.close()
 
     return ordini
+
+
+def salva_storico_calcolo(
+    email_cliente: str,
+    tipo: str,
+    titolo: str,
+    dettaglio: str,
+    importo: float = 0
+):
+    conn = get_connessione()
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        INSERT INTO storico_calcoli (
+            email_cliente,
+            tipo,
+            titolo,
+            dettaglio,
+            importo
+        )
+        VALUES (%s,%s,%s,%s,%s)
+    """, (
+        email_cliente,
+        tipo,
+        titolo,
+        dettaglio,
+        importo
+    ))
+
+    conn.commit()
+    cursor.close()
+    conn.close()
+
+
+def leggi_storico_calcoli(
+    email_cliente: str
+):
+    conn = get_connessione()
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        SELECT
+            id,
+            tipo,
+            titolo,
+            dettaglio,
+            importo,
+            data_calcolo
+        FROM storico_calcoli
+        WHERE email_cliente=%s
+        ORDER BY id DESC
+    """, (
+        email_cliente,
+    ))
+
+    risultati = cursor.fetchall()
+
+    cursor.close()
+    conn.close()
+
+    return risultati
 
 
 def aggiorna_stato_ordine(

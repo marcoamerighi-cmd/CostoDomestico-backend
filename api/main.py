@@ -50,7 +50,8 @@ from database.ordini_repository import (
     crea_tabella_funnel,
     salva_evento_funnel,
     leggi_eventi_funnel,
-    reset_dashboard_test
+    reset_dashboard_test,
+    salva_storico_calcolo
 )
 from database.clienti_repository import (
     crea_tabella_clienti,
@@ -433,6 +434,16 @@ def calcola_tfr(richiesta: RichiestaTFR):
 @app.post("/genera-pdf-tfr")
 def genera_pdf(richiesta: RichiestaTFR):
     risultato = elabora_tfr(richiesta)
+    salva_storico_calcolo(
+    email_cliente=richiesta.email_cliente,
+    tipo="TFR",
+    titolo=f"{richiesta.nome} {richiesta.cognome}",
+    dettaglio=(
+        f"{richiesta.data_assunzione} - "
+        f"{richiesta.data_cessazione}"
+    ),
+    importo=risultato["liquidazione"]["totale_da_liquidare"]
+)
 
     nome_file = (
         f"report_tfr_{richiesta.nome}_{richiesta.cognome}.pdf"
