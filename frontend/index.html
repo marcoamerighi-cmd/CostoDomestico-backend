@@ -8,13 +8,13 @@
 
     <meta name="description" content="Calcola online il costo reale di colf e badanti e il TFR maturato nel lavoro domestico. Report PDF professionali, contributi, tredicesima e rivalutazione TFR.">
 
-    <style>
-        body {
-            margin: 0;
-            font-family: Arial, sans-serif;
-            background: #f4f6f9;
-            color: #1f2937;
-        }
+    body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #f4f6f9;
+    color: #1f2937;
+    overflow-x: hidden;
+}
 
         header {
             background: #2962ff;
@@ -60,10 +60,10 @@
         }
 
         .hero {
-            padding: 70px 30px;
-            text-align: center;
-            background: white;
-        }
+    padding: 35px 30px;
+    text-align: center;
+    background: white;
+}
 
         .hero h1 {
             font-size: 44px;
@@ -110,15 +110,26 @@
         }
 
         .btn {
-            display: inline-block;
-            margin-top: 20px;
-            background: #2962ff;
-            color: white;
-            padding: 14px 24px;
-            border-radius: 10px;
-            text-decoration: none;
-            font-weight: bold;
-        }
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 220px;
+    height: 56px;
+
+    margin-top: 20px;
+
+    background: #2962ff;
+    color: white;
+
+    border-radius: 10px;
+
+    text-decoration: none;
+    font-weight: bold;
+
+    padding: 0 20px;
+    box-sizing: border-box;
+}
 
         .btn.orange {
             background: #ff9800;
