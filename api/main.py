@@ -448,22 +448,10 @@ def genera_pdf(richiesta: RichiestaTFR):
     )
 
     if richiesta.session_id:
-      aggiorna_pdf_ordine(
-        sessione_stripe=richiesta.session_id,
-        pdf_file=nome_file
-    )
-
-    sessione_stripe = getattr(
-    app.state,
-    "ultima_sessione_tfr",
-    ""
-)
-
-    if sessione_stripe:
-      aggiorna_pdf_ordine(
-        sessione_stripe=sessione_stripe,
-        pdf_file=nome_file
-    )
+        aggiorna_pdf_ordine(
+            sessione_stripe=richiesta.session_id,
+            pdf_file=nome_file
+        )
 
     chiave_email = (
         f"{richiesta.email_cliente}_"
