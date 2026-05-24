@@ -177,6 +177,10 @@ def leggi_storico_calcoli(
     conn = get_connessione()
     cursor = conn.cursor()
 
+    email_pulita = (
+        email_cliente or ""
+    ).lower().strip()
+
     cursor.execute("""
         SELECT
             id,
@@ -186,10 +190,10 @@ def leggi_storico_calcoli(
             importo,
             data_calcolo
         FROM storico_calcoli
-        WHERE email_cliente=%s
+        WHERE LOWER(TRIM(email_cliente)) = %s
         ORDER BY id DESC
     """, (
-        email_cliente,
+        email_pulita,
     ))
 
     risultati = cursor.fetchall()
