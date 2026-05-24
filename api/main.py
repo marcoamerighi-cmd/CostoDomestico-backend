@@ -710,12 +710,23 @@ def invia_email_costo_domestico(
     with open(percorso_pdf, "wb") as file:
         file.write(contenuto_pdf)
 
-        sessione_stripe = getattr(app.state, "ultima_sessione_costo_domestico", "")
+        sessione_stripe = getattr(
+    app.state,
+    "ultima_sessione_costo_domestico",
+    ""
+)
 
     if sessione_stripe:
-        aggiorna_pdf_ordine(
+        import base64
+
+    pdf_base64 = base64.b64encode(
+        contenuto_pdf
+    ).decode()
+
+    aggiorna_pdf_ordine(
         sessione_stripe=sessione_stripe,
-        pdf_file=richiesta.nome_file
+        pdf_file=richiesta.nome_file,
+        pdf_base64=pdf_base64
     )
 
     invia_report_costo_domestico_email(
