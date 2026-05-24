@@ -151,6 +151,9 @@
 
 <script>
 
+    const params = new URLSearchParams(window.location.search);
+    const sessionId = params.get("session_id") || "";
+
     let emailGiaInviata =
         localStorage.getItem("email_report_tfr_inviata") === "1";
 
@@ -189,12 +192,12 @@
                 },
 
                 body: JSON.stringify({
-            ...richiesta,
-            session_id: sessionId,
-            email_cliente: inviaEmail
-                ? richiesta.email_cliente
-                : ""
-        })
+                    ...richiesta,
+                    session_id: sessionId,
+                    email_cliente: inviaEmail
+                        ? richiesta.email_cliente
+                        : ""
+                })
             }
         );
 
@@ -207,43 +210,43 @@
 
     function scaricaBlob(blob) {
 
-    const url =
-        window.URL.createObjectURL(blob);
+        const url =
+            window.URL.createObjectURL(blob);
 
-    const link =
-        document.createElement("a");
+        const link =
+            document.createElement("a");
 
-    link.href = url;
+        link.href = url;
 
-    link.download =
-        "report_tfr_costodomestico.pdf";
+        link.download =
+            "report_tfr_costodomestico.pdf";
 
-    document.body.appendChild(link);
+        document.body.appendChild(link);
 
-    if (typeof gtag === "function") {
+        if (typeof gtag === "function") {
 
-        gtag("event", "purchase_tfr", {
-            transaction_id: Date.now().toString(),
-            currency: "EUR",
-            value: 7.90
-        });
+            gtag("event", "purchase_tfr", {
+                transaction_id: Date.now().toString(),
+                currency: "EUR",
+                value: 7.90
+            });
 
-        gtag("event", "pdf_download_tfr", {
-            currency: "EUR",
-            value: 7.90
-        });
+            gtag("event", "pdf_download_tfr", {
+                currency: "EUR",
+                value: 7.90
+            });
+        }
+
+        tracciaEventoBackend("pdf_download_tfr");
+
+        link.click();
+
+        document.body.removeChild(link);
+
+        setTimeout(() => {
+            window.URL.revokeObjectURL(url);
+        }, 3000);
     }
-
-    tracciaEventoBackend("pdf_download_tfr");
-
-    link.click();
-
-    document.body.removeChild(link);
-
-    setTimeout(() => {
-        window.URL.revokeObjectURL(url);
-    }, 3000);
-}
 
     async function scaricaManuale() {
 
@@ -390,7 +393,6 @@ async function tracciaEventoBackend(evento) {
         console.log("Errore tracking:", e);
     }
 }
-
 </script>
 
 </body>
