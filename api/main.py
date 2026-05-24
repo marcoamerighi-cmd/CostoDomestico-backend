@@ -562,6 +562,8 @@ def pagina_download_costo_domestico(request: Request):
             stato="pagato"
         )
 
+        app.state.ultima_sessione_costo_domestico = session_id
+
     return FileResponse(
         path=str(FRONTEND_DIR / "download_costo_domestico.html"),
         media_type="text/html"
@@ -673,6 +675,14 @@ def invia_email_costo_domestico(
 
     with open(percorso_pdf, "wb") as file:
         file.write(contenuto_pdf)
+
+        sessione_stripe = getattr(app.state, "ultima_sessione_costo_domestico", "")
+
+    if sessione_stripe:
+        aggiorna_pdf_ordine(
+        sessione_stripe=sessione_stripe,
+        pdf_file=richiesta.nome_file
+    )
 
     invia_report_costo_domestico_email(
         destinatario=richiesta.email_cliente,
@@ -1154,6 +1164,41 @@ def ordini_cliente(email: str):
 
     return risultato
 
+@app.get("/download-pdf/{ordine_id}")
+def download_pdf(ordine_id: int):
+
+    ordini = leggi_ordini()
+
+    for ordine in ordini:
+
+        if ordine[0] == ordine_id:
+
+            pdf_file = ordine[9]
+
+            if not pdf_file:
+                raise HTTPException(
+                    status_code=404,
+                    detail="PDF non disponibile"
+                )
+
+            percorso_pdf = PDF_DIR / pdf_file
+
+            if not percorso_pdf.exists():
+                raise HTTPException(
+                    status_code=404,
+                    detail="File PDF non trovato"
+                )
+
+            return FileResponse(
+                path=str(percorso_pdf),
+                filename=pdf_file,
+                media_type="application/pdf"
+            )
+
+    raise HTTPException(
+        status_code=404,
+        detail="Ordine non trovato"
+    )
 
 @app.get("/contributi-lavoro-domestico-2026.html")
 def pagina_contributi_lavoro_domestico_2026():

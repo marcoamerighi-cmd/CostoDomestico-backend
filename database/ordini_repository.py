@@ -90,17 +90,18 @@ def leggi_ordini():
 
     cursor.execute("""
         SELECT
-            id,
-            email_cliente,
-            nome_cliente,
-            cognome_cliente,
-            prodotto,
-            importo,
-            stato,
-            sessione_stripe,
-            data_ordine
-        FROM ordini
-        ORDER BY id DESC
+    id,
+    email_cliente,
+    nome_cliente,
+    cognome_cliente,
+    prodotto,
+    importo,
+    stato,
+    sessione_stripe,
+    data_ordine,
+    pdf_file
+FROM ordini
+ORDER BY id DESC
     """)
 
     ordini = cursor.fetchall()
