@@ -272,6 +272,22 @@ def pagina_checkout_tfr():
         media_type="text/html"
     )
 
+@app.get("/download_report.html")
+def pagina_download_report_html(request: Request):
+    session_id = request.query_params.get("session_id")
+
+    if session_id:
+        aggiorna_stato_ordine(
+            sessione_stripe=session_id,
+            stato="pagato"
+        )
+
+        app.state.ultima_sessione_tfr = session_id
+
+    return FileResponse(
+        path=str(FRONTEND_DIR / "download_report.html"),
+        media_type="text/html"
+    )
 
 @app.get("/download-report")
 def pagina_download_report(request: Request):
