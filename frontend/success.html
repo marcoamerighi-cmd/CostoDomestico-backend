@@ -148,9 +148,12 @@
         redirectEseguito = true;
       }
 
-      const url = downloadAutomatico
-        ? "https://costodomestico.it/?paid=1&download=1&success=1"
-        : "https://costodomestico.it/?paid=1&success=1";
+      const params = new URLSearchParams(window.location.search);
+const sessionId = params.get("session_id") || "";
+
+const url = downloadAutomatico
+  ? `https://costodomestico.it/?paid=1&download=1&success=1&session_id=${sessionId}`
+  : `https://costodomestico.it/?paid=1&success=1&session_id=${sessionId}`;
 
       window.location.href = url;
     }
