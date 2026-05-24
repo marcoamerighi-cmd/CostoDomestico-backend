@@ -467,6 +467,8 @@ def genera_pdf(richiesta: RichiestaTFR):
         richiesta.email_cliente or ""
     ).lower().strip()
 
+    print("DEBUG STORICO TFR - email:", email_cliente)
+
     if email_cliente:
         salva_storico_calcolo(
             email_cliente=email_cliente,
@@ -478,6 +480,8 @@ def genera_pdf(richiesta: RichiestaTFR):
             ),
             importo=risultato["liquidazione"]["totale_da_liquidare"]
         )
+
+        print("DEBUG STORICO TFR - salvato")
 
     chiave_email = (
         f"{richiesta.email_cliente}_"
