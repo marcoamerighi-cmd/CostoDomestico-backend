@@ -283,6 +283,8 @@ def pagina_download_report(request: Request):
             stato="pagato"
         )
 
+        app.state.ultima_sessione_tfr = session_id
+
     return FileResponse(
         path=str(FRONTEND_DIR / "download_report.html"),
         media_type="text/html"
@@ -426,6 +428,18 @@ def genera_pdf(richiesta: RichiestaTFR):
     genera_pdf_tfr(
         percorso_file=str(percorso_pdf),
         risultato=risultato
+    )
+
+    sessione_stripe = getattr(
+    app.state,
+    "ultima_sessione_tfr",
+    ""
+)
+
+    if sessione_stripe:
+      aggiorna_pdf_ordine(
+        sessione_stripe=sessione_stripe,
+        pdf_file=nome_file
     )
 
     chiave_email = (
