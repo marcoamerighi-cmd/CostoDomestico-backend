@@ -149,19 +149,6 @@ def aggiorna_pdf_ordine(
     conn.commit()
     cursor.close()
     conn.close()
-    cursor.execute("""
-        UPDATE ordini
-        SET stato = %s
-        WHERE sessione_stripe = %s
-    """, (
-        stato,
-        sessione_stripe
-    ))
-
-    conn.commit()
-    cursor.close()
-    conn.close()
-
 
 def elimina_ordini_test():
     conn = get_connessione()
