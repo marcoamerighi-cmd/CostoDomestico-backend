@@ -104,7 +104,7 @@
 
         if (dati.success) {
             localStorage.setItem("admin_token", dati.token);
-            window.location.href = "dashboard_admin.html";
+            window.location.href = "/dashboard-admin";
         } else {
             document.getElementById("errore").innerText =
                 "Password non corretta";
