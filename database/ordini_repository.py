@@ -199,3 +199,19 @@ def leggi_eventi_funnel():
         eventi[evento] = totale
 
     return eventi
+
+def reset_dashboard_test():
+
+    conn = get_connessione()
+    cursor = conn.cursor()
+
+    cursor.execute("DELETE FROM funnel_eventi")
+    cursor.execute("DELETE FROM ordini")
+    cursor.execute("DELETE FROM clienti")
+
+    conn.commit()
+
+    cursor.close()
+    conn.close()
+
+    return True

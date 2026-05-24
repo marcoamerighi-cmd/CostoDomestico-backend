@@ -45,7 +45,8 @@ from database.ordini_repository import (
     elimina_ordini_test,
     crea_tabella_funnel,
     salva_evento_funnel,
-    leggi_eventi_funnel
+    leggi_eventi_funnel,
+    reset_dashboard_test
 )
 from database.clienti_repository import (
     crea_tabella_clienti,
@@ -900,28 +901,13 @@ def elimina_ordini_senza_email():
     }
 
 @app.delete("/reset-test-dashboard")
-def reset_test_dashboard():
+def reset_test_dashboard_endpoint():
 
-    conn = get_connessione()
-    cursor = conn.cursor()
+    reset_dashboard_test()
 
-    cursor.execute("DELETE FROM ordini")
-    cursor.execute("DELETE FROM clienti")
-
-    global eventi_funnel
-
-    eventi_funnel = {
-        "click_calcola": 0,
-        "click_stripe": 0,
-        "begin_checkout": 0,
-        "purchase": 0,
-        "pdf_download": 0,
-
-        "click_calcola_tfr": 0,
-        "click_stripe_tfr": 0,
-        "begin_checkout_tfr": 0,
-        "purchase_tfr": 0,
-        "pdf_download_tfr": 0
+    return {
+        "success": True,
+        "messaggio": "Dashboard ripulita"
     }
 
     conn.commit()
