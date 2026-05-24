@@ -573,6 +573,22 @@ text-decoration:underline;
       color: #111827;
     }
 
+.trust-box{
+display:flex;
+justify-content:center;
+gap:20px;
+margin:20px 0;
+font-size:14px;
+flex-wrap:wrap;
+}
+
+.trust-box span{
+background:white;
+padding:8px 14px;
+border-radius:999px;
+box-shadow:0 2px 8px rgba(0,0,0,0.05);
+}
+
   </style>
 <!-- Google tag (gtag.js) con consenso cookie -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-3LF3S9S7LB"></script>
@@ -725,6 +741,16 @@ Il livello viene suggerito automaticamente, ma puoi modificarlo.
 
       </div>
 
+      <div class="trust-box">
+
+    <span>✔ Nessuna registrazione</span>
+
+    <span>✔ Calcolo aggiornato 2026</span>
+
+    <span>✔ Pagamento sicuro Stripe</span>
+
+</div>
+
       <button onclick="calcola()">Calcola costo reale</button>
     </div>
 
@@ -846,8 +872,18 @@ Il livello viene suggerito automaticamente, ma puoi modificarlo.
     </div>
   </div>
 
+  <div class="trust-box">
+
+    <span>✔ PDF professionale</span>
+
+    <span>✔ Invio immediato via email</span>
+
+    <span>✔ Pagamento sicuro Stripe</span>
+
+</div>
+
   <button onclick="vaiAlPagamento()">
-    Scarica report professionale - 9,90€
+     Scarica il report PDF professionale • 9,90€
   </button>
 
   <p class="small-note">
