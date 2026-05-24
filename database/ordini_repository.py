@@ -153,13 +153,13 @@ def elimina_ordini_test():
     cursor = conn.cursor()
 
     cursor.execute("""
-        DELETE FROM ordini
-        WHERE
-            email_cliente ILIKE '%test%'
-            OR email_cliente ILIKE '%postgres%'
-    """)
-
-    eliminati = cursor.rowcount
+        UPDATE ordini
+        SET pdf_file = %s
+        WHERE sessione_stripe = %s
+    """, (
+        pdf_file,
+        sessione_stripe
+    ))
 
     conn.commit()
     cursor.close()
