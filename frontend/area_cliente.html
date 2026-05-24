@@ -266,6 +266,7 @@
 
 <script>
     let ordiniCliente = [];
+    let storicoCalcoli = [];
 
     function gestisciInvio(event) {
         if (event.key === "Enter") {
@@ -327,6 +328,12 @@
         );
 
         ordiniCliente = await risposta.json();
+        const rispostaStorico = await fetch(
+    "https://costodomestico-backend.onrender.com/storico-calcoli?email=" +
+    encodeURIComponent(email)
+);
+
+storicoCalcoli = await rispostaStorico.json();
 
         if (ordiniCliente.length === 0) {
             document.getElementById("tabella").style.display = "none";
@@ -343,6 +350,7 @@
 
         aggiornaRiepilogo();
         renderizzaOrdini();
+        mostraStoricoCalcoli();
 
         document.getElementById("messaggio").innerText =
             "Report trovati: " + ordiniCliente.length;
@@ -422,6 +430,69 @@
             `;
         });
     }
+    function mostraStoricoCalcoli() {
+
+    if (storicoCalcoli.length === 0) {
+        return;
+    }
+
+    const container = document.querySelector(".container");
+
+    let html = `
+    <div style="
+        margin-top:40px;
+        border-top:2px solid #eee;
+        padding-top:25px;
+    ">
+
+    <h2 style="color:#1f3c88;">
+        Storico Calcoli
+    </h2>
+    `;
+
+    storicoCalcoli.forEach(calcolo => {
+
+        html += `
+        <div style="
+            border:1px solid #ddd;
+            border-radius:12px;
+            padding:15px;
+            margin-bottom:12px;
+            background:#fafafa;
+        ">
+            <strong>${calcolo.tipo}</strong><br>
+
+            ${calcolo.titolo}<br>
+
+            <small>
+                ${calcolo.dettaglio}
+            </small><br>
+
+            <strong>
+            € ${Number(calcolo.importo).toFixed(2)}
+            </strong>
+        </div>
+        `;
+    });
+
+    html += "</div>";
+
+    const vecchio =
+        document.getElementById(
+            "storico-calcoli-box"
+        );
+
+    if (vecchio) {
+        vecchio.remove();
+    }
+
+    const div = document.createElement("div");
+
+    div.id = "storico-calcoli-box";
+    div.innerHTML = html;
+
+    container.appendChild(div);
+}
 </script>
 
 </body>

@@ -51,7 +51,8 @@ from database.ordini_repository import (
     salva_evento_funnel,
     leggi_eventi_funnel,
     reset_dashboard_test,
-    salva_storico_calcolo
+    salva_storico_calcolo,
+    leggi_storico_calcoli
 )
 from database.clienti_repository import (
     crea_tabella_clienti,
@@ -917,6 +918,28 @@ async def track_event(request: Request):
         "success": True
     }
 
+
+@app.get("/storico-calcoli")
+def storico_calcoli(email: str):
+
+    risultati = leggi_storico_calcoli(
+        email
+    )
+
+    storico = []
+
+    for riga in risultati:
+
+        storico.append({
+            "id": riga[0],
+            "tipo": riga[1],
+            "titolo": riga[2],
+            "dettaglio": riga[3],
+            "importo": riga[4],
+            "data": str(riga[5])
+        })
+
+    return storico
 
 @app.get("/analytics-funnel-interno")
 def analytics_funnel_interno():
