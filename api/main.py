@@ -363,6 +363,17 @@ def pagina_area_cliente():
     )
 
 
+from fastapi.responses import RedirectResponse
+
+
+@app.get("/webmail")
+def apri_webmail():
+
+    return RedirectResponse(
+        url="https://webmail.siteground.com/webmail/log-in"
+    )
+
+
 @app.post("/login-admin")
 def login_admin(richiesta: RichiestaLoginAdmin):
     if richiesta.password != ADMIN_PASSWORD:
