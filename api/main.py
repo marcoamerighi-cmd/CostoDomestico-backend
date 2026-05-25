@@ -57,9 +57,7 @@ from database.ordini_repository import (
 from database.clienti_repository import (
     crea_tabella_clienti,
     salva_o_aggiorna_cliente,
-    leggi_clienti,
-    salva_magic_token,
-    verifica_magic_token
+    leggi_clienti
     
 )
 
@@ -1168,22 +1166,31 @@ def richiedi_magic_link(richiesta: RichiestaMagicLink):
         cognome=""
     )
 
-    salva_magic_token(
-        email=email,
-        token=token,
-        scadenza=scadenza
-    )
+    conn = get_connessione()
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        UPDATE clienti
+        SET magic_token = %s,
+            magic_token_scadenza = %s
+        WHERE LOWER(TRIM(email)) = %s
+    """, (
+        token,
+        scadenza,
+        email
+    ))
+
+    conn.commit()
+    cursor.close()
+    conn.close()
 
     magic_link = (
         "https://costodomestico.it/area-cliente"
         f"?token={token}"
     )
 
-    print("MAGIC LINK CLIENTE:", magic_link)
-
     return {
         "success": True,
-        "messaggio": "Magic link generato",
         "magic_link": magic_link
     }
 
@@ -1191,17 +1198,58 @@ def richiedi_magic_link(richiesta: RichiestaMagicLink):
 @app.get("/verifica-magic-link")
 def verifica_magic_link_endpoint(token: str):
 
-    cliente = verifica_magic_token(token)
+    from datetime import datetime
+
+    conn = get_connessione()
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        SELECT
+            id,
+            email,
+            nome,
+            cognome,
+            magic_token_scadenza
+        FROM clienti
+        WHERE magic_token = %s
+    """, (
+        token,
+    ))
+
+    cliente = cursor.fetchone()
 
     if not cliente:
+        cursor.close()
+        conn.close()
         return {
             "success": False,
             "errore": "Token non valido"
         }
 
+    cursor.execute("""
+        UPDATE clienti
+        SET ultimo_accesso = %s,
+            magic_token = NULL,
+            magic_token_scadenza = NULL
+        WHERE id = %s
+    """, (
+        datetime.now().isoformat(),
+        cliente[0]
+    ))
+
+    conn.commit()
+    cursor.close()
+    conn.close()
+
     return {
         "success": True,
-        "cliente": cliente
+        "cliente": {
+            "id": cliente[0],
+            "email": cliente[1],
+            "nome": cliente[2],
+            "cognome": cliente[3],
+            "scadenza": cliente[4]
+        }
     }
 
 @app.delete("/elimina-ordini-email")
