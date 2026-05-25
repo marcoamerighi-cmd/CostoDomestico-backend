@@ -1190,10 +1190,14 @@ def richiedi_magic_link(richiesta: RichiestaMagicLink):
         f"?token={token}"
     )
 
-    invia_magic_link_email(
-    destinatario=email,
-    magic_link=magic_link
-)
+    try:
+        invia_magic_link_email(
+            destinatario=email,
+            magic_link=magic_link
+        )
+        print("MAGIC LINK EMAIL INVIATA A:", email)
+    except Exception as errore:
+        print("ERRORE INVIO MAGIC LINK:", errore)
     return {
         "success": True,
         "magic_link": magic_link
