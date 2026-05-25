@@ -288,6 +288,32 @@
     <div class="card"><strong>✅ Conversioni reali</strong><span id="conv_convertiti">0</span></div>
     <div class="card"><strong>💰 Ricavi reali</strong><span id="conv_ricavi">€ 0,00</span></div>
     <div class="card"><strong>📈 Conversione reale</strong><span id="conv_percentuale">0%</span></div>
+<div class="card"><strong>📊 Ordini tracciati</strong><span id="conv_totale_ordini">0</span></div>
+<div class="card"><strong>✅ Conversioni reali</strong><span id="conv_convertiti">0</span></div>
+<div class="card"><strong>💰 Ricavi reali</strong><span id="conv_ricavi">€ 0,00</span></div>
+<div class="card"><strong>📈 Conversione reale</strong><span id="conv_percentuale">0%</span></div>
+
+<div class="card">
+    <strong>🟡 Checkout creati</strong>
+    <span id="checkout_reali">0</span>
+</div>
+
+<div class="card">
+    <strong>🟢 Pagamenti reali</strong>
+    <span id="pagamenti_reali">0</span>
+</div>
+
+<div class="card">
+    <strong>💰 Ricavi verificati</strong>
+    <span id="ricavi_verificati">€ 0,00</span>
+</div>
+
+<div class="card">
+    <strong>📈 Checkout → Pagamento</strong>
+    <span id="conversione_checkout_reale">0%</span>
+</div>
+
+</div>
 </div>
 
 <div class="section-box">
@@ -906,25 +932,83 @@
     }
 
     async function caricaStatisticheConversione() {
+
     try {
-        const risposta = await fetch("/statistiche-conversione");
+
+        const risposta =
+            await fetch("/statistiche-conversione");
+
         const dati = await risposta.json();
 
-        document.getElementById("conv_totale_ordini").innerText =
+        document.getElementById(
+            "conv_totale_ordini"
+        ).innerText =
             dati.totale_ordini || 0;
 
-        document.getElementById("conv_convertiti").innerText =
+        document.getElementById(
+            "checkout_reali"
+        ).innerText =
+            dati.totale_ordini || 0;
+
+        document.getElementById(
+            "conv_convertiti"
+        ).innerText =
             dati.convertiti || 0;
 
-        document.getElementById("conv_ricavi").innerText =
-            "€ " + Number(dati.ricavi || 0).toFixed(2).replace(".", ",");
+        document.getElementById(
+            "pagamenti_reali"
+        ).innerText =
+            dati.convertiti || 0;
 
-        document.getElementById("conv_percentuale").innerText =
-            Number(dati.conversione || 0).toFixed(2).replace(".", ",") + "%";
+        document.getElementById(
+            "conv_ricavi"
+        ).innerText =
+            "€ " +
+            Number(
+                dati.ricavi || 0
+            )
+            .toFixed(2)
+            .replace(".", ",");
 
-    } catch (errore) {
-        console.error("Errore statistiche conversione:", errore);
+        document.getElementById(
+            "ricavi_verificati"
+        ).innerText =
+            "€ " +
+            Number(
+                dati.ricavi || 0
+            )
+            .toFixed(2)
+            .replace(".", ",");
+
+        document.getElementById(
+            "conv_percentuale"
+        ).innerText =
+            Number(
+                dati.conversione || 0
+            )
+            .toFixed(2)
+            .replace(".", ",") + "%";
+
+        document.getElementById(
+            "conversione_checkout_reale"
+        ).innerText =
+            Number(
+                dati.conversione || 0
+            )
+            .toFixed(2)
+            .replace(".", ",") + "%";
+
     }
+
+    catch (errore) {
+
+        console.log(
+            "Errore statistiche:",
+            errore
+        );
+
+    }
+
 }
 
     document.getElementById(
