@@ -80,10 +80,71 @@ font-size:13px;
 color:#6b7280;
 }
 
+header{
+display:flex;
+justify-content:center;
+padding:24px;
+background:#2962ff;
+}
+
+.brand-logo{
+display:inline-flex;
+align-items:center;
+justify-content:center;
+gap:12px;
+background:rgba(255,255,255,0.96);
+color:#0f172a;
+padding:10px 18px;
+border-radius:999px;
+box-shadow:0 8px 24px rgba(0,0,0,0.12);
+text-decoration:none;
+}
+
+.brand-logo svg{
+width:44px;
+height:44px;
+flex:0 0 auto;
+}
+
+.brand-name{
+font-size:28px;
+font-weight:800;
+letter-spacing:-0.5px;
+color:#0b4dbb;
+white-space:nowrap;
+}
+
+.brand-it{
+color:#16a34a;
+}
+
 </style>
 </head>
 
 <body>
+
+<header>
+
+<a href="/" class="brand-logo" aria-label="CostoDomestico.it">
+
+<svg viewBox="0 0 64 64" role="img" aria-hidden="true">
+<path d="M32 4 L56 13 V29 C56 45 45 57 32 61 C19 57 8 45 8 29 V13 Z" fill="#ffffff" stroke="#0b4dbb" stroke-width="4"/>
+<path d="M18 31 L32 20 L46 31 V45 H18 Z" fill="#0b4dbb"/>
+<path d="M24 36 H30 V42 H24 Z M34 36 H40 V42 H34 Z" fill="#ffffff"/>
+<path d="M17 50 C29 48 42 39 52 25" fill="none" stroke="#16a34a" stroke-width="5" stroke-linecap="round"/>
+<path d="M48 24 L57 19 L55 30 Z" fill="#16a34a"/>
+<rect x="20" y="46" width="7" height="8" fill="#16a34a"/>
+<rect x="30" y="43" width="7" height="11" fill="#16a34a"/>
+<rect x="40" y="38" width="7" height="16" fill="#16a34a"/>
+</svg>
+
+<span class="brand-name">
+CostoDomestico<span class="brand-it">.it</span>
+</span>
+
+</a>
+
+</header>
 
 <section class="hero">
 
