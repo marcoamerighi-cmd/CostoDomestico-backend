@@ -79,73 +79,69 @@ def invia_magic_link_email(
             margin:auto;
             padding:20px;
             color:#374151;
+            line-height:1.5;
         ">
 
-            <div style="
-                text-align:center;
-                margin-bottom:25px;
-            ">
-                <h1 style="
-                    color:#0b4dbb;
-                    margin:0;
-                ">
-                    CostoDomestico.it
-                </h1>
-            </div>
+            <h2 style="color:#0b4dbb;">
+                CostoDomestico.it
+            </h2>
 
             <p>Ciao,</p>
 
             <p>
-                hai richiesto l'accesso alla tua area personale su
-                <strong>CostoDomestico.it</strong>.
+                abbiamo ricevuto una richiesta di accesso alla tua area personale.
             </p>
 
             <p>
-                Da qui potrai consultare:
+                Nell'area cliente puoi consultare i report acquistati,
+                scaricare nuovamente i PDF e visualizzare lo storico dei calcoli.
             </p>
 
-            <ul>
-                <li>Report acquistati</li>
-                <li>Storico calcoli</li>
-                <li>PDF generati</li>
-            </ul>
+            <p>
+                Puoi accedere usando il pulsante qui sotto:
+            </p>
 
-            <div style="
-                text-align:center;
-                margin:35px 0;
-            ">
-
+            <p style="text-align:center; margin:30px 0;">
                 <a
                     href="{magic_link}"
                     style="
                         display:inline-block;
-                        padding:16px 28px;
+                        padding:14px 24px;
                         background:#16a34a;
                         color:white;
                         text-decoration:none;
-                        border-radius:10px;
+                        border-radius:8px;
                         font-weight:bold;
                     "
                 >
-                    Accedi alla mia area personale
+                    Accedi alla mia area cliente
                 </a>
+            </p>
 
-            </div>
+            <p style="font-size:13px; color:#666;">
+                Se il pulsante non funziona, copia e incolla questo link nel browser:
+            </p>
 
             <p style="
-                font-size:13px;
-                color:#6b7280;
+                font-size:12px;
+                word-break:break-all;
+                color:#2563eb;
             ">
-                Per motivi di sicurezza il link sarà valido per 30 minuti.
+                {magic_link}
+            </p>
+
+            <p style="font-size:13px; color:#6b7280;">
+                Il link resta valido per 30 minuti.
+            </p>
+
+            <p style="font-size:13px; color:#6b7280;">
+                Se non hai richiesto tu questo accesso, puoi ignorare questa email.
             </p>
 
             <hr>
 
-            <p style="
-                font-size:12px;
-                color:#9ca3af;
-            ">
-                Se non hai richiesto questo accesso puoi ignorare questa email.
+            <p style="font-size:12px; color:#9ca3af;">
+                Email automatica inviata da CostoDomestico.it.
             </p>
 
         </div>
