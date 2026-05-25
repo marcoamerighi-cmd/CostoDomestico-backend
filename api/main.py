@@ -57,7 +57,10 @@ from database.ordini_repository import (
 from database.clienti_repository import (
     crea_tabella_clienti,
     salva_o_aggiorna_cliente,
-    leggi_clienti
+    leggi_clienti,
+    salva_magic_token,
+    verifica_magic_token
+    
 )
 
 from pdf.report_tfr import genera_pdf_tfr
@@ -151,6 +154,9 @@ class RichiestaLoginAdmin(BaseModel):
 class RichiestaLoginCliente(BaseModel):
     email_cliente: str
 
+
+class RichiestaMagicLink(BaseModel):
+    email: str
 
 def elabora_tfr(richiesta: RichiestaTFR) -> dict:
     annualita_lorde = []
@@ -1134,6 +1140,69 @@ async def stripe_webhook(request: Request):
 @app.post("/webhook")
 async def webhook(request: Request):
     return await gestisci_webhook_stripe(request)
+
+
+@app.post("/richiedi-magic-link")
+def richiedi_magic_link(richiesta: RichiestaMagicLink):
+
+    import secrets
+    from datetime import datetime, timedelta
+
+    email = richiesta.email.lower().strip()
+
+    if not email:
+        return {
+            "success": False,
+            "errore": "Email mancante"
+        }
+
+    token = secrets.token_urlsafe(32)
+
+    scadenza = (
+        datetime.now() + timedelta(minutes=30)
+    ).isoformat()
+
+    salva_o_aggiorna_cliente(
+        email=email,
+        nome="",
+        cognome=""
+    )
+
+    salva_magic_token(
+        email=email,
+        token=token,
+        scadenza=scadenza
+    )
+
+    magic_link = (
+        "https://costodomestico.it/area-cliente"
+        f"?token={token}"
+    )
+
+    print("MAGIC LINK CLIENTE:", magic_link)
+
+    return {
+        "success": True,
+        "messaggio": "Magic link generato",
+        "magic_link": magic_link
+    }
+
+
+@app.get("/verifica-magic-link")
+def verifica_magic_link_endpoint(token: str):
+
+    cliente = verifica_magic_token(token)
+
+    if not cliente:
+        return {
+            "success": False,
+            "errore": "Token non valido"
+        }
+
+    return {
+        "success": True,
+        "cliente": cliente
+    }
 
 @app.delete("/elimina-ordini-email")
 def elimina_ordini_email(email: str):
