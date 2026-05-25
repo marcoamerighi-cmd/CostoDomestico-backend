@@ -284,6 +284,10 @@
     <div class="card"><strong>📊 Conversione Calcolo → Checkout</strong><span id="kpi_conversione">0%</span></div>
     <div class="card"><strong>🚀 Conversione Checkout → Acquisto</strong><span id="kpi_conversione_acquisto">0%</span></div>
     <div class="card"><strong>📆 Proiezione fatturato mese</strong><span id="kpi_proiezione_mese">€ 0,00</span></div>
+    <div class="card"><strong>📊 Ordini tracciati</strong><span id="conv_totale_ordini">0</span></div>
+    <div class="card"><strong>✅ Conversioni reali</strong><span id="conv_convertiti">0</span></div>
+    <div class="card"><strong>💰 Ricavi reali</strong><span id="conv_ricavi">€ 0,00</span></div>
+    <div class="card"><strong>📈 Conversione reale</strong><span id="conv_percentuale">0%</span></div>
 </div>
 
 <div class="section-box">
@@ -901,6 +905,28 @@
 
     }
 
+    async function caricaStatisticheConversione() {
+    try {
+        const risposta = await fetch("/statistiche-conversione");
+        const dati = await risposta.json();
+
+        document.getElementById("conv_totale_ordini").innerText =
+            dati.totale_ordini || 0;
+
+        document.getElementById("conv_convertiti").innerText =
+            dati.convertiti || 0;
+
+        document.getElementById("conv_ricavi").innerText =
+            "€ " + Number(dati.ricavi || 0).toFixed(2).replace(".", ",");
+
+        document.getElementById("conv_percentuale").innerText =
+            Number(dati.conversione || 0).toFixed(2).replace(".", ",") + "%";
+
+    } catch (errore) {
+        console.error("Errore statistiche conversione:", errore);
+    }
+}
+
     document.getElementById(
         "contenutoReport"
     ).innerHTML = `
@@ -939,6 +965,7 @@ function chiudiReport(){
 }
 
     caricaDashboard();
+    caricaStatisticheConversione();
 </script>
 
 </body>
