@@ -344,3 +344,50 @@ def reset_dashboard_test():
     conn.close()
 
     return True
+
+
+def statistiche_conversione():
+
+    conn = get_connessione()
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        SELECT COUNT(*)
+        FROM ordini
+    """)
+
+    totale_ordini = cursor.fetchone()[0]
+
+    cursor.execute("""
+        SELECT COUNT(*)
+        FROM ordini
+        WHERE stato='pagato'
+    """)
+
+    pagati = cursor.fetchone()[0]
+
+    cursor.execute("""
+        SELECT COALESCE(SUM(importo),0)
+        FROM ordini
+        WHERE stato='pagato'
+    """)
+
+    ricavi = cursor.fetchone()[0]
+
+    conversione = 0
+
+    if totale_ordini > 0:
+        conversione = round(
+            (pagati / totale_ordini) * 100,
+            2
+        )
+
+    cursor.close()
+    conn.close()
+
+    return {
+        "totale_ordini": totale_ordini,
+        "pagati": pagati,
+        "ricavi": ricavi,
+        "conversione": conversione
+    }

@@ -53,7 +53,8 @@ from database.ordini_repository import (
     leggi_eventi_funnel,
     reset_dashboard_test,
     salva_storico_calcolo,
-    leggi_storico_calcoli
+    leggi_storico_calcoli,
+    statistiche_conversione,
 )
 from database.clienti_repository import (
     crea_tabella_clienti,
@@ -254,6 +255,12 @@ def home():
         path=str(FRONTEND_DIR / "index.html"),
         media_type="text/html"
     )
+
+
+@app.get("/statistiche-conversione")
+def get_statistiche_conversione():
+
+    return statistiche_conversione()
 
 
 @app.get("/{nome_file}.html")
@@ -1485,22 +1492,9 @@ def pagina_tfr_tool():
     )
 
 
-@app.get("/{nome_pagina}")
-def pagina_frontend_generica(nome_pagina: str):
 
-    percorso = FRONTEND_DIR / f"{nome_pagina}.html"
 
-    if not percorso.exists():
-        percorso = FRONTEND_DIR / nome_pagina
 
-    if not percorso.exists():
-        return {
-            "detail": "Pagina non trovata"
-        }
 
-    return FileResponse(
-        path=str(percorso),
-        media_type="text/html"
-    )
 
 
