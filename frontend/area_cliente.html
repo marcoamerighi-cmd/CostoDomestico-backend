@@ -217,6 +217,11 @@
         <button onclick="cercaOrdiniCliente()">
             Accedi alla mia area
         </button>
+
+        <button onclick="richiediMagicLink()" style="background:#16a34a;">
+    Ricevi link di accesso via email
+</button>
+
     </div>
 
     <div id="messaggio" class="msg"></div>
@@ -267,6 +272,48 @@
 <script>
     let ordiniCliente = [];
     let storicoCalcoli = [];
+
+    async function richiediMagicLink() {
+    const email = document.getElementById("email_cliente").value.trim();
+
+    if (!email) {
+        document.getElementById("messaggio").innerText =
+            "Inserisci prima la tua email.";
+        return;
+    }
+
+    document.getElementById("messaggio").innerText =
+        "Generazione link di accesso in corso...";
+
+    const risposta = await fetch(
+        "/richiedi-magic-link",
+        {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                email: email
+            })
+        }
+    );
+
+    const dati = await risposta.json();
+
+    if (!dati.success) {
+        document.getElementById("messaggio").innerText =
+            dati.errore || "Errore durante la generazione del link.";
+        return;
+    }
+
+    document.getElementById("messaggio").innerHTML =
+        `
+        Link generato correttamente.<br>
+        <a href="${dati.magic_link}" style="color:#1f3c88; font-weight:bold;">
+            Apri area cliente con Magic Link
+        </a>
+        `;
+}
 
     function gestisciInvio(event) {
         if (event.key === "Enter") {
@@ -493,6 +540,37 @@ storicoCalcoli = await rispostaStorico.json();
 
     container.appendChild(div);
 }
+
+async function verificaTokenDaUrl() {
+    const params = new URLSearchParams(window.location.search);
+    const token = params.get("token");
+
+    if (!token) {
+        return;
+    }
+
+    document.getElementById("messaggio").innerText =
+        "Verifica accesso in corso...";
+
+    const risposta = await fetch(
+        "/verifica-magic-link?token=" + encodeURIComponent(token)
+    );
+
+    const dati = await risposta.json();
+
+    if (!dati.success) {
+        document.getElementById("messaggio").innerText =
+            "Link non valido o scaduto.";
+        return;
+    }
+
+    document.getElementById("email_cliente").value =
+        dati.cliente.email;
+
+    cercaOrdiniCliente();
+}
+
+verificaTokenDaUrl();
 </script>
 
 </body>
