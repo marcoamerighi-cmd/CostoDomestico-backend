@@ -361,15 +361,21 @@ def statistiche_conversione():
     cursor.execute("""
         SELECT COUNT(*)
         FROM ordini
-        WHERE stato='pagato'
+        WHERE
+            stato = 'pagato'
+            OR pdf_file IS NOT NULL
+            OR pdf_base64 IS NOT NULL
     """)
 
-    pagati = cursor.fetchone()[0]
+    convertiti = cursor.fetchone()[0]
 
     cursor.execute("""
         SELECT COALESCE(SUM(importo),0)
         FROM ordini
-        WHERE stato='pagato'
+        WHERE
+            stato = 'pagato'
+            OR pdf_file IS NOT NULL
+            OR pdf_base64 IS NOT NULL
     """)
 
     ricavi = cursor.fetchone()[0]
@@ -378,7 +384,7 @@ def statistiche_conversione():
 
     if totale_ordini > 0:
         conversione = round(
-            (pagati / totale_ordini) * 100,
+            (convertiti / totale_ordini) * 100,
             2
         )
 
@@ -387,7 +393,7 @@ def statistiche_conversione():
 
     return {
         "totale_ordini": totale_ordini,
-        "pagati": pagati,
-        "ricavi": ricavi,
+        "convertiti": convertiti,
+        "ricavi": float(ricavi),
         "conversione": conversione
     }
