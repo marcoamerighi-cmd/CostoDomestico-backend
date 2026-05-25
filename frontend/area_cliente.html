@@ -467,10 +467,14 @@ storicoCalcoli = await rispostaStorico.json();
                                 </a>
                             `
                             : `
-                                <span style="color:#888">
-                                    PDF non disponibile
-                                </span>
-                            `
+    <button
+        class="btn-download"
+        style="background:#f59e0b;"
+        onclick="rigeneraPdf('${prodottoNormalizzato(ordine.prodotto)}', '${ordine.sessione_stripe}')"
+    >
+        Rigenera PDF
+    </button>
+`
                         }
                     </td>
                 </tr>
@@ -571,6 +575,22 @@ async function verificaTokenDaUrl() {
 }
 
 verificaTokenDaUrl();
+function rigeneraPdf(tipo, sessioneStripe) {
+
+    if (!sessioneStripe) {
+        alert("Sessione pagamento non trovata.");
+        return;
+    }
+
+    if (tipo === "TFR") {
+        window.location.href =
+            "/download_report.html?session_id=" + encodeURIComponent(sessioneStripe);
+        return;
+    }
+
+    window.location.href =
+        "/download-costo-domestico?session_id=" + encodeURIComponent(sessioneStripe);
+}
 </script>
 
 </body>
