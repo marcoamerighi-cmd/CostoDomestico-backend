@@ -27,7 +27,8 @@ from pydantic import BaseModel
 from api.stripe_config import STRIPE_SECRET_KEY
 from api.email_service import (
     invia_report_tfr_email,
-    invia_report_costo_domestico_email
+    invia_report_costo_domestico_email,
+    invia_magic_link_email
 )
 from api.stripe_webhook_config import STRIPE_WEBHOOK_SECRET
 
@@ -1189,6 +1190,10 @@ def richiedi_magic_link(richiesta: RichiestaMagicLink):
         f"?token={token}"
     )
 
+    invia_magic_link_email(
+    destinatario=email,
+    magic_link=magic_link
+)
     return {
         "success": True,
         "magic_link": magic_link

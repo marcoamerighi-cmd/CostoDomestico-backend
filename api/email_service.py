@@ -63,3 +63,58 @@ def invia_report_costo_domestico_email(
             }
         ]
     })
+
+def invia_magic_link_email(
+    destinatario: str,
+    magic_link: str
+):
+    resend.Emails.send({
+        "from": EMAIL_MITTENTE,
+        "to": destinatario,
+        "subject": "Accedi alla tua Area Cliente - CostoDomestico.it",
+        "html": f"""
+        <div style="
+            font-family:Arial,sans-serif;
+            max-width:600px;
+            margin:auto;
+            padding:20px;
+        ">
+
+        <h2 style="color:#0b4dbb;">
+            CostoDomestico.it
+        </h2>
+
+        <p>
+            Hai richiesto un accesso alla tua Area Cliente.
+        </p>
+
+        <p>
+            Premi il pulsante qui sotto:
+        </p>
+
+        <a
+            href="{magic_link}"
+            style="
+                display:inline-block;
+                padding:14px 24px;
+                background:#16a34a;
+                color:white;
+                text-decoration:none;
+                border-radius:10px;
+                font-weight:bold;
+            "
+        >
+            Accedi alla mia area
+        </a>
+
+        <p style="
+            margin-top:25px;
+            font-size:13px;
+            color:#666;
+        ">
+            Il link scade dopo 30 minuti.
+        </p>
+
+        </div>
+        """
+    })
