@@ -394,6 +394,6 @@ def statistiche_conversione():
     return {
         "totale_ordini": totale_ordini,
         "convertiti": convertiti,
-        "ricavi": float(ricavi),
+        "ricavi": round(float(ricavi), 2),
         "conversione": conversione
     }
