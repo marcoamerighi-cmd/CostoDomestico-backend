@@ -71,49 +71,82 @@ def invia_magic_link_email(
     resend.Emails.send({
         "from": EMAIL_MITTENTE,
         "to": destinatario,
-        "subject": "Accedi alla tua Area Cliente - CostoDomestico.it",
+        "subject": "Il tuo accesso personale a CostoDomestico.it",
         "html": f"""
         <div style="
             font-family:Arial,sans-serif;
-            max-width:600px;
+            max-width:650px;
             margin:auto;
             padding:20px;
+            color:#374151;
         ">
 
-        <h2 style="color:#0b4dbb;">
-            CostoDomestico.it
-        </h2>
+            <div style="
+                text-align:center;
+                margin-bottom:25px;
+            ">
+                <h1 style="
+                    color:#0b4dbb;
+                    margin:0;
+                ">
+                    CostoDomestico.it
+                </h1>
+            </div>
 
-        <p>
-            Hai richiesto un accesso alla tua Area Cliente.
-        </p>
+            <p>Ciao,</p>
 
-        <p>
-            Premi il pulsante qui sotto:
-        </p>
+            <p>
+                hai richiesto l'accesso alla tua area personale su
+                <strong>CostoDomestico.it</strong>.
+            </p>
 
-        <a
-            href="{magic_link}"
-            style="
-                display:inline-block;
-                padding:14px 24px;
-                background:#16a34a;
-                color:white;
-                text-decoration:none;
-                border-radius:10px;
-                font-weight:bold;
-            "
-        >
-            Accedi alla mia area
-        </a>
+            <p>
+                Da qui potrai consultare:
+            </p>
 
-        <p style="
-            margin-top:25px;
-            font-size:13px;
-            color:#666;
-        ">
-            Il link scade dopo 30 minuti.
-        </p>
+            <ul>
+                <li>Report acquistati</li>
+                <li>Storico calcoli</li>
+                <li>PDF generati</li>
+            </ul>
+
+            <div style="
+                text-align:center;
+                margin:35px 0;
+            ">
+
+                <a
+                    href="{magic_link}"
+                    style="
+                        display:inline-block;
+                        padding:16px 28px;
+                        background:#16a34a;
+                        color:white;
+                        text-decoration:none;
+                        border-radius:10px;
+                        font-weight:bold;
+                    "
+                >
+                    Accedi alla mia area personale
+                </a>
+
+            </div>
+
+            <p style="
+                font-size:13px;
+                color:#6b7280;
+            ">
+                Per motivi di sicurezza il link sarà valido per 30 minuti.
+            </p>
+
+            <hr>
+
+            <p style="
+                font-size:12px;
+                color:#9ca3af;
+            ">
+                Se non hai richiesto questo accesso puoi ignorare questa email.
+            </p>
 
         </div>
         """
