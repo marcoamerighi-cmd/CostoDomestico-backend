@@ -230,10 +230,16 @@ def calcola_tfr_annualita_lorde(
             "quota_tfr": round(quota_tfr, 2)
         })
 
+    data_cessazione_dt = datetime.strptime(
+        data_cessazione,
+        "%Y-%m-%d"
+    )
+
     coefficiente = get_coefficiente_tfr(
-    anno=data_cessazione.year,
-    mese=data_cessazione.month
-)
+    anno=data_cessazione_dt.year,
+    mese=data_cessazione_dt.month
+    )
+
 
     rivalutazione = calcola_rivalutazione_tfr(
         dettaglio_anni=dettaglio_anni,
