@@ -419,6 +419,39 @@ color:white;
     box-shadow:0 2px 8px rgba(0,0,0,0.05);
 }
 
+.report-note{
+
+background:#eff6ff;
+border:1px solid #dbeafe;
+padding:15px;
+margin-top:15px;
+border-radius:12px;
+font-size:14px;
+line-height:1.7;
+color:#1f3c88;
+
+}
+
+#risultato{
+
+animation:fadeResult .4s ease;
+
+}
+
+@keyframes fadeResult{
+
+from{
+opacity:0;
+transform:translateY(10px);
+}
+
+to{
+opacity:1;
+transform:translateY(0);
+}
+
+}
+
     </style>
 </head>
 
@@ -612,8 +645,23 @@ e scarica un report PDF professionale.
             
 
             <button class="premium-button" onclick="scaricaPDF()">
-                Scarica il report PDF completo
-            </button>
+    📄 Scarica Report Professionale TFR (€7,90)
+</button>
+
+<div class="report-note">
+
+⚠️ L'anteprima mostra una simulazione del risultato.
+
+Il report professionale include:
+
+✔ Retribuzione utile TFR  
+✔ Quota maturata  
+✔ Rivalutazione  
+✔ Anticipi inseriti  
+✔ Totale finale da liquidare  
+✔ PDF pronto da stampare
+
+</div>
 
         </div>
 
@@ -879,73 +927,74 @@ popolaSelectDateTFR();
     }
 
     function costruisciRichiesta() {
-        const dataAssunzione =
-            document.getElementById("data_assunzione").value;
+    const dataAssunzione =
+        document.getElementById("data_assunzione").value;
 
-        const dataCessazione =
-            document.getElementById("data_cessazione").value;
+    const dataCessazione =
+        document.getElementById("data_cessazione").value;
 
-        const annoInizio =
-            new Date(dataAssunzione).getFullYear();
+    const annoInizio =
+        new Date(dataAssunzione).getFullYear();
 
-        const annoFine =
-            new Date(dataCessazione).getFullYear();
+    const annoFine =
+        new Date(dataCessazione).getFullYear();
 
-        const annualita = [];
+    const annualita = [];
 
-        for (let anno = annoInizio; anno <= annoFine; anno++) {
-            annualita.push({
-                anno: anno,
-                retribuzione_netta:
-                    Number(document.getElementById(`netto_${anno}`).value),
-                mesi_utili:
-                    Number(document.getElementById(`mesi_${anno}`).value)
-            });
-        }
-
-        return {
-            nome_datore:
-                document.getElementById("nome_datore").value,
-
-            cognome_datore:
-                document.getElementById("cognome_datore").value,
-            email_cliente:
-                document.getElementById("email_cliente").value,
-
-            nome:
-                document.getElementById("nome").value,
-
-            cognome:
-                document.getElementById("cognome").value,
-
-            livello:
-                document.getElementById("livello").value,
-
-            convivente:
-                document.getElementById("tipo_rapporto").value === "convivente",
-
-                tempo_determinato:
-                document.getElementById("tipo_contratto").value === "determinato",
-
-            data_assunzione:
-                dataAssunzione,
-
-            data_cessazione:
-                dataCessazione,
-
-            ore_settimanali:
-                Number(document.getElementById("ore_settimanali").value),
-
-            annualita:
-                annualita,
-
-            variazione_istat_foi:
-                2,
-
-            anticipi:
-                Number(document.getElementById("anticipi").value)
-        };
+    for (let anno = annoInizio; anno <= annoFine; anno++) {
+        annualita.push({
+            anno: anno,
+            retribuzione_netta:
+                Number(document.getElementById(`netto_${anno}`).value || 0),
+            mesi_utili:
+                Number(document.getElementById(`mesi_${anno}`).value || 0)
+        });
     }
+
+    return {
+        nome_datore:
+            document.getElementById("nome_datore").value.trim(),
+
+        cognome_datore:
+            document.getElementById("cognome_datore").value.trim(),
+
+        email_cliente:
+            document.getElementById("email_cliente").value.trim(),
+
+        nome:
+            document.getElementById("nome").value.trim(),
+
+        cognome:
+            document.getElementById("cognome").value.trim(),
+
+        livello:
+            document.getElementById("livello").value,
+
+        convivente:
+            document.getElementById("tipo_rapporto").value === "convivente",
+
+        tempo_determinato:
+            document.getElementById("tipo_contratto").value === "determinato",
+
+        data_assunzione:
+            dataAssunzione,
+
+        data_cessazione:
+            dataCessazione,
+
+        ore_settimanali:
+            Number(document.getElementById("ore_settimanali").value || 0),
+
+        annualita:
+            annualita,
+
+        variazione_istat_foi:
+            2,
+
+        anticipi:
+            Number(document.getElementById("anticipi").value || 0)
+    };
+}
 
     function validaDatiCliente() {
         const nomeDatore = document.getElementById("nome_datore").value.trim();
@@ -980,16 +1029,65 @@ popolaSelectDateTFR();
     ["ore_settimanali", "Inserisci le ore settimanali"]
 ];
 
-for (const campo of campiObbligatori) {
-    const elemento = document.getElementById(campo[0]);
+for (const [idCampo, messaggio] of campiObbligatori) {
+    const elemento = document.getElementById(idCampo);
 
-    if (!elemento || !elemento.value.trim()) {
-        alert("⚠️ " + campo[1]);
+    if (!elemento || !String(elemento.value).trim()) {
+        alert("⚠️ " + messaggio);
+
         if (elemento) {
             elemento.focus();
+            elemento.scrollIntoView({
+                behavior: "smooth",
+                block: "center"
+            });
         }
+
         return;
     }
+}
+
+const dataAssunzione = new Date(
+    document.getElementById("data_assunzione").value
+);
+
+const dataCessazione = new Date(
+    document.getElementById("data_cessazione").value
+);
+
+if (dataCessazione < dataAssunzione) {
+
+    alert("⚠️ La data di cessazione non può essere precedente alla data di assunzione.");
+
+    const campoData = document.getElementById(
+        "data_cessazione"
+    );
+
+    campoData.focus();
+
+    campoData.scrollIntoView({
+        behavior: "smooth",
+        block: "center"
+    });
+
+    return;
+}
+
+const campoEmail = document.getElementById("email_cliente");
+const emailCliente = campoEmail.value.trim();
+
+const emailValida = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailCliente);
+
+if (!emailValida) {
+    alert("⚠️ Inserisci un indirizzo email valido.");
+
+    campoEmail.focus();
+    campoEmail.scrollIntoView({
+        behavior: "smooth",
+        block: "center"
+    });
+
+    return;
 }
 
         const richiesta = costruisciRichiesta();
@@ -1037,11 +1135,6 @@ localStorage.setItem(
 );
 
         localStorage.setItem(
-            "richiesta_tfr",
-            JSON.stringify(richiesta)
-        );
-
-        localStorage.setItem(
             "calcolo_tfr",
             JSON.stringify(dati)
         );
@@ -1061,6 +1154,11 @@ localStorage.setItem(
         }
 
         const richiesta = window.richiestaTFR || costruisciRichiesta();
+
+        if (!window.calcoloTFR) {
+    alert("⚠️ Prima esegui il calcolo TFR, poi scarica il report.");
+    return;
+}
 
         const nomeCliente = document.getElementById("nome_datore").value.trim();
         const cognomeCliente = document.getElementById("cognome_datore").value.trim();

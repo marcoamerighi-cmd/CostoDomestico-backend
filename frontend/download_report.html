@@ -182,6 +182,14 @@
             return null;
         }
 
+        if (!richiesta.dati_calcolo) {
+    alert(
+        "⚠️ Dati calcolo TFR non trovati. Effettua nuovamente il calcolo."
+    );
+
+    return null;
+}
+
         const risposta = await fetch(
             "/genera-pdf-tfr",
             {
