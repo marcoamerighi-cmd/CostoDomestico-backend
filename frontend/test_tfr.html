@@ -969,6 +969,29 @@ popolaSelectDateTFR();
 
         document.activeElement.blur();
 
+        const campiObbligatori = [
+    ["email_cliente", "Inserisci l'email"],
+    ["nome_datore", "Inserisci il nome del datore"],
+    ["cognome_datore", "Inserisci il cognome del datore"],
+    ["nome", "Inserisci il nome del lavoratore"],
+    ["cognome", "Inserisci il cognome del lavoratore"],
+    ["data_assunzione", "Inserisci la data di assunzione"],
+    ["data_cessazione", "Inserisci la data di cessazione"],
+    ["ore_settimanali", "Inserisci le ore settimanali"]
+];
+
+for (const campo of campiObbligatori) {
+    const elemento = document.getElementById(campo[0]);
+
+    if (!elemento || !elemento.value.trim()) {
+        alert("⚠️ " + campo[1]);
+        if (elemento) {
+            elemento.focus();
+        }
+        return;
+    }
+}
+
         const richiesta = costruisciRichiesta();
 
         const risposta = await fetch(
