@@ -460,7 +460,15 @@ e scarica un report PDF professionale.
     <label>Cognome datore</label>
     <input id="cognome_datore">
     <label>Email per ricevere il report</label>
-    <input id="email_cliente" type="email">
+    <input
+    id="email_cliente"
+    type="email"
+    autocomplete="email"
+    autocorrect="off"
+    autocapitalize="off"
+    spellcheck="false"
+    inputmode="email"
+>
     <h2>Dati Lavoratore</h2>
 
     <label>Nome lavoratore</label>
@@ -958,6 +966,9 @@ popolaSelectDateTFR();
     }
 
     async function calcolaTFR() {
+
+        document.activeElement.blur();
+        
         const richiesta = costruisciRichiesta();
 
         const risposta = await fetch(

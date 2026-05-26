@@ -208,11 +208,16 @@
 
     <div class="login-box">
         <input
-            type="email"
-            id="email_cliente"
-            placeholder="Inserisci la tua email"
-            onkeypress="gestisciInvio(event)"
-        >
+    type="email"
+    id="email_cliente"
+    placeholder="Inserisci la tua email"
+    onkeypress="gestisciInvio(event)"
+    autocomplete="email"
+    autocorrect="off"
+    autocapitalize="off"
+    spellcheck="false"
+    inputmode="email"
+>
 
         <button onclick="cercaOrdiniCliente()">
             Accedi alla mia area
@@ -274,6 +279,9 @@
     let storicoCalcoli = [];
 
     async function richiediMagicLink() {
+
+        document.activeElement.blur();
+        
     const email = document.getElementById("email_cliente").value.trim();
 
     if (!email) {

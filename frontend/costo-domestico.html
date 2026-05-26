@@ -669,7 +669,16 @@ box-shadow:0 2px 8px rgba(0,0,0,0.05);
       </p>
 
       <label>Email per ricevere il report</label>
-<input id="email_cliente" type="email" placeholder="esempio@email.it">
+<input
+    id="email_cliente"
+    type="email"
+    placeholder="esempio@email.it"
+    autocomplete="email"
+    autocorrect="off"
+    autocapitalize="off"
+    spellcheck="false"
+    inputmode="email"
+>
 <p class="small-note">
   L'email verrà usata per il pagamento e per ricevere il report.
 </p>
@@ -1178,6 +1187,8 @@ function suggerisciLivello() {
 
     function calcola() {
       
+       document.activeElement.blur();
+       
       const tipoLavoro = document.getElementById("tipoLavoro").value;
 const rapporto = document.getElementById("rapporto").value;
 const ore = document.getElementById("ore").value;
