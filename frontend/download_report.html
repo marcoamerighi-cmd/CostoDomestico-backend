@@ -183,7 +183,7 @@
         }
 
         const risposta = await fetch(
-            "https://costodomestico-backend.onrender.com/genera-pdf-tfr",
+            "/genera-pdf-tfr",
             {
                 method: "POST",
 
@@ -376,7 +376,7 @@ async function tracciaEventoBackend(evento) {
 
     try {
         await fetch(
-            "https://costodomestico-backend.onrender.com/track-event",
+            "/track-event",
             {
                 method: "POST",
                 headers: {
@@ -388,7 +388,7 @@ async function tracciaEventoBackend(evento) {
             }
         );
     } catch(e) {
-        console.log("Errore tracking:", e);
+        console.error("Errore tracking:", e);
     }
 }
 </script>

@@ -121,7 +121,7 @@
         "1"
       );
 
-      fetch("https://costodomestico-backend.onrender.com/salva-ordine-costo-domestico", {
+      fetch("/salva-ordine-costo-domestico", {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
@@ -132,7 +132,7 @@
           cognome_cliente: localStorage.getItem("cognome_cliente") || ""
         })
       }).catch(function(error) {
-        console.log("Errore salvataggio ordine:", error);
+        console.error("Errore salvataggio ordine:", errore);
       });
     }
 

@@ -281,7 +281,7 @@
     async function richiediMagicLink() {
 
         document.activeElement.blur();
-        
+
     const email = document.getElementById("email_cliente").value.trim();
 
     if (!email) {
@@ -378,13 +378,13 @@
             "Caricamento report in corso...";
 
         const risposta = await fetch(
-            "https://costodomestico-backend.onrender.com/ordini-cliente?email=" +
+            "/ordini-cliente?email=" +
             encodeURIComponent(email)
         );
 
         ordiniCliente = await risposta.json();
         const rispostaStorico = await fetch(
-    "https://costodomestico-backend.onrender.com/storico-calcoli?email=" +
+    "/storico-calcoli?email=" +
     encodeURIComponent(email)
 );
 

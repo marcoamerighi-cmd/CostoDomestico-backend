@@ -425,7 +425,7 @@
 
     async function caricaDashboard() {
         const risposta = await fetch(
-            "https://costodomestico-backend.onrender.com/storico-ordini"
+            "/storico-ordini"
         );
 
         tuttiOrdini = await risposta.json();
@@ -438,7 +438,7 @@
 
     async function caricaFunnelInterno() {
         const risposta = await fetch(
-            "https://costodomestico-backend.onrender.com/analytics-funnel-interno"
+            "/analytics-funnel-interno"
         );
 
         const dati = await risposta.json();
@@ -509,7 +509,7 @@
 
     async function caricaClienti() {
         const rispostaClienti = await fetch(
-            "https://costodomestico-backend.onrender.com/clienti"
+            "/clienti"
         );
 
         const clienti = await rispostaClienti.json();
@@ -812,7 +812,7 @@
         if (!conferma) return;
 
         const risposta = await fetch(
-            "https://costodomestico-backend.onrender.com/elimina-ordini-email?email=" + encodeURIComponent(email),
+            "/elimina-ordini-email?email=" + encodeURIComponent(email),
             {
                 method: "DELETE"
             }
@@ -841,7 +841,7 @@
         if (!conferma) return;
 
         const risposta = await fetch(
-            "https://costodomestico-backend.onrender.com/elimina-ordini-senza-email",
+            "/elimina-ordini-senza-email",
             {
                 method: "DELETE"
             }

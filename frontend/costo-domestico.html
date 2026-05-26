@@ -616,7 +616,7 @@ box-shadow:0 2px 8px rgba(0,0,0,0.05);
     try {
 
         await fetch(
-            "https://costodomestico-backend.onrender.com/track-event",
+            "/track-event",
             {
                 method: "POST",
                 headers: {
@@ -629,7 +629,7 @@ box-shadow:0 2px 8px rgba(0,0,0,0.05);
         );
 
     } catch(e) {
-        console.log("Errore tracking:", e);
+        console.error("Errore tracking:", e);
     }
 }
 
@@ -1188,7 +1188,7 @@ function suggerisciLivello() {
     function calcola() {
       
        document.activeElement.blur();
-       
+
       const tipoLavoro = document.getElementById("tipoLavoro").value;
 const rapporto = document.getElementById("rapporto").value;
 const ore = document.getElementById("ore").value;
@@ -1813,7 +1813,7 @@ if (typeof gtag === "function") {
     }
 
     const risposta = await fetch(
-      "https://costodomestico-backend.onrender.com/crea-checkout-costo-domestico",
+      "/crea-checkout-costo-domestico",
       {
         method: "POST",
         headers: {

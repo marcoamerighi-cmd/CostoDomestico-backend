@@ -968,11 +968,11 @@ popolaSelectDateTFR();
     async function calcolaTFR() {
 
         document.activeElement.blur();
-        
+
         const richiesta = costruisciRichiesta();
 
         const risposta = await fetch(
-            "https://costodomestico-backend.onrender.com/calcola-tfr",
+            "/calcola-tfr",
             {
                 method: "POST",
                 headers: {
@@ -1067,7 +1067,7 @@ localStorage.setItem(
 
         try {
             const risposta = await fetch(
-                "https://costodomestico-backend.onrender.com/crea-checkout-tfr",
+                "/crea-checkout-tfr",
                 {
                     method: "POST",
                     headers: {
@@ -1163,7 +1163,7 @@ async function tracciaEventoBackend(evento) {
     try {
 
         await fetch(
-            "https://costodomestico-backend.onrender.com/track-event",
+            "/track-event",
             {
                 method: "POST",
                 headers: {
@@ -1176,7 +1176,7 @@ async function tracciaEventoBackend(evento) {
         );
 
     } catch(e) {
-        console.log("Errore tracking:", e);
+        console.error("Errore tracking:", e);
     }
 
 }

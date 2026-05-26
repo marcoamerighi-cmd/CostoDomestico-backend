@@ -396,7 +396,7 @@ const emailCliente =
     "";
 
 if (emailCliente) {
-    await fetch("https://costodomestico-backend.onrender.com/invia-email-costo-domestico", {
+    await fetch("/invia-email-costo-domestico", {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
