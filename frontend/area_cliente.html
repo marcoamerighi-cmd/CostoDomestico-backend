@@ -465,31 +465,38 @@ storicoCalcoli = await rispostaStorico.json();
                     <td>${badgeStato(ordine.stato)}</td>
                     <td>${formattaData(ordine.data_ordine)}</td>
                     <td>
-                        ${
-                            ordine.pdf_file
-                            ? `
-                                <a href="/download-pdf/${ordine.id}">
-                                    <button class="btn-download">
-                                        Scarica PDF
-                                    </button>
-                                </a>
-                            `
-                            : `
-    <button
-        class="btn-download"
-        style="background:#f59e0b;"
-        onclick="rigeneraPdf('${prodottoNormalizzato(ordine.prodotto)}', '${ordine.sessione_stripe}')"
-    >
-        Rigenera PDF
-    </button>
-`
-                        }
-                    </td>
-                </tr>
-            `;
-        });
+    ${
+        ordine.pdf_file
+        ? `
+            <a href="/download-pdf/${ordine.id}">
+                <button class="btn-download">
+                    Scarica PDF
+                </button>
+            </a>
+        `
+        : `
+            <button
+                class="btn-download"
+                style="background:#f59e0b;"
+                onclick="rigeneraPdf('${prodottoNormalizzato(ordine.prodotto)}', '${ordine.sessione_stripe}')"
+            >
+                Recupera PDF
+            </button>
+
+            <br>
+
+            <small style="color:#777;">
+                Il report verrà rigenerato automaticamente.
+            </small>
+        `
     }
-    function mostraStoricoCalcoli() {
+</td>
+</tr>
+`;
+});
+}
+
+function mostraStoricoCalcoli() {
 
     if (storicoCalcoli.length === 0) {
         return;
