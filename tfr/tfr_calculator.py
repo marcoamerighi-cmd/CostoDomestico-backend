@@ -230,9 +230,10 @@ def calcola_tfr_annualita_lorde(
             "quota_tfr": round(quota_tfr, 2)
         })
 
-    coefficiente = calcola_coefficiente_rivalutazione(
-        variazione_istat_foi
-    )
+    coefficiente = get_coefficiente_tfr(
+    anno=data_cessazione.year,
+    mese=data_cessazione.month
+)
 
     rivalutazione = calcola_rivalutazione_tfr(
         dettaglio_anni=dettaglio_anni,
