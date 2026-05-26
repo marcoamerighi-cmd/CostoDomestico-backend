@@ -1,3 +1,5 @@
+import json
+from pathlib import Path
 COEFFICIENTI_TFR = {
     2016: {
         1: 0.125000,
@@ -113,6 +115,28 @@ COEFFICIENTI_TFR = {
     }
 }
 
+def carica_coefficienti_json() -> dict:
+    percorso_json = Path(__file__).parent / "coefficienti_aggiornamento.json"
+
+    if not percorso_json.exists():
+        return {}
+
+    try:
+        with open(percorso_json, "r", encoding="utf-8") as file:
+            dati_json = json.load(file)
+
+        coefficienti_convertiti = {}
+
+        for anno, mesi in dati_json.items():
+            coefficienti_convertiti[int(anno)] = {
+                int(mese): valore
+                for mese, valore in mesi.items()
+            }
+
+        return coefficienti_convertiti
+
+    except Exception:
+        return {}
 
 def trova_coefficiente_tfr(
     anno: int,
@@ -149,4 +173,28 @@ def get_ultimo_coefficiente_disponibile() -> float:
 
 
 def get_coefficiente_tfr(anno: int, mese: int) -> float:
+    coefficienti_json = carica_coefficienti_json()
+
+    if coefficienti_json:
+        coefficienti_uniti = {
+            **COEFFICIENTI_TFR,
+            **coefficienti_json
+        }
+
+        anno_corrente = anno
+
+        while anno_corrente >= 2016:
+            coefficienti_anno = coefficienti_uniti.get(
+                anno_corrente,
+                {}
+            )
+
+            mese_partenza = mese if anno_corrente == anno else 12
+
+            for mese_corrente in range(mese_partenza, 0, -1):
+                if mese_corrente in coefficienti_anno:
+                    return coefficienti_anno[mese_corrente]
+
+            anno_corrente -= 1
+
     return trova_coefficiente_tfr(anno, mese)
