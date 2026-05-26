@@ -1487,6 +1487,12 @@ def pagina_tfr_tool():
         media_type="text/html"
     )
 
+@app.get("/calcolo-tfr-colf-badanti.html")
+def pagina_calcolo_tfr_colf_badanti():
+    return FileResponse(
+        path=str(FRONTEND_DIR / "calcolo-tfr-colf-badanti.html")
+    )
+
 
 
 
