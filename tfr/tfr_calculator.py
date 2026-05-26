@@ -149,9 +149,9 @@ def calcola_rivalutazione_tfr(
         quota_tfr = riga["quota_tfr"]
 
         coefficiente_anno = get_coefficiente_tfr(
-    anno=anno,
-    mese=12
-)
+            anno=anno,
+            mese=12
+        )
 
         rivalutazione_anno = round(
             tfr_accantonato * coefficiente_anno / 100,
@@ -230,16 +230,9 @@ def calcola_tfr_annualita_lorde(
             "quota_tfr": round(quota_tfr, 2)
         })
 
-    data_cessazione_dt = datetime.strptime(
-        data_cessazione,
-        "%Y-%m-%d"
+    coefficiente = calcola_coefficiente_rivalutazione(
+        variazione_istat_foi
     )
-
-    coefficiente = get_coefficiente_tfr(
-    anno=data_cessazione_dt.year,
-    mese=data_cessazione_dt.month
-    )
-
 
     rivalutazione = calcola_rivalutazione_tfr(
         dettaglio_anni=dettaglio_anni,
