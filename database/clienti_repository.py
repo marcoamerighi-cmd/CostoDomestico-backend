@@ -53,6 +53,8 @@ def salva_o_aggiorna_cliente(
     if not email:
         return
 
+    email = email.strip().lower()
+
     conn = get_connessione()
     cursor = conn.cursor()
 
