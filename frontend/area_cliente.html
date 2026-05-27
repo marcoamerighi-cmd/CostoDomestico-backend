@@ -2,16 +2,54 @@
 <html lang="it">
 <head>
     <meta charset="UTF-8">
-    <title>Area Cliente - CostoDomestico</title>
+    <title>Area Clienti - CostoDomestico.it</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <style>
         body {
             font-family: Arial, sans-serif;
             background: #f4f6f9;
-            padding: 30px 16px;
+            padding: 0 16px 30px;
             color: #333;
             margin: 0;
+        }
+
+        header {
+            display: flex;
+            justify-content: center;
+            padding: 24px 0 22px;
+            background: transparent;
+        }
+
+        .brand-logo {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            background: rgba(255,255,255,0.96);
+            color: #0f172a;
+            padding: 10px 18px;
+            border-radius: 999px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+            text-decoration: none;
+        }
+
+        .brand-logo svg {
+            width: 44px;
+            height: 44px;
+            flex: 0 0 auto;
+        }
+
+        .brand-name {
+            font-size: 28px;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            color: #0b4dbb;
+            white-space: nowrap;
+        }
+
+        .brand-it {
+            color: #16a34a;
         }
 
         .container {
@@ -23,28 +61,18 @@
             box-shadow: 0 4px 18px rgba(0,0,0,0.08);
         }
 
-        .brand {
-            text-align: center;
-            font-size: 28px;
-            font-weight: 800;
-            color: #0b4dbb;
-            margin-bottom: 10px;
-        }
-
-        .brand span {
-            color: #16a34a;
-        }
-
         h1 {
             color: #1f3c88;
             text-align: center;
             margin: 8px 0;
+            font-size: 34px;
         }
 
         .intro {
             text-align: center;
             color: #555;
             margin-bottom: 24px;
+            line-height: 1.5;
         }
 
         .login-box {
@@ -79,6 +107,14 @@
 
         button:hover {
             background: #162d66;
+        }
+
+        .btn-magic {
+            background: #16a34a;
+        }
+
+        .btn-magic:hover {
+            background: #0f7a35;
         }
 
         .btn-download {
@@ -179,6 +215,10 @@
         }
 
         @media (max-width: 700px) {
+            body {
+                padding: 0 12px 24px;
+            }
+
             .container {
                 padding: 22px;
             }
@@ -190,53 +230,67 @@
             button {
                 width: 100%;
             }
+
+            .brand-name {
+                font-size: 22px;
+            }
+
+            .brand-logo svg {
+                width: 38px;
+                height: 38px;
+            }
         }
-
-
-.brand-title{
-    font-size:46px;
-    font-weight:800;
-    color:#1f3c88;
-    line-height:1;
-}
-
-.brand-title span{
-    color:#16a34a;
-}
-
     </style>
 </head>
 
 <body>
 
-<div class="brand-title">
-    CostoDomestico<span>.it</span>
-</div>
+<header>
+    <a href="/" class="brand-logo" aria-label="CostoDomestico.it">
 
-<h1>Area Clienti</h1>
+        <svg viewBox="0 0 64 64" role="img" aria-hidden="true">
+            <path d="M32 4 L56 13 V29 C56 45 45 57 32 61 C19 57 8 45 8 29 V13 Z" fill="#ffffff" stroke="#0b4dbb" stroke-width="4"/>
+            <path d="M18 31 L32 20 L46 31 V45 H18 Z" fill="#0b4dbb"/>
+            <path d="M24 36 H30 V42 H24 Z M34 36 H40 V42 H34 Z" fill="#ffffff"/>
+            <path d="M17 50 C29 48 42 39 52 25" fill="none" stroke="#16a34a" stroke-width="5" stroke-linecap="round"/>
+            <path d="M48 24 L57 19 L55 30 Z" fill="#16a34a"/>
+            <rect x="20" y="46" width="7" height="8" fill="#16a34a"/>
+            <rect x="30" y="43" width="7" height="11" fill="#16a34a"/>
+            <rect x="40" y="38" width="7" height="16" fill="#16a34a"/>
+        </svg>
 
-<p class="intro">
-    Accedi con la tua email per consultare i report acquistati
-    e scaricare nuovamente i PDF.
-</p>
+        <span class="brand-name">
+            CostoDomestico<span class="brand-it">.it</span>
+        </span>
+
+    </a>
+</header>
+
+<div class="container">
+
+    <h1>Area Clienti</h1>
+
+    <p class="intro">
+        Accedi con la tua email per consultare i report acquistati
+        e scaricare nuovamente i PDF.
+    </p>
 
     <div class="login-box">
         <input
-    type="email"
-    id="email_cliente"
-    placeholder="Inserisci la tua email"
-    onkeypress="gestisciInvio(event)"
-    autocomplete="email"
-    autocorrect="off"
-    autocapitalize="off"
-    spellcheck="false"
-    inputmode="email"
->
+            type="email"
+            id="email_cliente"
+            placeholder="Inserisci la tua email"
+            onkeypress="gestisciInvio(event)"
+            autocomplete="email"
+            autocorrect="off"
+            autocapitalize="off"
+            spellcheck="false"
+            inputmode="email"
+        >
 
-        <button onclick="richiediMagicLink()" style="background:#16a34a;">
-    Ricevi link di accesso via email
-</button>
-
+        <button onclick="richiediMagicLink()" class="btn-magic">
+            Ricevi link di accesso via email
+        </button>
     </div>
 
     <div id="messaggio" class="msg"></div>
@@ -289,53 +343,53 @@
     let storicoCalcoli = [];
 
     async function richiediMagicLink() {
-
         document.activeElement.blur();
 
-    const email = document.getElementById("email_cliente").value.trim();
+        const email = document
+            .getElementById("email_cliente")
+            .value
+            .trim();
 
-    if (!email) {
-        document.getElementById("messaggio").innerText =
-            "Inserisci prima la tua email.";
-        return;
-    }
-
-    document.getElementById("messaggio").innerText =
-        "Generazione link di accesso in corso...";
-
-    const risposta = await fetch(
-        "/richiedi-magic-link",
-        {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                email: email
-            })
+        if (!email) {
+            document.getElementById("messaggio").innerText =
+                "Inserisci prima la tua email.";
+            return;
         }
-    );
 
-    const dati = await risposta.json();
-
-    if (!dati.success) {
         document.getElementById("messaggio").innerText =
-            dati.errore || "Errore durante la generazione del link.";
-        return;
-    }
+            "Generazione link di accesso in corso...";
 
-    document.getElementById("messaggio").innerHTML =
-        `
-        Link generato correttamente.<br>
-        <a href="${dati.magic_link}" style="color:#1f3c88; font-weight:bold;">
-            Apri area cliente con Magic Link
-        </a>
-        `;
-}
+        const risposta = await fetch(
+            "/richiedi-magic-link",
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    email: email
+                })
+            }
+        );
+
+        const dati = await risposta.json();
+
+        if (!dati.success) {
+            document.getElementById("messaggio").innerText =
+                dati.errore || "Errore durante la generazione del link.";
+            return;
+        }
+
+        document.getElementById("messaggio").innerHTML =
+            `
+            Link generato correttamente.<br>
+            Controlla la tua email e apri il link di accesso ricevuto.
+            `;
+    }
 
     function gestisciInvio(event) {
         if (event.key === "Enter") {
-            cercaOrdiniCliente();
+            richiediMagicLink();
         }
     }
 
@@ -376,7 +430,10 @@
     }
 
     async function cercaOrdiniCliente() {
-        const email = document.getElementById("email_cliente").value.trim();
+        const email = document
+            .getElementById("email_cliente")
+            .value
+            .trim();
 
         if (!email) {
             document.getElementById("messaggio").innerText =
@@ -393,12 +450,13 @@
         );
 
         ordiniCliente = await risposta.json();
-        const rispostaStorico = await fetch(
-    "/storico-calcoli?email=" +
-    encodeURIComponent(email)
-);
 
-storicoCalcoli = await rispostaStorico.json();
+        const rispostaStorico = await fetch(
+            "/storico-calcoli?email=" +
+            encodeURIComponent(email)
+        );
+
+        storicoCalcoli = await rispostaStorico.json();
 
         if (ordiniCliente.length === 0) {
             document.getElementById("tabella").style.display = "none";
@@ -475,147 +533,146 @@ storicoCalcoli = await rispostaStorico.json();
                     <td>${badgeStato(ordine.stato)}</td>
                     <td>${formattaData(ordine.data_ordine)}</td>
                     <td>
-    ${
-        ordine.pdf_file
-        ? `
-            <a href="/download-pdf/${ordine.id}">
-                <button class="btn-download">
-                    Scarica PDF
-                </button>
-            </a>
-        `
-        : `
-            <button
-                class="btn-download"
-                style="background:#f59e0b;"
-                onclick="rigeneraPdf('${prodottoNormalizzato(ordine.prodotto)}', '${ordine.sessione_stripe}')"
+                        ${
+                            ordine.pdf_file
+                            ? `
+                                <a href="/download-pdf/${ordine.id}">
+                                    <button class="btn-download">
+                                        Scarica PDF
+                                    </button>
+                                </a>
+                            `
+                            : `
+                                <button
+                                    class="btn-download"
+                                    style="background:#f59e0b;"
+                                    onclick="rigeneraPdf('${prodottoNormalizzato(ordine.prodotto)}', '${ordine.sessione_stripe}')"
+                                >
+                                    Recupera PDF
+                                </button>
+
+                                <br>
+
+                                <small style="color:#777;">
+                                    Il report verrà rigenerato automaticamente.
+                                </small>
+                            `
+                        }
+                    </td>
+                </tr>
+            `;
+        });
+    }
+
+    function mostraStoricoCalcoli() {
+        const vecchio =
+            document.getElementById("storico-calcoli-box");
+
+        if (vecchio) {
+            vecchio.remove();
+        }
+
+        if (storicoCalcoli.length === 0) {
+            return;
+        }
+
+        const container = document.querySelector(".container");
+
+        let html = `
+            <div
+                id="storico-calcoli-box"
+                style="
+                    margin-top:40px;
+                    border-top:2px solid #eee;
+                    padding-top:25px;
+                "
             >
-                Recupera PDF
-            </button>
 
-            <br>
-
-            <small style="color:#777;">
-                Il report verrà rigenerato automaticamente.
-            </small>
-        `
-    }
-</td>
-</tr>
-`;
-});
-}
-
-function mostraStoricoCalcoli() {
-
-    if (storicoCalcoli.length === 0) {
-        return;
-    }
-
-    const container = document.querySelector(".container");
-
-    let html = `
-    <div style="
-        margin-top:40px;
-        border-top:2px solid #eee;
-        padding-top:25px;
-    ">
-
-    <h2 style="color:#1f3c88;">
-        Storico Calcoli
-    </h2>
-    `;
-
-    storicoCalcoli.forEach(calcolo => {
-
-        html += `
-        <div style="
-            border:1px solid #ddd;
-            border-radius:12px;
-            padding:15px;
-            margin-bottom:12px;
-            background:#fafafa;
-        ">
-            <strong>${calcolo.tipo}</strong><br>
-
-            ${calcolo.titolo}<br>
-
-            <small>
-                ${calcolo.dettaglio}
-            </small><br>
-
-            <strong>
-            € ${Number(calcolo.importo).toFixed(2)}
-            </strong>
-        </div>
+            <h2 style="color:#1f3c88;">
+                Storico Calcoli
+            </h2>
         `;
-    });
 
-    html += "</div>";
+        storicoCalcoli.forEach(calcolo => {
+            html += `
+                <div style="
+                    border:1px solid #ddd;
+                    border-radius:12px;
+                    padding:15px;
+                    margin-bottom:12px;
+                    background:#fafafa;
+                ">
+                    <strong>${calcolo.tipo}</strong><br>
+                    ${calcolo.titolo}<br>
 
-    const vecchio =
-        document.getElementById(
-            "storico-calcoli-box"
+                    <small>
+                        ${calcolo.dettaglio}
+                    </small><br>
+
+                    <strong>
+                        € ${Number(calcolo.importo).toFixed(2)}
+                    </strong>
+                </div>
+            `;
+        });
+
+        html += "</div>";
+
+        const div = document.createElement("div");
+        div.innerHTML = html;
+
+        container.appendChild(div.firstElementChild);
+    }
+
+    async function verificaTokenDaUrl() {
+        const params = new URLSearchParams(window.location.search);
+        const token = params.get("token");
+
+        if (!token) {
+            return;
+        }
+
+        document.getElementById("messaggio").innerText =
+            "Verifica accesso in corso...";
+
+        const risposta = await fetch(
+            "/verifica-magic-link?token=" +
+            encodeURIComponent(token)
         );
 
-    if (vecchio) {
-        vecchio.remove();
+        const dati = await risposta.json();
+
+        if (!dati.success) {
+            document.getElementById("messaggio").innerText =
+                "Link non valido o scaduto.";
+            return;
+        }
+
+        document.getElementById("email_cliente").value =
+            dati.cliente.email;
+
+        cercaOrdiniCliente();
     }
 
-    const div = document.createElement("div");
+    function rigeneraPdf(tipo, sessioneStripe) {
+        if (!sessioneStripe) {
+            alert("Sessione pagamento non trovata.");
+            return;
+        }
 
-    div.id = "storico-calcoli-box";
-    div.innerHTML = html;
+        if (tipo === "TFR") {
+            window.location.href =
+                "/download_report.html?session_id=" +
+                encodeURIComponent(sessioneStripe);
+            return;
+        }
 
-    container.appendChild(div);
-}
-
-async function verificaTokenDaUrl() {
-    const params = new URLSearchParams(window.location.search);
-    const token = params.get("token");
-
-    if (!token) {
-        return;
-    }
-
-    document.getElementById("messaggio").innerText =
-        "Verifica accesso in corso...";
-
-    const risposta = await fetch(
-        "/verifica-magic-link?token=" + encodeURIComponent(token)
-    );
-
-    const dati = await risposta.json();
-
-    if (!dati.success) {
-        document.getElementById("messaggio").innerText =
-            "Link non valido o scaduto.";
-        return;
-    }
-
-    document.getElementById("email_cliente").value =
-        dati.cliente.email;
-
-    cercaOrdiniCliente();
-}
-
-verificaTokenDaUrl();
-function rigeneraPdf(tipo, sessioneStripe) {
-
-    if (!sessioneStripe) {
-        alert("Sessione pagamento non trovata.");
-        return;
-    }
-
-    if (tipo === "TFR") {
         window.location.href =
-            "/download_report.html?session_id=" + encodeURIComponent(sessioneStripe);
-        return;
+            "/download-costo-domestico?session_id=" +
+            encodeURIComponent(sessioneStripe);
     }
 
-    window.location.href =
-        "/download-costo-domestico?session_id=" + encodeURIComponent(sessioneStripe);
-}
+    verificaTokenDaUrl();
 </script>
 
 </body>
