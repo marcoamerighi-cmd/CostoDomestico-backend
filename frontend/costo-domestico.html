@@ -746,8 +746,15 @@ Il livello viene suggerito automaticamente, ma puoi modificarlo.
           </p>
 
           <label>Netto mensile concordato</label>
-          <input id="nettoMensileConcordato" type="number" value="0" min="0" step="0.01"
-                 oninput="modalitaPagaNonConvivente = 'mensile'; aggiornaPagaOrariaDaMensile();">
+          <input
+    id="nettoMensileConcordato"
+    type="number"
+    value="0"
+    min="0"
+    step="0.01"
+    onwheel="this.blur()"
+    oninput="modalitaPagaNonConvivente = 'mensile'; aggiornaPagaOrariaDaMensile();"
+>
           <p class="small-note">
             Oppure inserisci il netto mensile: la paga netta oraria viene calcolata automaticamente.
           </p>
