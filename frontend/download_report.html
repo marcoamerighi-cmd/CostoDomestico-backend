@@ -306,7 +306,7 @@
                 .textContent =
                 "Preparazione nuovo download PDF...";
 
-            const blob = await generaBlobPdf(false);
+            const blob = await generaBlobPdf(true);
 
             if (!blob) {
                 return;
