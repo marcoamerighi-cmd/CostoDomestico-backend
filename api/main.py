@@ -1335,16 +1335,6 @@ def reset_test_dashboard_endpoint():
 
     return {
         "success": True,
-        "messaggio": "Dashboard ripulita"
-    }
-
-    conn.commit()
-
-    cursor.close()
-    conn.close()
-
-    return {
-        "success": True,
         "messaggio": "Dashboard test ripulita"
     }
 
