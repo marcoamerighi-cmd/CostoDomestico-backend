@@ -54,6 +54,7 @@ from database.ordini_repository import (
     reset_dashboard_test,
     salva_storico_calcolo,
     leggi_storico_calcoli,
+    elimina_storico_calcoli,
     statistiche_conversione,
 )
 from database.clienti_repository import (
@@ -1344,6 +1345,18 @@ def reset_test_dashboard_endpoint():
     return {
         "success": False,
         "messaggio": "Endpoint disabilitato in produzione"
+    }
+
+@app.delete("/elimina-storico-calcoli")
+def elimina_storico_calcoli_endpoint(
+    email: str
+):
+
+    eliminati = elimina_storico_calcoli(email)
+
+    return {
+        "success": True,
+        "eliminati": eliminati
     }
 
 @app.get("/immagini/report-tfr-preview.png")

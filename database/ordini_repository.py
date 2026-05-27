@@ -203,6 +203,32 @@ def leggi_storico_calcoli(
 
     return risultati
 
+def elimina_storico_calcoli(
+    email_cliente: str
+):
+    conn = get_connessione()
+    cursor = conn.cursor()
+
+    email_pulita = (
+        email_cliente or ""
+    ).lower().strip()
+
+    cursor.execute("""
+        DELETE FROM storico_calcoli
+        WHERE LOWER(TRIM(email_cliente)) = %s
+    """, (
+        email_pulita,
+    ))
+
+    eliminati = cursor.rowcount
+
+    conn.commit()
+
+    cursor.close()
+    conn.close()
+
+    return eliminati
+
 
 def aggiorna_stato_ordine(
     sessione_stripe: str,
