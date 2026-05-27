@@ -200,10 +200,11 @@
                 },
 
                 body: JSON.stringify({
-                    ...richiesta,
-                    session_id: sessionId,
-                    email_cliente: richiesta.email_cliente || ""
-                })
+    ...richiesta,
+    session_id: sessionId,
+    email_cliente: richiesta.email_cliente || "",
+    invia_email: inviaEmail
+})
             }
         );
 
@@ -315,8 +316,8 @@
             scaricaBlob(blob);
 
             document.getElementById("loading_text")
-                .textContent =
-                "PDF scaricato nuovamente.";
+    .textContent =
+    "PDF scaricato nuovamente. Una copia è stata inviata anche via email.";
 
         } catch (errore) {
 
