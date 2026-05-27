@@ -1341,11 +1341,9 @@ def elimina_ordini_senza_email():
 @app.delete("/reset-test-dashboard")
 def reset_test_dashboard_endpoint():
 
-    reset_dashboard_test()
-
     return {
-        "success": True,
-        "messaggio": "Dashboard test ripulita"
+        "success": False,
+        "messaggio": "Endpoint disabilitato in produzione"
     }
 
 @app.get("/immagini/report-tfr-preview.png")
