@@ -513,18 +513,28 @@ def genera_pdf(richiesta: RichiestaTFR):
 
     ultima_email = getattr(app.state, "ultima_email_tfr", None)
 
-    if richiesta.email_cliente and ultima_email != chiave_email:
-        try:
-            invia_report_tfr_email(
-                destinatario=richiesta.email_cliente,
-                percorso_pdf=str(percorso_pdf),
-                nome_file=nome_file
-            )
+forza_invio_email = richiesta.invia_email
 
-            app.state.ultima_email_tfr = chiave_email
+deve_inviare_email = (
+    richiesta.email_cliente
+    and (
+        forza_invio_email
+        or ultima_email != chiave_email
+    )
+)
 
-        except Exception as errore:
-            print("Errore invio email:", errore)
+if deve_inviare_email:
+    try:
+        invia_report_tfr_email(
+            destinatario=richiesta.email_cliente,
+            percorso_pdf=str(percorso_pdf),
+            nome_file=nome_file
+        )
+
+        app.state.ultima_email_tfr = chiave_email
+
+    except Exception as errore:
+        print("Errore invio email:", errore)
 
     return FileResponse(
         path=str(percorso_pdf),
