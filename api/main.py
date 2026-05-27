@@ -1305,37 +1305,17 @@ def elimina_ordini_email(email: str):
 @app.delete("/elimina-ordini-senza-email")
 def elimina_ordini_senza_email():
 
-    from database.ordini_repository import get_connessione
-
-    conn = get_connessione()
-    cur = conn.cursor()
-
-    cur.execute("""
-        DELETE
-        FROM ordini
-        WHERE email_cliente IS NULL
-        OR TRIM(email_cliente) = ''
-    """)
-
-    eliminati = cur.rowcount
-
-    conn.commit()
-    cur.close()
-    conn.close()
-
     return {
-        "success": True,
-        "ordini_eliminati": eliminati
+        "success": False,
+        "messaggio": "Endpoint disabilitato in produzione"
     }
 
 @app.delete("/reset-test-dashboard")
 def reset_test_dashboard_endpoint():
 
-    reset_dashboard_test()
-
     return {
-        "success": True,
-        "messaggio": "Dashboard test ripulita"
+        "success": False,
+        "messaggio": "Endpoint disabilitato in produzione"
     }
 
 @app.get("/immagini/report-tfr-preview.png")
