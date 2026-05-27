@@ -191,20 +191,57 @@
                 width: 100%;
             }
         }
+
+        .brand-wrapper{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    gap:12px;
+    margin-bottom:10px;
+}
+
+.logo-area{
+    width:72px;
+    height:72px;
+}
+
+.brand-title{
+    font-size:46px;
+    font-weight:800;
+    color:#1f3c88;
+    line-height:1;
+}
+
+.brand-title span{
+    color:#16a34a;
+}
+
     </style>
 </head>
 
 <body>
 
-<div class="container">
+<div class="brand-wrapper">
 
-    <div class="brand">CostoDomestico<span>.it</span></div>
+    <img
+        src="/favicon-512.png?v=2"
+        alt="CostoDomestico.it"
+        class="logo-area"
+    >
 
-    <h1>Area Cliente</h1>
+    <div class="brand-title">
+        CostoDomestico<span>.it</span>
+    </div>
 
-    <p class="intro">
-        Accedi con la tua email per consultare i report acquistati e scaricare nuovamente i PDF.
-    </p>
+</div>
+
+<h1>Area Clienti</h1>
+
+<p class="intro">
+    Accedi con la tua email per consultare i report acquistati
+    e scaricare nuovamente i PDF.
+</p>
 
     <div class="login-box">
         <input
