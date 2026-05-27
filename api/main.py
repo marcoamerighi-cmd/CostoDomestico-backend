@@ -649,21 +649,21 @@ def crea_checkout_costo_domestico(
     richiesta: RichiestaOrdineCostoDomestico
 ):
 
+    email_cliente = (richiesta.email_cliente or "").strip().lower()
+    nome_cliente = (richiesta.nome_cliente or "").strip()
+    cognome_cliente = (richiesta.cognome_cliente or "").strip()
+
     nome_completo = (
-        f"{richiesta.nome_cliente} {richiesta.cognome_cliente}"
+        f"{nome_cliente} {cognome_cliente}"
         .strip()
     )
 
-    sessione = stripe.checkout.Session.create(
-        payment_method_types=["card"],
-        mode="payment",
+    parametri_sessione = {
+        "payment_method_types": ["card"],
+        "mode": "payment",
+        "billing_address_collection": "auto",
 
-        customer_email=richiesta.email_cliente or None,
-        customer_creation="always",
-
-        billing_address_collection="auto",
-
-        custom_fields=[
+        "custom_fields": [
             {
                 "key": "nome_completo",
                 "label": {
@@ -675,38 +675,47 @@ def crea_checkout_costo_domestico(
             }
         ],
 
-                line_items=[
-                    {
-                        "price_data": {
-                            "currency": "eur",
-                            "product_data": {
-                                "name": "Report Costo Domestico - CostoDomestico.it",
-                                "images": [
-                                      "https://costodomestico.it/favicon-512.png"
-                                ]
-                            },
-                            "unit_amount": 990
-                        },
-                        "quantity": 1
-                    }
-                ],
+        "line_items": [
+            {
+                "price_data": {
+                    "currency": "eur",
+                    "product_data": {
+                        "name": "Report Costo Domestico - CostoDomestico.it",
+                        "images": [
+                            "https://costodomestico.it/favicon-512.png"
+                        ]
+                    },
+                    "unit_amount": 990
+                },
+                "quantity": 1
+            }
+        ],
 
-        metadata={
+        "metadata": {
             "prodotto": "Costo Domestico",
-            "email_cliente": richiesta.email_cliente,
-            "nome_cliente": richiesta.nome_cliente,
-            "cognome_cliente": richiesta.cognome_cliente,
+            "email_cliente": email_cliente,
+            "nome_cliente": nome_cliente,
+            "cognome_cliente": cognome_cliente,
             "nome_completo": nome_completo
         },
 
-        success_url=(
+        "success_url": (
             "https://costodomestico.it/download_costo_domestico.html"
             "?session_id={CHECKOUT_SESSION_ID}"
         ),
 
-        cancel_url="https://costodomestico.it/costo-domestico.html"
-    )
+        "cancel_url": "https://costodomestico.it/costo-domestico.html"
+    }
 
+    if email_cliente:
+        parametri_sessione["customer_email"] = email_cliente
+
+    parametri_sessione["customer_creation"] = "always"
+
+    sessione = stripe.checkout.Session.create(
+        **parametri_sessione
+    )
+    
     salva_ordine(
         email_cliente=richiesta.email_cliente,
         nome_cliente=richiesta.nome_cliente,
