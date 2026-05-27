@@ -14,12 +14,6 @@
   </url>
 
   <url>
-    <loc>https://costodomestico.it/test_tfr.html</loc>
-    <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
-  </url>
-
-  <url>
     <loc>https://costodomestico.it/calcolo-tfr-colf-badanti.html</loc>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>

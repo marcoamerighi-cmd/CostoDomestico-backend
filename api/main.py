@@ -1473,7 +1473,7 @@ def pagina_contributi_badante_54_ore():
 @app.get("/tfr-tool")
 def pagina_tfr_tool():
     return FileResponse(
-        path=str(FRONTEND_DIR / "test_tfr.html"),
+        path=str(FRONTEND_DIR / "calcolo-tfr-colf-badanti.html"),
         media_type="text/html"
     )
 
