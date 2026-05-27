@@ -126,6 +126,7 @@ class RichiestaTFR(BaseModel):
 
     anticipi: float = 0
     variazione_istat_foi: float = 2
+    invia_email: bool = False
 
 
 class RichiestaCheckoutTFR(BaseModel):
