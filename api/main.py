@@ -1500,6 +1500,13 @@ def pagina_calcolo_tfr_colf_badanti():
         path=str(FRONTEND_DIR / "calcolo-tfr-colf-badanti.html")
     )
 
+@app.get("/sitemap.xml")
+def sitemap():
+    return FileResponse(
+        path=str(FRONTEND_DIR / "sitemap.xml"),
+        media_type="application/xml"
+    )
+
 
 
 
