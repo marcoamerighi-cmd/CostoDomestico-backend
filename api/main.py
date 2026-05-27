@@ -795,6 +795,14 @@ def invia_email_costo_domestico(
         nome_file=richiesta.nome_file
     )
 
+    salva_storico_calcolo(
+        email_cliente=richiesta.email_cliente.lower().strip(),
+        tipo="Costo Domestico",
+        titolo="Report Costo Domestico",
+        dettaglio="Simulazione costo lavoro domestico",
+        importo=0
+    )
+
     if richiesta.sessione_stripe:
         aggiorna_pdf_ordine(
             sessione_stripe=richiesta.sessione_stripe,
