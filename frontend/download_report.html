@@ -99,21 +99,15 @@
 
 <div class="container">
 
-    <div class="success">
-        ✅
-    </div>
+    <div class="success">✅</div>
 
     <h1>Pagamento completato</h1>
 
-    <p>
-        Il report professionale TFR è pronto.
-    </p>
+    <p>Il report professionale TFR è pronto.</p>
 
     <div class="download-box">
 
-        <h3>
-            Download automatico in corso...
-        </h3>
+        <h3>Download automatico in corso...</h3>
 
         <p>
             Se il download non parte automaticamente,
@@ -150,7 +144,6 @@
 </div>
 
 <script>
-
     const params = new URLSearchParams(window.location.search);
     const sessionId = params.get("session_id") || "";
 
@@ -158,12 +151,10 @@
         localStorage.getItem("email_report_tfr_inviata") === "1";
 
     function recuperaRichiesta() {
-
         const richiestaSalvata =
             localStorage.getItem("richiesta_tfr");
 
         if (!richiestaSalvata) {
-
             alert(
                 "Dati del report non trovati.\n\nEffettua nuovamente il calcolo TFR."
             );
@@ -175,7 +166,6 @@
     }
 
     async function generaBlobPdf(inviaEmail) {
-
         const richiesta = recuperaRichiesta();
 
         if (!richiesta) {
@@ -183,28 +173,26 @@
         }
 
         if (!richiesta.dati_calcolo) {
-    alert(
-        "⚠️ Dati calcolo TFR non trovati. Effettua nuovamente il calcolo."
-    );
+            alert(
+                "⚠️ Dati calcolo TFR non trovati. Effettua nuovamente il calcolo."
+            );
 
-    return null;
-}
+            return null;
+        }
 
         const risposta = await fetch(
             "/genera-pdf-tfr",
             {
                 method: "POST",
-
                 headers: {
                     "Content-Type": "application/json"
                 },
-
                 body: JSON.stringify({
-    ...richiesta,
-    session_id: sessionId,
-    email_cliente: richiesta.email_cliente || "",
-    invia_email: inviaEmail
-})
+                    ...richiesta,
+                    session_id: sessionId,
+                    email_cliente: richiesta.email_cliente || "",
+                    invia_email: inviaEmail
+                })
             }
         );
 
@@ -216,7 +204,6 @@
     }
 
     function scaricaBlob(blob) {
-
         const url =
             window.URL.createObjectURL(blob);
 
@@ -224,14 +211,11 @@
             document.createElement("a");
 
         link.href = url;
-
-        link.download =
-            "report_tfr_costodomestico.pdf";
+        link.download = "report_tfr_costodomestico.pdf";
 
         document.body.appendChild(link);
 
         if (typeof gtag === "function") {
-
             gtag("event", "purchase_tfr", {
                 transaction_id: Date.now().toString(),
                 currency: "EUR",
@@ -256,9 +240,7 @@
     }
 
     async function scaricaManuale() {
-
         try {
-
             const deveInviareEmail =
                 !emailGiaInviata;
 
@@ -286,7 +268,6 @@
                 "PDF generato correttamente. Puoi scaricarlo di nuovo con il pulsante.";
 
         } catch (errore) {
-
             console.error(errore);
 
             document.getElementById("loading_text")
@@ -300,12 +281,10 @@
     }
 
     async function scaricaSoloPdf() {
-
         try {
-
             document.getElementById("loading_text")
                 .textContent =
-                "Preparazione nuovo download PDF...";
+                "Preparazione nuovo download PDF e invio email...";
 
             const blob = await generaBlobPdf(true);
 
@@ -316,11 +295,10 @@
             scaricaBlob(blob);
 
             document.getElementById("loading_text")
-    .textContent =
-    "PDF scaricato nuovamente. Una copia è stata inviata anche via email.";
+                .textContent =
+                "PDF scaricato nuovamente. Una copia è stata inviata anche via email.";
 
         } catch (errore) {
-
             console.error(errore);
 
             document.getElementById("loading_text")
@@ -334,9 +312,7 @@
     }
 
     async function apriPdfNuovaScheda() {
-
         try {
-
             document.getElementById("loading_text")
                 .textContent =
                 "Apertura PDF in nuova scheda...";
@@ -357,7 +333,6 @@
                 "PDF aperto in una nuova scheda.";
 
         } catch (errore) {
-
             console.error(errore);
 
             document.getElementById("loading_text")
@@ -373,12 +348,10 @@
     setTimeout(() => {
         scaricaManuale();
     }, 1500);
-
 </script>
 
 <script>
 async function tracciaEventoBackend(evento) {
-
     if (localStorage.getItem("escludi_tracking") === "si") {
         return;
     }
