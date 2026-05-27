@@ -1973,5 +1973,15 @@ function ripristinaDatiDopoPagamento() {
   document.addEventListener('DOMContentLoaded', mostraCookieBanner);
 </script>
 
+<script>
+document.addEventListener("wheel", function(event) {
+    const elemento = document.activeElement;
+
+    if (elemento && elemento.type === "number") {
+        elemento.blur();
+    }
+}, { passive: true });
+</script>
+
 </body>
 </html>
