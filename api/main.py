@@ -715,7 +715,7 @@ def crea_checkout_costo_domestico(
     sessione = stripe.checkout.Session.create(
         **parametri_sessione
     )
-    
+
     salva_ordine(
         email_cliente=richiesta.email_cliente,
         nome_cliente=richiesta.nome_cliente,
