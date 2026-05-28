@@ -1128,7 +1128,7 @@ async function caricaStoricoEmail() {
 
     try {
 
-        const response = await fetch("/admin/email-inviate");
+        const response = await fetch("https://costodomestico.it/admin/email-inviate");
         storicoEmailAdmin = await response.json();
 
         mostraStoricoEmail(storicoEmailAdmin);
