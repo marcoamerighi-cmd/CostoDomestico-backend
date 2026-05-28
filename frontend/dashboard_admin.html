@@ -1114,11 +1114,17 @@ function chiudiReport(){
     }
 }
 
+
 let storicoEmailAdmin = [];
 
 async function caricaStoricoEmail() {
 
     const tbody = document.getElementById("storico_email_admin");
+
+    if (!tbody) {
+        alert("Tabella storico_email_admin non trovata");
+        return;
+    }
 
     tbody.innerHTML = `
         <tr>
@@ -1128,17 +1134,26 @@ async function caricaStoricoEmail() {
 
     try {
 
-        const response = await fetch("https://costodomestico.it/admin/email-inviate");
-        storicoEmailAdmin = await response.json();
+        const response = await fetch("/admin/email-inviate");
+
+        if (!response.ok) {
+            throw new Error("Errore HTTP " + response.status);
+        }
+
+        const dati = await response.json();
+
+        storicoEmailAdmin = Array.isArray(dati) ? dati : [];
 
         mostraStoricoEmail(storicoEmailAdmin);
 
     } catch (errore) {
 
+        console.error("Errore storico email:", errore);
+
         tbody.innerHTML = `
             <tr>
                 <td colspan="4" style="color:red;">
-                    Errore caricamento storico email
+                    Errore caricamento storico email: ${errore.message}
                 </td>
             </tr>
         `;
@@ -1150,6 +1165,10 @@ function mostraStoricoEmail(lista) {
 
     const tbody = document.getElementById("storico_email_admin");
 
+    if (!tbody) {
+        return;
+    }
+
     if (!lista || lista.length === 0) {
         tbody.innerHTML = `
             <tr>
@@ -1159,34 +1178,56 @@ function mostraStoricoEmail(lista) {
         return;
     }
 
-    tbody.innerHTML = lista.map(email => `
-        <tr>
-            <td>${email.creato_il || ""}</td>
-            <td>${email.destinatario || ""}</td>
-            <td>${email.oggetto || ""}</td>
-            <td>
-                ${
-                    email.stato === "inviata"
-                    ? "✅ Inviata"
-                    : "❌ Errore"
-                }
-            </td>
-        </tr>
-    `).join("");
+    tbody.innerHTML = "";
+
+    lista.forEach(email => {
+
+        const tr = document.createElement("tr");
+
+        const tdData = document.createElement("td");
+        tdData.textContent = email.creato_il || "";
+
+        const tdDestinatario = document.createElement("td");
+        tdDestinatario.textContent = email.destinatario || "";
+
+        const tdOggetto = document.createElement("td");
+        tdOggetto.textContent = email.oggetto || "";
+
+        const tdStato = document.createElement("td");
+        tdStato.textContent =
+            email.stato === "inviata"
+                ? "✅ Inviata"
+                : "❌ Errore";
+
+        tr.appendChild(tdData);
+        tr.appendChild(tdDestinatario);
+        tr.appendChild(tdOggetto);
+        tr.appendChild(tdStato);
+
+        tbody.appendChild(tr);
+    });
 }
 
 
 function filtraStoricoEmail() {
 
-    const ricerca = document
-        .getElementById("ricerca_email_admin")
-        .value
-        .toLowerCase();
+    const campoRicerca = document.getElementById("ricerca_email_admin");
 
-    const filtrate = storicoEmailAdmin.filter(email =>
-        (email.destinatario || "").toLowerCase().includes(ricerca) ||
-        (email.oggetto || "").toLowerCase().includes(ricerca)
-    );
+    if (!campoRicerca) {
+        return;
+    }
+
+    const ricerca = campoRicerca.value.toLowerCase();
+
+    const filtrate = storicoEmailAdmin.filter(email => {
+        const destinatario = (email.destinatario || "").toLowerCase();
+        const oggetto = (email.oggetto || "").toLowerCase();
+
+        return (
+            destinatario.includes(ricerca) ||
+            oggetto.includes(ricerca)
+        );
+    });
 
     mostraStoricoEmail(filtrate);
 }
