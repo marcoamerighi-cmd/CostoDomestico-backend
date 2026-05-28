@@ -675,18 +675,6 @@ def crea_checkout_costo_domestico(
         "mode": "payment",
         "billing_address_collection": "auto",
 
-        "custom_fields": [
-            {
-                "key": "nome_completo",
-                "label": {
-                    "type": "custom",
-                    "custom": "Nome completo"
-                },
-                "type": "text",
-                "optional": False
-            }
-        ],
-
         "line_items": [
             {
                 "price_data": {
@@ -729,9 +717,9 @@ def crea_checkout_costo_domestico(
     )
 
     salva_ordine(
-        email_cliente=richiesta.email_cliente,
-        nome_cliente=richiesta.nome_cliente,
-        cognome_cliente=richiesta.cognome_cliente,
+        email_cliente=email_cliente,
+        nome_cliente=nome_cliente,
+        cognome_cliente=cognome_cliente,
         prodotto="Costo Domestico",
         importo=9.90,
         stato="checkout_creato",
@@ -739,9 +727,9 @@ def crea_checkout_costo_domestico(
     )
 
     salva_o_aggiorna_cliente(
-        email=richiesta.email_cliente,
-        nome=richiesta.nome_cliente,
-        cognome=richiesta.cognome_cliente
+        email=email_cliente,
+        nome=nome_cliente,
+        cognome=cognome_cliente
     )
 
     return {
