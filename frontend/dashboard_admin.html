@@ -1114,8 +1114,6 @@ function chiudiReport(){
     }
 }
 
-let storicoEmailAdmin = [];
-
 async function caricaStoricoEmail() {
 
     const tbody = document.getElementById("storico_email_admin");
@@ -1141,9 +1139,9 @@ async function caricaStoricoEmail() {
 
         const dati = await response.json();
 
-        storicoEmailAdmin = Array.isArray(dati) ? dati : [];
+        window.storicoEmailAdmin = Array.isArray(dati) ? dati : [];
 
-        mostraStoricoEmail(storicoEmailAdmin);
+        mostraStoricoEmail(window.storicoEmailAdmin);
 
     } catch (errore) {
 
@@ -1218,7 +1216,7 @@ function filtraStoricoEmail() {
 
     const ricerca = campoRicerca.value.toLowerCase();
 
-    const filtrate = storicoEmailAdmin.filter(email => {
+    const filtrate = (window.storicoEmailAdmin || []).filter(email => {
         const destinatario = (email.destinatario || "").toLowerCase();
         const oggetto = (email.oggetto || "").toLowerCase();
 
