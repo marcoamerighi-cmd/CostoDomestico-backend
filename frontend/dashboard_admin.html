@@ -1113,6 +1113,85 @@ function chiudiReport(){
         `;
     }
 }
+
+let storicoEmailAdmin = [];
+
+async function caricaStoricoEmail() {
+
+    const tbody = document.getElementById("storico_email_admin");
+
+    tbody.innerHTML = `
+        <tr>
+            <td colspan="4">Caricamento...</td>
+        </tr>
+    `;
+
+    try {
+
+        const response = await fetch("/admin/email-inviate");
+        storicoEmailAdmin = await response.json();
+
+        mostraStoricoEmail(storicoEmailAdmin);
+
+    } catch (errore) {
+
+        tbody.innerHTML = `
+            <tr>
+                <td colspan="4" style="color:red;">
+                    Errore caricamento storico email
+                </td>
+            </tr>
+        `;
+    }
+}
+
+
+function mostraStoricoEmail(lista) {
+
+    const tbody = document.getElementById("storico_email_admin");
+
+    if (!lista || lista.length === 0) {
+        tbody.innerHTML = `
+            <tr>
+                <td colspan="4">Nessuna email inviata</td>
+            </tr>
+        `;
+        return;
+    }
+
+    tbody.innerHTML = lista.map(email => `
+        <tr>
+            <td>${email.creato_il || ""}</td>
+            <td>${email.destinatario || ""}</td>
+            <td>${email.oggetto || ""}</td>
+            <td>
+                ${
+                    email.stato === "inviata"
+                    ? "✅ Inviata"
+                    : "❌ Errore"
+                }
+            </td>
+        </tr>
+    `).join("");
+}
+
+
+function filtraStoricoEmail() {
+
+    const ricerca = document
+        .getElementById("ricerca_email_admin")
+        .value
+        .toLowerCase();
+
+    const filtrate = storicoEmailAdmin.filter(email =>
+        (email.destinatario || "").toLowerCase().includes(ricerca) ||
+        (email.oggetto || "").toLowerCase().includes(ricerca)
+    );
+
+    mostraStoricoEmail(filtrate);
+}
+
+
 </script>
 
 <div class="card-admin">
@@ -1142,6 +1221,40 @@ function chiudiReport(){
     </button>
 
     <div id="email_esito"></div>
+
+</div>
+
+<div class="card-admin">
+
+    <h2>📨 Storico Email Inviate</h2>
+
+    <button onclick="caricaStoricoEmail()">
+        Aggiorna storico email
+    </button>
+
+    <input
+        type="text"
+        id="ricerca_email_admin"
+        placeholder="Cerca per destinatario o oggetto"
+        oninput="filtraStoricoEmail()"
+        style="margin-top:15px;"
+    >
+
+    <table style="width:100%; margin-top:15px;">
+        <thead>
+            <tr>
+                <th>Data</th>
+                <th>Destinatario</th>
+                <th>Oggetto</th>
+                <th>Stato</th>
+            </tr>
+        </thead>
+        <tbody id="storico_email_admin">
+            <tr>
+                <td colspan="4">Nessuna email caricata</td>
+            </tr>
+        </tbody>
+    </table>
 
 </div>
 

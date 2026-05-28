@@ -65,6 +65,12 @@ from database.clienti_repository import (
     
 )
 
+from database.email_repository import (
+    crea_tabella_email,
+    salva_email_admin,
+    leggi_email_admin
+)
+
 from pdf.report_tfr import genera_pdf_tfr
 
 
@@ -85,6 +91,7 @@ app.add_middleware(
 crea_database()
 crea_tabella_ordini()
 crea_tabella_clienti()
+crea_tabella_email()
 
 BASE_DIR = Path(__file__).resolve().parents[1]
 FRONTEND_DIR = BASE_DIR / "frontend"
@@ -1517,24 +1524,42 @@ class RichiestaEmailAdmin(BaseModel):
 def admin_invia_email(richiesta: RichiestaEmailAdmin):
 
     try:
-
         invia_email_generica(
             destinatario=richiesta.destinatario,
             oggetto=richiesta.oggetto,
             testo=richiesta.testo
         )
 
+        salva_email_admin(
+            destinatario=richiesta.destinatario,
+            oggetto=richiesta.oggetto,
+            testo=richiesta.testo,
+            stato="inviata"
+        )
+
         return {
             "ok": True,
-            "messaggio": "Email inviata correttamente"
+            "messaggio": "Email inviata e salvata correttamente"
         }
 
     except Exception as e:
+
+        salva_email_admin(
+            destinatario=richiesta.destinatario,
+            oggetto=richiesta.oggetto,
+            testo=richiesta.testo,
+            stato="errore",
+            errore=str(e)
+        )
 
         raise HTTPException(
             status_code=500,
             detail=f"Errore invio email: {str(e)}"
         )
+    
+@app.get("/admin/email-inviate")
+def admin_email_inviate():
+    return leggi_email_admin()
 
 
 
