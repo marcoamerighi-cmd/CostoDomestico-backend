@@ -147,3 +147,38 @@ def invia_magic_link_email(
         </div>
         """
     })
+
+
+def invia_email_generica(
+        destinatario: str,
+        oggetto: str,
+        testo: str
+    ):
+        resend.Emails.send({
+            "from": EMAIL_MITTENTE,
+            "to": destinatario,
+            "subject": oggetto,
+            "html": f"""
+            <div style="
+                font-family:Arial,sans-serif;
+                max-width:650px;
+                margin:auto;
+                padding:20px;
+                color:#374151;
+                line-height:1.5;
+            ">
+                <h2 style="color:#0b4dbb;">
+                CostoDomestico.it
+                </h2>
+
+                <p>{testo}</p>
+
+                <hr>
+
+                <p style="font-size:12px;color:#9ca3af;">
+                    Email inviata da CostoDomestico.it<br>
+                    support@costodomestico.it
+                </p>
+            </div>
+            """
+    })

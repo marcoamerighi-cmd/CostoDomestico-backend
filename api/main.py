@@ -28,7 +28,8 @@ from api.stripe_config import STRIPE_SECRET_KEY
 from api.email_service import (
     invia_report_tfr_email,
     invia_report_costo_domestico_email,
-    invia_magic_link_email
+    invia_magic_link_email,
+    invia_email_generica
 )
 from api.stripe_webhook_config import STRIPE_WEBHOOK_SECRET
 
@@ -1505,6 +1506,35 @@ def sitemap():
         path=str(FRONTEND_DIR / "sitemap.xml"),
         media_type="application/xml"
     )
+
+class RichiestaEmailAdmin(BaseModel):
+    destinatario: str
+    oggetto: str
+    testo: str
+
+
+@app.post("/admin/invia-email")
+def admin_invia_email(richiesta: RichiestaEmailAdmin):
+
+    try:
+
+        invia_email_generica(
+            destinatario=richiesta.destinatario,
+            oggetto=richiesta.oggetto,
+            testo=richiesta.testo
+        )
+
+        return {
+            "ok": True,
+            "messaggio": "Email inviata correttamente"
+        }
+
+    except Exception as e:
+
+        raise HTTPException(
+            status_code=500,
+            detail=f"Errore invio email: {str(e)}"
+        )
 
 
 

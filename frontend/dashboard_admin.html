@@ -1050,7 +1050,100 @@ function chiudiReport(){
 
     caricaDashboard();
     caricaStatisticheConversione();
+    async function inviaEmailAdmin() {
+
+    const destinatario =
+        document.getElementById("email_destinatario").value;
+
+    const oggetto =
+        document.getElementById("email_oggetto").value;
+
+    const testo =
+        document.getElementById("email_testo").value;
+
+    const esito =
+        document.getElementById("email_esito");
+
+    esito.innerHTML = "Invio in corso...";
+
+    try {
+
+        const response = await fetch(
+            "/admin/invia-email",
+            {
+                method: "POST",
+
+                headers: {
+                    "Content-Type": "application/json"
+                },
+
+                body: JSON.stringify({
+                    destinatario,
+                    oggetto,
+                    testo
+                })
+            }
+        );
+
+        const data = await response.json();
+
+        if (response.ok) {
+
+            esito.innerHTML = `
+                <span style="color:green;">
+                    Email inviata correttamente
+                </span>
+            `;
+
+        } else {
+
+            esito.innerHTML = `
+                <span style="color:red;">
+                    ${data.detail}
+                </span>
+            `;
+        }
+
+    } catch (errore) {
+
+        esito.innerHTML = `
+            <span style="color:red;">
+                Errore connessione server
+            </span>
+        `;
+    }
+}
 </script>
+
+<div class="card-admin">
+
+    <h2>📧 Invio Email</h2>
+
+    <input
+        type="email"
+        id="email_destinatario"
+        placeholder="Destinatario"
+    >
+
+    <input
+        type="text"
+        id="email_oggetto"
+        placeholder="Oggetto"
+    >
+
+    <textarea
+        id="email_testo"
+        placeholder="Scrivi il messaggio..."
+        rows="8"
+    ></textarea>
+
+    <button onclick="inviaEmailAdmin()">
+        Invia Email
+    </button>
+
+    <div id="email_esito"></div>
+
+</div>
 
 </body>
 </html>
