@@ -1,0 +1,57 @@
+{
+  "2026": {
+    "tempo_indeterminato": {
+      "fino_24_ore": [
+        {
+          "da": 0,
+          "a": 9.61,
+          "totale": 1.70,
+          "quota_lavoratore": 0.43
+        },
+        {
+          "da": 9.61,
+          "a": 11.70,
+          "totale": 1.92,
+          "quota_lavoratore": 0.48
+        },
+        {
+          "da": 11.70,
+          "a": null,
+          "totale": 2.34,
+          "quota_lavoratore": 0.59
+        }
+      ],
+      "oltre_24_ore": {
+        "totale": 1.24,
+        "quota_lavoratore": 0.31
+      }
+    },
+
+    "tempo_determinato": {
+      "fino_24_ore": [
+        {
+          "da": 0,
+          "a": 9.61,
+          "totale": 1.82,
+          "quota_lavoratore": 0.43
+        },
+        {
+          "da": 9.61,
+          "a": 11.70,
+          "totale": 2.05,
+          "quota_lavoratore": 0.48
+        },
+        {
+          "da": 11.70,
+          "a": null,
+          "totale": 2.50,
+          "quota_lavoratore": 0.59
+        }
+      ],
+      "oltre_24_ore": {
+        "totale": 1.32,
+        "quota_lavoratore": 0.31
+      }
+    }
+  }
+}

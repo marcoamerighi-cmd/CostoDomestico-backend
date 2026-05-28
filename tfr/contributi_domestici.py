@@ -1,3 +1,5 @@
+import json
+from pathlib import Path
 CONTRIBUTI_DOMESTICI = {
     2016: {
         "fino_24_ore": [
@@ -141,6 +143,52 @@ def get_anno_contributi_disponibile(anno: int) -> int:
     return anni_disponibili[0]
 
 
+def carica_contributi_json() -> dict:
+    percorso = (
+        Path(__file__).parent
+        / "contributi_inps_lavoro_domestico.json"
+    )
+
+    if not percorso.exists():
+        return {}
+
+    try:
+        with open(percorso, "r", encoding="utf-8") as file:
+            dati = json.load(file)
+
+        return {
+            int(anno): valore
+            for anno, valore in dati.items()
+        }
+
+    except Exception:
+        return {}
+    
+
 def get_contributi_domestici(anno: int) -> dict:
+    contributi_json = carica_contributi_json()
+
+    if contributi_json:
+        contributi_uniti = {
+            **CONTRIBUTI_DOMESTICI,
+            **contributi_json
+        }
+
+        anni_disponibili = sorted(contributi_uniti.keys())
+
+        if anno in contributi_uniti:
+            return contributi_uniti[anno]
+
+        anni_precedenti = [
+            anno_disponibile
+            for anno_disponibile in anni_disponibili
+            if anno_disponibile <= anno
+        ]
+
+        if anni_precedenti:
+            return contributi_uniti[anni_precedenti[-1]]
+
+        return contributi_uniti[anni_disponibili[0]]
+
     anno_disponibile = get_anno_contributi_disponibile(anno)
     return CONTRIBUTI_DOMESTICI[anno_disponibile]
