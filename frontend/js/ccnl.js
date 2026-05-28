@@ -1,4 +1,4 @@
-const CCNL = {
+let CCNL = {
 
     2026: {
 
@@ -25,6 +25,41 @@ const CCNL = {
         }
     }
 };
+
+async function caricaCCNLJson() {
+
+    try {
+
+        const risposta = await fetch(
+            "/js/ccnl-dati.json?v=" + Date.now()
+        );
+
+        if (!risposta.ok) {
+            return;
+        }
+
+        const dati = await risposta.json();
+
+        CCNL = {
+            ...CCNL,
+            ...dati
+        };
+
+        console.log(
+            "CCNL aggiornato da JSON",
+            CCNL
+        );
+
+    } catch (errore) {
+
+        console.error(
+            "Errore caricamento JSON CCNL",
+            errore
+        );
+    }
+}
+
+caricaCCNLJson();
 
 
 function getAnnoCCNL(annoRichiesto = new Date().getFullYear()) {
@@ -61,3 +96,5 @@ function getPagheNonConviventi() {
 
     return CCNL[anno].nonConviventi;
 }
+
+
