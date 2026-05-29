@@ -1374,6 +1374,83 @@ function formattaDataEmail(dataString) {
     });
 }
 
+async function inviaEmailTuttiClienti() {
+
+    const oggetto =
+        document.getElementById("email_oggetto").value;
+
+    const testo =
+        document.getElementById("email_testo").value;
+
+    const esito =
+        document.getElementById("email_esito");
+
+    if (!oggetto || !testo) {
+        esito.innerHTML = `
+            <span style="color:red;">
+                Inserisci oggetto e testo prima di inviare.
+            </span>
+        `;
+        return;
+    }
+
+    const conferma = confirm(
+        "Vuoi inviare questa email a tutti i clienti presenti nel database?"
+    );
+
+    if (!conferma) {
+        return;
+    }
+
+    esito.innerHTML = "Invio email a tutti i clienti in corso...";
+
+    try {
+
+        const response = await fetch(
+            "/admin/invia-email-clienti",
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    oggetto,
+                    testo
+                })
+            }
+        );
+
+        const data = await response.json();
+
+        if (response.ok) {
+
+            esito.innerHTML = `
+                <span style="color:green;">
+                    Email inviata a ${data.totale_clienti} clienti.
+                </span>
+            `;
+
+            caricaStoricoEmail();
+
+        } else {
+
+            esito.innerHTML = `
+                <span style="color:red;">
+                    ${data.detail}
+                </span>
+            `;
+        }
+
+    } catch (errore) {
+
+        esito.innerHTML = `
+            <span style="color:red;">
+                Errore invio email massiva
+            </span>
+        `;
+    }
+}
+
 </script>
 
 <div class="card-admin mail-box">
@@ -1402,6 +1479,14 @@ function formattaDataEmail(dataString) {
         <button onclick="inviaEmailAdmin()">
             Invia Email
         </button>
+
+        <button onclick="inviaEmailTuttiClienti()" style="
+    background:#0b4dbb;
+    margin-left:10px;
+">
+    Invia a tutti i clienti
+</button>
+
     </div>
 
     <div id="email_esito"></div>
