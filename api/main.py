@@ -58,6 +58,7 @@ from database.ordini_repository import (
     elimina_storico_calcoli,
     statistiche_conversione,
     statistiche_ordini,
+    leggi_ordini_cliente,
 )
 from database.clienti_repository import (
     crea_tabella_clienti,
@@ -1635,6 +1636,22 @@ def admin_invia_email_clienti(richiesta: RichiestaEmailMassivaAdmin):
         "risultati": risultati
     }
 
+@app.get("/api/miei-ordini")
+def api_miei_ordini(email: str):
+
+    ordini = leggi_ordini_cliente(email)
+
+    return [
+        {
+            "id": ordine[0],
+            "prodotto": ordine[1],
+            "importo": ordine[2],
+            "stato": ordine[3],
+            "data_ordine": ordine[4],
+            "pdf_file": ordine[5],
+        }
+        for ordine in ordini
+    ]
 
 
 

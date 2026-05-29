@@ -139,6 +139,32 @@ def leggi_ordini():
     return ordini
 
 
+def leggi_ordini_cliente(email_cliente: str):
+
+    conn = get_connessione()
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        SELECT
+            id,
+            prodotto,
+            importo,
+            stato,
+            data_ordine,
+            pdf_file
+        FROM ordini
+        WHERE LOWER(email_cliente)=LOWER(%s)
+        ORDER BY id DESC
+    """, (email_cliente,))
+
+    risultati = cursor.fetchall()
+
+    cursor.close()
+    conn.close()
+
+    return risultati
+
+
 def statistiche_ordini():
 
     conn = get_connessione()
