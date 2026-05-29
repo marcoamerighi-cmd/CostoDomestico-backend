@@ -1451,7 +1451,35 @@ async function inviaEmailTuttiClienti() {
     }
 }
 
+async function caricaStatisticheClienti() {
+
+    try {
+        const response = await fetch("/admin/statistiche-clienti");
+        const data = await response.json();
+
+        document.getElementById("crm_clienti_registrati").textContent =
+            data.clienti_registrati || 0;
+
+    } catch (errore) {
+        document.getElementById("crm_clienti_registrati").textContent =
+            "Errore";
+    }
+}
+
 </script>
+
+<div class="card-admin">
+    <h2>👥 CRM Clienti</h2>
+
+    <p>
+        Clienti registrati:
+        <strong id="crm_clienti_registrati">-</strong>
+    </p>
+
+    <button onclick="caricaStatisticheClienti()">
+        Aggiorna statistiche clienti
+    </button>
+</div>
 
 <div class="card-admin mail-box">
 
