@@ -1519,6 +1519,10 @@ class RichiestaEmailAdmin(BaseModel):
     oggetto: str
     testo: str
 
+class RichiestaEmailMassivaAdmin(BaseModel):
+    oggetto: str
+    testo: str
+
 
 @app.post("/admin/invia-email")
 def admin_invia_email(richiesta: RichiestaEmailAdmin):
@@ -1566,6 +1570,55 @@ def admin_clienti_email():
     return {
         "totale": len(leggi_email_clienti()),
         "email": leggi_email_clienti()
+    }
+
+@app.post("/admin/invia-email-clienti")
+def admin_invia_email_clienti(richiesta: RichiestaEmailMassivaAdmin):
+
+    email_clienti = leggi_email_clienti()
+
+    risultati = []
+
+    for email in email_clienti:
+
+        try:
+            invia_email_generica(
+                destinatario=email,
+                oggetto=richiesta.oggetto,
+                testo=richiesta.testo
+            )
+
+            salva_email_admin(
+                destinatario=email,
+                oggetto=richiesta.oggetto,
+                testo=richiesta.testo,
+                stato="inviata"
+            )
+
+            risultati.append({
+                "email": email,
+                "stato": "inviata"
+            })
+
+        except Exception as e:
+
+            salva_email_admin(
+                destinatario=email,
+                oggetto=richiesta.oggetto,
+                testo=richiesta.testo,
+                stato="errore",
+                errore=str(e)
+            )
+
+            risultati.append({
+                "email": email,
+                "stato": "errore",
+                "errore": str(e)
+            })
+
+    return {
+        "totale_clienti": len(email_clienti),
+        "risultati": risultati
     }
 
 
