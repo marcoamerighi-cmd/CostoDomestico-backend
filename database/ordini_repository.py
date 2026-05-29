@@ -139,6 +139,40 @@ def leggi_ordini():
     return ordini
 
 
+def statistiche_ordini():
+
+    conn = get_connessione()
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        SELECT
+            COUNT(*),
+            COALESCE(SUM(importo), 0)
+        FROM ordini
+        WHERE stato = 'pagato'
+    """)
+
+    risultato = cursor.fetchone()
+
+    cursor.execute("""
+        SELECT COUNT(DISTINCT email_cliente)
+        FROM ordini
+        WHERE stato = 'pagato'
+    """)
+
+    clienti_paganti = cursor.fetchone()[0]
+
+    cursor.close()
+    conn.close()
+
+    return {
+        "ordini_pagati": risultato[0],
+        "fatturato_totale": float(risultato[1]),
+        "clienti_paganti": clienti_paganti
+    }
+
+
+
 def salva_storico_calcolo(
     email_cliente: str,
     tipo: str,

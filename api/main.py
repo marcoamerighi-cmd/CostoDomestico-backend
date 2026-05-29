@@ -57,6 +57,7 @@ from database.ordini_repository import (
     leggi_storico_calcoli,
     elimina_storico_calcoli,
     statistiche_conversione,
+    statistiche_ordini,
 )
 from database.clienti_repository import (
     crea_tabella_clienti,
@@ -1575,8 +1576,14 @@ def admin_clienti_email():
 
 @app.get("/admin/statistiche-clienti")
 def admin_statistiche_clienti():
+
+    stats_ordini = statistiche_ordini()
+
     return {
-        "clienti_registrati": conta_clienti()
+        "clienti_registrati": conta_clienti(),
+        "clienti_paganti": stats_ordini["clienti_paganti"],
+        "ordini_pagati": stats_ordini["ordini_pagati"],
+        "fatturato_totale": stats_ordini["fatturato_totale"]
     }
 
 @app.post("/admin/invia-email-clienti")

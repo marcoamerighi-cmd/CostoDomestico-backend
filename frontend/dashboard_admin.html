@@ -1460,9 +1460,23 @@ async function caricaStatisticheClienti() {
         document.getElementById("crm_clienti_registrati").textContent =
             data.clienti_registrati || 0;
 
+        document.getElementById("crm_clienti_paganti").textContent =
+            data.clienti_paganti || 0;
+
+        document.getElementById("crm_ordini_pagati").textContent =
+            data.ordini_pagati || 0;
+
+        document.getElementById("crm_fatturato_totale").textContent =
+            "€ " + Number(data.fatturato_totale || 0).toLocaleString("it-IT", {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            });
+
     } catch (errore) {
-        document.getElementById("crm_clienti_registrati").textContent =
-            "Errore";
+        document.getElementById("crm_clienti_registrati").textContent = "Errore";
+        document.getElementById("crm_clienti_paganti").textContent = "Errore";
+        document.getElementById("crm_ordini_pagati").textContent = "Errore";
+        document.getElementById("crm_fatturato_totale").textContent = "Errore";
     }
 }
 
@@ -1474,6 +1488,21 @@ async function caricaStatisticheClienti() {
     <p>
         Clienti registrati:
         <strong id="crm_clienti_registrati">-</strong>
+    </p>
+
+    <p>
+        Clienti paganti:
+        <strong id="crm_clienti_paganti">-</strong>
+    </p>
+
+    <p>
+        Ordini pagati:
+        <strong id="crm_ordini_pagati">-</strong>
+    </p>
+
+    <p>
+        Fatturato totale:
+        <strong id="crm_fatturato_totale">-</strong>
     </p>
 
     <button onclick="caricaStatisticheClienti()">
