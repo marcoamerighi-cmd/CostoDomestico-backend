@@ -106,6 +106,28 @@ def leggi_clienti():
 
     return clienti
 
+def leggi_email_clienti():
+    conn = get_connessione()
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        SELECT email
+        FROM clienti
+        WHERE email IS NOT NULL
+        AND email <> ''
+        ORDER BY email ASC
+    """)
+
+    righe = cursor.fetchall()
+
+    cursor.close()
+    conn.close()
+
+    return [
+        riga[0]
+        for riga in righe
+    ]
+
 def salva_magic_token(
     email: str,
     token: str,
