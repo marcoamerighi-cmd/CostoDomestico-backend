@@ -1226,7 +1226,7 @@ function mostraStoricoEmail(lista) {
     const tr = document.createElement("tr");
 
     const tdData = document.createElement("td");
-    tdData.textContent = email.creato_il || "";
+    tdData.textContent = formattaDataEmail(email.creato_il);
 
     const tdDestinatario = document.createElement("td");
     tdDestinatario.textContent = email.destinatario || "";
@@ -1307,7 +1307,7 @@ function filtraStoricoEmail() {
 function apriDettaglioEmail(email) {
 
     document.getElementById("modal_email_data").textContent =
-        email.creato_il || "";
+        formattaDataEmail(email.creato_il);
 
     document.getElementById("modal_email_destinatario").textContent =
         email.destinatario || "";
@@ -1324,6 +1324,27 @@ function apriDettaglioEmail(email) {
 
 function chiudiDettaglioEmail() {
     document.getElementById("modal_email").style.display = "none";
+}
+
+function formattaDataEmail(dataString) {
+
+    if (!dataString) {
+        return "";
+    }
+
+    const data = new Date(dataString);
+
+    if (isNaN(data.getTime())) {
+        return dataString;
+    }
+
+    return data.toLocaleString("it-IT", {
+        day: "2-digit",
+        month: "2-digit",
+        year: "numeric",
+        hour: "2-digit",
+        minute: "2-digit"
+    });
 }
 
 </script>
