@@ -1235,10 +1235,37 @@ function mostraStoricoEmail(lista) {
     tdOggetto.textContent = email.oggetto || "";
 
     const tdStato = document.createElement("td");
-    tdStato.textContent =
-        email.stato === "inviata"
-            ? "✅ Inviata"
-            : "❌ Errore";
+
+if (email.stato === "inviata") {
+
+    tdStato.innerHTML = `
+        <span style="
+            background:#dcfce7;
+            color:#166534;
+            padding:6px 10px;
+            border-radius:20px;
+            font-size:12px;
+            font-weight:bold;
+        ">
+            ✅ Inviata
+        </span>
+    `;
+
+} else {
+
+    tdStato.innerHTML = `
+        <span style="
+            background:#fee2e2;
+            color:#991b1b;
+            padding:6px 10px;
+            border-radius:20px;
+            font-size:12px;
+            font-weight:bold;
+        ">
+            ❌ Errore
+        </span>
+    `;
+}
 
     const tdAzioni = document.createElement("td");
 
