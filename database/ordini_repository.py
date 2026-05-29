@@ -145,17 +145,18 @@ def leggi_ordini_cliente(email_cliente: str):
     cursor = conn.cursor()
 
     cursor.execute("""
-        SELECT
-            id,
-            prodotto,
-            importo,
-            stato,
-            data_ordine,
-            pdf_file
-        FROM ordini
-        WHERE LOWER(email_cliente)=LOWER(%s)
-        ORDER BY id DESC
-    """, (email_cliente,))
+            SELECT
+                id,
+                prodotto,
+                importo,
+                stato,
+                data_ordine,
+                pdf_file,
+                sessione_stripe
+            FROM ordini
+            WHERE LOWER(email_cliente)=LOWER(%s)
+            ORDER BY id DESC
+        """, (email_cliente,))
 
     risultati = cursor.fetchall()
 

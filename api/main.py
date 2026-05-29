@@ -1642,16 +1642,17 @@ def api_miei_ordini(email: str):
     ordini = leggi_ordini_cliente(email)
 
     return [
-        {
-            "id": ordine[0],
-            "prodotto": ordine[1],
-            "importo": ordine[2],
-            "stato": ordine[3],
-            "data_ordine": ordine[4],
-            "pdf_file": ordine[5],
-        }
-        for ordine in ordini
-    ]
+    {
+        "id": ordine[0],
+        "prodotto": ordine[1],
+        "importo": ordine[2],
+        "stato": ordine[3],
+        "data_ordine": ordine[4],
+        "pdf_file": ordine[5],
+        "sessione_stripe": ordine[6],
+    }
+    for ordine in ordini
+]
 
 
 
