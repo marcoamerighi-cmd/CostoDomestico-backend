@@ -1169,7 +1169,7 @@ async function caricaStoricoEmail() {
 
     tbody.innerHTML = `
         <tr>
-            <td colspan="4">Caricamento...</td>
+            <td colspan="5">Caricamento...</td>
         </tr>
     `;
 
@@ -1193,7 +1193,7 @@ async function caricaStoricoEmail() {
 
         tbody.innerHTML = `
             <tr>
-                <td colspan="4" style="color:red;">
+                <td colspan="5" style="color:red;">
                     Errore caricamento storico email: ${errore.message}
                 </td>
             </tr>
@@ -1213,7 +1213,7 @@ function mostraStoricoEmail(lista) {
     if (!lista || lista.length === 0) {
         tbody.innerHTML = `
             <tr>
-                <td colspan="4">Nessuna email inviata</td>
+                <td colspan="5">Nessuna email inviata</td>
             </tr>
         `;
         return;
@@ -1244,10 +1244,23 @@ function mostraStoricoEmail(lista) {
         tr.appendChild(tdDestinatario);
         tr.appendChild(tdOggetto);
         tr.appendChild(tdStato);
+        tr.appendChild(tdAzioni);
 
         tbody.appendChild(tr);
     });
 }
+
+const tdAzioni = document.createElement("td");
+
+const btnVisualizza = document.createElement("button");
+
+btnVisualizza.textContent = "👁 Visualizza";
+
+btnVisualizza.onclick = function () {
+    apriDettaglioEmail(email);
+};
+
+tdAzioni.appendChild(btnVisualizza);
 
 
 function filtraStoricoEmail() {
@@ -1273,6 +1286,27 @@ function filtraStoricoEmail() {
     mostraStoricoEmail(filtrate);
 }
 
+function apriDettaglioEmail(email) {
+
+    document.getElementById("modal_email_data").textContent =
+        email.creato_il || "";
+
+    document.getElementById("modal_email_destinatario").textContent =
+        email.destinatario || "";
+
+    document.getElementById("modal_email_oggetto").textContent =
+        email.oggetto || "";
+
+    document.getElementById("modal_email_testo").textContent =
+        email.testo || "";
+
+    document.getElementById("modal_email").style.display = "flex";
+}
+
+
+function chiudiDettaglioEmail() {
+    document.getElementById("modal_email").style.display = "none";
+}
 
 </script>
 
@@ -1327,19 +1361,73 @@ function filtraStoricoEmail() {
     <table style="width:100%; margin-top:15px;">
         <thead>
             <tr>
-                <th>Data</th>
-                <th>Destinatario</th>
-                <th>Oggetto</th>
-                <th>Stato</th>
-            </tr>
+    <th>Data</th>
+    <th>Destinatario</th>
+    <th>Oggetto</th>
+    <th>Stato</th>
+    <th>Azioni</th>
+</tr>
         </thead>
         <tbody id="storico_email_admin">
             <tr>
-                <td colspan="4">Nessuna email caricata</td>
+                <td colspan="5">Nessuna email caricata</td>
             </tr>
         </tbody>
     </table>
 
+</div>
+
+<div id="modal_email" style="
+    display:none;
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,0.45);
+    z-index:9999;
+    align-items:center;
+    justify-content:center;
+">
+
+    <div style="
+        background:white;
+        width:90%;
+        max-width:700px;
+        border-radius:12px;
+        padding:24px;
+        box-shadow:0 10px 30px rgba(0,0,0,0.25);
+    ">
+
+        <h2>📧 Dettaglio Email</h2>
+
+        <p><strong>Data:</strong> <span id="modal_email_data"></span></p>
+        <p><strong>Destinatario:</strong> <span id="modal_email_destinatario"></span></p>
+        <p><strong>Oggetto:</strong> <span id="modal_email_oggetto"></span></p>
+
+        <hr>
+
+        <div id="modal_email_testo" style="
+            white-space:pre-wrap;
+            background:#f8fafc;
+            border:1px solid #e5e7eb;
+            border-radius:8px;
+            padding:16px;
+            min-height:120px;
+            margin-top:12px;
+        "></div>
+
+        <div style="text-align:right; margin-top:20px;">
+            <button onclick="chiudiDettaglioEmail()" style="
+                padding:10px 18px;
+                border:none;
+                border-radius:8px;
+                background:#374151;
+                color:white;
+                cursor:pointer;
+            ">
+                Chiudi
+            </button>
+        </div>
+
+    </div>
 </div>
 
 </body>
