@@ -1223,31 +1223,49 @@ function mostraStoricoEmail(lista) {
 
     lista.forEach(email => {
 
-        const tr = document.createElement("tr");
+    const tr = document.createElement("tr");
 
-        const tdData = document.createElement("td");
-        tdData.textContent = email.creato_il || "";
+    const tdData = document.createElement("td");
+    tdData.textContent = email.creato_il || "";
 
-        const tdDestinatario = document.createElement("td");
-        tdDestinatario.textContent = email.destinatario || "";
+    const tdDestinatario = document.createElement("td");
+    tdDestinatario.textContent = email.destinatario || "";
 
-        const tdOggetto = document.createElement("td");
-        tdOggetto.textContent = email.oggetto || "";
+    const tdOggetto = document.createElement("td");
+    tdOggetto.textContent = email.oggetto || "";
 
-        const tdStato = document.createElement("td");
-        tdStato.textContent =
-            email.stato === "inviata"
-                ? "✅ Inviata"
-                : "❌ Errore";
+    const tdStato = document.createElement("td");
+    tdStato.textContent =
+        email.stato === "inviata"
+            ? "✅ Inviata"
+            : "❌ Errore";
 
-        tr.appendChild(tdData);
-        tr.appendChild(tdDestinatario);
-        tr.appendChild(tdOggetto);
-        tr.appendChild(tdStato);
-        tr.appendChild(tdAzioni);
+    const tdAzioni = document.createElement("td");
 
-        tbody.appendChild(tr);
-    });
+    const btnVisualizza = document.createElement("button");
+    btnVisualizza.textContent = "👁 Visualizza";
+
+    btnVisualizza.style.padding = "6px 10px";
+    btnVisualizza.style.border = "none";
+    btnVisualizza.style.borderRadius = "6px";
+    btnVisualizza.style.cursor = "pointer";
+    btnVisualizza.style.background = "#0b4dbb";
+    btnVisualizza.style.color = "white";
+
+    btnVisualizza.onclick = function () {
+        apriDettaglioEmail(email);
+    };
+
+    tdAzioni.appendChild(btnVisualizza);
+
+    tr.appendChild(tdData);
+    tr.appendChild(tdDestinatario);
+    tr.appendChild(tdOggetto);
+    tr.appendChild(tdStato);
+    tr.appendChild(tdAzioni);
+
+    tbody.appendChild(tr);
+});
 }
 
 const tdAzioni = document.createElement("td");
