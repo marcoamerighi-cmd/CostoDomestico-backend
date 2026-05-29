@@ -1,3 +1,5 @@
+from database.ordini_repository import get_connessione
+
 import os
 from datetime import datetime
 
@@ -105,6 +107,23 @@ def leggi_clienti():
     conn.close()
 
     return clienti
+
+def conta_clienti():
+
+    conn = get_connessione()
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        SELECT COUNT(*)
+        FROM clienti
+    """)
+
+    totale = cursor.fetchone()[0]
+
+    cursor.close()
+    conn.close()
+
+    return totale
 
 def leggi_email_clienti():
     conn = get_connessione()

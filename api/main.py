@@ -62,7 +62,8 @@ from database.clienti_repository import (
     crea_tabella_clienti,
     salva_o_aggiorna_cliente,
     leggi_clienti,
-    leggi_email_clienti
+    leggi_email_clienti,
+    conta_clienti
 )
 
 from database.email_repository import (
@@ -1570,6 +1571,12 @@ def admin_clienti_email():
     return {
         "totale": len(leggi_email_clienti()),
         "email": leggi_email_clienti()
+    }
+
+@app.get("/admin/statistiche-clienti")
+def admin_statistiche_clienti():
+    return {
+        "clienti_registrati": conta_clienti()
     }
 
 @app.post("/admin/invia-email-clienti")
