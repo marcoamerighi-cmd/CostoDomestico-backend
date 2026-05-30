@@ -72,7 +72,8 @@ from database.email_repository import (
     crea_tabella_email,
     salva_email_admin,
     leggi_email_admin,
-    leggi_messaggi_clienti
+    leggi_messaggi_clienti,
+    segna_messaggio_letto
 )
 
 from pdf.report_tfr import genera_pdf_tfr
@@ -1658,6 +1659,15 @@ def cliente_invia_messaggio(
     return {
         "ok": True,
         "messaggio": "Messaggio inviato correttamente"
+    }
+
+@app.post("/admin/messaggio-letto/{id_messaggio}")
+def admin_messaggio_letto(id_messaggio: int):
+    segna_messaggio_letto(id_messaggio)
+
+    return {
+        "ok": True,
+        "messaggio": "Messaggio segnato come letto"
     }
 
 @app.get("/api/miei-ordini")

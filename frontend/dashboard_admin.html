@@ -1093,7 +1093,7 @@ function chiudiReport(){
 }
 
     caricaDashboard();
-    caricaStatisticheConversione();
+    // caricaStatisticheConversione();
     async function inviaEmailAdmin() {
 
     const destinatario =
@@ -1508,56 +1508,70 @@ async function caricaMessaggiClienti() {
 
         dati.forEach(msg => {
 
-            const tr = document.createElement("tr");
+    const tr = document.createElement("tr");
 
-            const tdData = document.createElement("td");
-            tdData.textContent = formattaDataEmail(msg.creato_il);
+    const tdData = document.createElement("td");
+    tdData.textContent = formattaDataEmail(msg.creato_il);
 
-            const tdMittente = document.createElement("td");
-            tdMittente.textContent = msg.mittente || "";
+    const tdMittente = document.createElement("td");
+    tdMittente.textContent = msg.mittente || "";
 
-            const tdOggetto = document.createElement("td");
-            tdOggetto.textContent = msg.oggetto || "";
+    const tdOggetto = document.createElement("td");
+    tdOggetto.textContent = msg.oggetto || "";
 
-            const tdAzioni = document.createElement("td");
+    const tdStato = document.createElement("td");
+    tdStato.innerHTML = msg.letto
+        ? `<span style="background:#e5e7eb;color:#374151;padding:6px 10px;border-radius:20px;font-size:12px;font-weight:bold;">Letto</span>`
+        : `<span style="background:#fee2e2;color:#991b1b;padding:6px 10px;border-radius:20px;font-size:12px;font-weight:bold;">Nuovo</span>`;
 
-            const btn = document.createElement("button");
-            btn.textContent = "👁 Visualizza";
-            btn.style.padding = "6px 10px";
-            btn.style.border = "none";
-            btn.style.borderRadius = "6px";
-            btn.style.background = "#0b4dbb";
-            btn.style.color = "white";
-            btn.style.cursor = "pointer";
+    const tdAzioni = document.createElement("td");
 
-            btn.onclick = function () {
-                apriDettaglioMessaggioCliente(msg);
-            };
+    const btn = document.createElement("button");
+    btn.textContent = "👁 Visualizza";
+    btn.style.padding = "6px 10px";
+    btn.style.border = "none";
+    btn.style.borderRadius = "6px";
+    btn.style.background = "#0b4dbb";
+    btn.style.color = "white";
+    btn.style.cursor = "pointer";
 
-            tdAzioni.appendChild(btn);
-            const btnRispondi = document.createElement("button");
-btnRispondi.textContent = "📧 Rispondi";
-btnRispondi.style.padding = "6px 10px";
-btnRispondi.style.border = "none";
-btnRispondi.style.borderRadius = "6px";
-btnRispondi.style.background = "#16a34a";
-btnRispondi.style.color = "white";
-btnRispondi.style.cursor = "pointer";
-btnRispondi.style.marginLeft = "6px";
-
-btnRispondi.onclick = function () {
-    preparaRispostaCliente(msg);
-};
-
-tdAzioni.appendChild(btnRispondi);
-
-            tr.appendChild(tdData);
-            tr.appendChild(tdMittente);
-            tr.appendChild(tdOggetto);
-            tr.appendChild(tdAzioni);
-
-            tbody.appendChild(tr);
+    btn.onclick = async function () {
+        await fetch("/admin/messaggio-letto/" + msg.id, {
+            method: "POST"
         });
+
+        msg.letto = true;
+
+        apriDettaglioMessaggioCliente(msg);
+        caricaMessaggiClienti();
+    };
+
+    tdAzioni.appendChild(btn);
+
+    const btnRispondi = document.createElement("button");
+    btnRispondi.textContent = "📧 Rispondi";
+    btnRispondi.style.padding = "6px 10px";
+    btnRispondi.style.border = "none";
+    btnRispondi.style.borderRadius = "6px";
+    btnRispondi.style.background = "#16a34a";
+    btnRispondi.style.color = "white";
+    btnRispondi.style.cursor = "pointer";
+    btnRispondi.style.marginLeft = "6px";
+
+    btnRispondi.onclick = function () {
+        preparaRispostaCliente(msg);
+    };
+
+    tdAzioni.appendChild(btnRispondi);
+
+    tr.appendChild(tdData);
+    tr.appendChild(tdMittente);
+    tr.appendChild(tdOggetto);
+    tr.appendChild(tdStato);
+    tr.appendChild(tdAzioni);
+
+    tbody.appendChild(tr);
+});
 
     } catch (errore) {
 

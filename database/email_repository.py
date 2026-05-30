@@ -27,6 +27,11 @@ def crea_tabella_email():
         ADD COLUMN IF NOT EXISTS mittente TEXT
     """)
 
+    cursor.execute("""
+        ALTER TABLE email_admin
+        ADD COLUMN IF NOT EXISTS letto BOOLEAN DEFAULT FALSE
+    """)
+
     conn.commit()
     cursor.close()
     conn.close()
@@ -113,7 +118,8 @@ def leggi_messaggi_clienti():
             oggetto,
             testo,
             stato,
-            creato_il
+            creato_il,
+            letto
         FROM email_admin
         WHERE tipo = 'ricevuta'
         ORDER BY id DESC
@@ -132,6 +138,21 @@ def leggi_messaggi_clienti():
             "testo": riga[3],
             "stato": riga[4],
             "creato_il": riga[5],
+            "letto": riga[6],
         }
         for riga in righe
     ]
+
+def segna_messaggio_letto(id_messaggio: int):
+    conn = get_connessione()
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        UPDATE email_admin
+        SET letto = TRUE
+        WHERE id = %s
+    """, (id_messaggio,))
+
+    conn.commit()
+    cursor.close()
+    conn.close()
