@@ -1519,12 +1519,20 @@ async function caricaMessaggiClienti() {
                     <td>${msg.oggetto}</td>
 
                     <td>
-                        <button
-                            onclick="alert(${JSON.stringify('${msg.testo}')})"
-                        >
-                            Visualizza
-                        </button>
-                    </td>
+    <button
+        onclick='apriDettaglioMessaggioCliente(${JSON.stringify(msg)})'
+        style="
+            padding:6px 10px;
+            border:none;
+            border-radius:6px;
+            background:#0b4dbb;
+            color:white;
+            cursor:pointer;
+        "
+    >
+        👁 Visualizza
+    </button>
+</td>
                 </tr>
             `;
         });
@@ -1541,6 +1549,22 @@ async function caricaMessaggiClienti() {
     }
 }
 
+function apriDettaglioMessaggioCliente(msg) {
+
+    document.getElementById("modal_email_data").textContent =
+        formattaDataEmail(msg.creato_il);
+
+    document.getElementById("modal_email_destinatario").textContent =
+        msg.mittente || "";
+
+    document.getElementById("modal_email_oggetto").textContent =
+        msg.oggetto || "";
+
+    document.getElementById("modal_email_testo").textContent =
+        msg.testo || "";
+
+    document.getElementById("modal_email").style.display = "flex";
+}
 </script>
 
 <div class="card-admin">
