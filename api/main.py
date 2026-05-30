@@ -71,7 +71,8 @@ from database.clienti_repository import (
 from database.email_repository import (
     crea_tabella_email,
     salva_email_admin,
-    leggi_email_admin
+    leggi_email_admin,
+    leggi_messaggi_clienti
 )
 
 from pdf.report_tfr import genera_pdf_tfr
@@ -1526,6 +1527,10 @@ class RichiestaEmailMassivaAdmin(BaseModel):
     oggetto: str
     testo: str
 
+class RichiestaMessaggioCliente(BaseModel):
+    email: str
+    oggetto: str
+    testo: str
 
 @app.post("/admin/invia-email")
 def admin_invia_email(richiesta: RichiestaEmailAdmin):
@@ -1636,6 +1641,25 @@ def admin_invia_email_clienti(richiesta: RichiestaEmailMassivaAdmin):
         "risultati": risultati
     }
 
+@app.post("/cliente/invia-messaggio")
+def cliente_invia_messaggio(
+    richiesta: RichiestaMessaggioCliente
+):
+
+    salva_email_admin(
+        destinatario="support@costodomestico.it",
+        oggetto=richiesta.oggetto,
+        testo=richiesta.testo,
+        stato="ricevuta",
+        tipo="ricevuta",
+        mittente=richiesta.email
+    )
+
+    return {
+        "ok": True,
+        "messaggio": "Messaggio inviato correttamente"
+    }
+
 @app.get("/api/miei-ordini")
 def api_miei_ordini(email: str):
 
@@ -1654,6 +1678,9 @@ def api_miei_ordini(email: str):
     for ordine in ordini
 ]
 
+@app.get("/admin/messaggi-clienti")
+def admin_messaggi_clienti():
+    return leggi_messaggi_clienti()
 
 
 

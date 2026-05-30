@@ -1480,6 +1480,67 @@ async function caricaStatisticheClienti() {
     }
 }
 
+async function caricaMessaggiClienti() {
+
+    const tbody =
+        document.getElementById(
+            "messaggi_clienti_admin"
+        );
+
+    try {
+
+        const response = await fetch(
+            "/admin/messaggi-clienti"
+        );
+
+        const dati = await response.json();
+
+        if (!dati.length) {
+
+            tbody.innerHTML = `
+                <tr>
+                    <td colspan="4">
+                        Nessun messaggio ricevuto
+                    </td>
+                </tr>
+            `;
+
+            return;
+        }
+
+        tbody.innerHTML = "";
+
+        dati.forEach(msg => {
+
+            tbody.innerHTML += `
+                <tr>
+                    <td>${msg.creato_il}</td>
+                    <td>${msg.mittente}</td>
+                    <td>${msg.oggetto}</td>
+
+                    <td>
+                        <button
+                            onclick="alert(${JSON.stringify('${msg.testo}')})"
+                        >
+                            Visualizza
+                        </button>
+                    </td>
+                </tr>
+            `;
+        });
+
+    } catch (errore) {
+
+        tbody.innerHTML = `
+            <tr>
+                <td colspan="4">
+                    Errore caricamento messaggi
+                </td>
+            </tr>
+        `;
+    }
+}
+
 </script>
 
 <div class="card-admin">
@@ -1547,6 +1608,35 @@ async function caricaStatisticheClienti() {
     </div>
 
     <div id="email_esito"></div>
+
+</div>
+
+<div class="card-admin">
+
+    <h2>📩 Messaggi Clienti</h2>
+
+    <button onclick="caricaMessaggiClienti()">
+        Aggiorna messaggi
+    </button>
+
+    <table style="margin-top:15px;">
+        <thead>
+            <tr>
+                <th>Data</th>
+                <th>Mittente</th>
+                <th>Oggetto</th>
+                <th>Azioni</th>
+            </tr>
+        </thead>
+
+        <tbody id="messaggi_clienti_admin">
+            <tr>
+                <td colspan="4">
+                    Nessun messaggio caricato
+                </td>
+            </tr>
+        </tbody>
+    </table>
 
 </div>
 
