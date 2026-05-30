@@ -1472,12 +1472,34 @@ async function caricaStatisticheClienti() {
                 maximumFractionDigits: 2
             });
 
+            const responseMessaggi =
+    await fetch("/admin/messaggi-non-letti");
+
+const dataMessaggi =
+    await responseMessaggi.json();
+
+document.getElementById(
+    "crm_messaggi_non_letti"
+).textContent =
+    dataMessaggi.totale || 0;
+
     } catch (errore) {
-        document.getElementById("crm_clienti_registrati").textContent = "Errore";
-        document.getElementById("crm_clienti_paganti").textContent = "Errore";
-        document.getElementById("crm_ordini_pagati").textContent = "Errore";
-        document.getElementById("crm_fatturato_totale").textContent = "Errore";
-    }
+
+    document.getElementById("crm_clienti_registrati").textContent =
+        "Errore";
+
+    document.getElementById("crm_clienti_paganti").textContent =
+        "Errore";
+
+    document.getElementById("crm_ordini_pagati").textContent =
+        "Errore";
+
+    document.getElementById("crm_fatturato_totale").textContent =
+        "Errore";
+
+    document.getElementById("crm_messaggi_non_letti").textContent =
+        "Errore";
+}
 }
 
 async function caricaMessaggiClienti() {
@@ -1634,6 +1656,11 @@ function preparaRispostaCliente(msg) {
         Clienti registrati:
         <strong id="crm_clienti_registrati">-</strong>
     </p>
+
+    <p>
+    Messaggi non letti:
+    <strong id="crm_messaggi_non_letti" style="color:#dc2626;">-</strong>
+</p>
 
     <p>
         Clienti paganti:

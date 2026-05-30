@@ -156,3 +156,21 @@ def segna_messaggio_letto(id_messaggio: int):
     conn.commit()
     cursor.close()
     conn.close()
+
+def conta_messaggi_non_letti():
+    conn = get_connessione()
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        SELECT COUNT(*)
+        FROM email_admin
+        WHERE tipo = 'ricevuta'
+        AND COALESCE(letto, FALSE) = FALSE
+    """)
+
+    totale = cursor.fetchone()[0]
+
+    cursor.close()
+    conn.close()
+
+    return totale

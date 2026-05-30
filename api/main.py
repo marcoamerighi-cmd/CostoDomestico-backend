@@ -73,7 +73,8 @@ from database.email_repository import (
     salva_email_admin,
     leggi_email_admin,
     leggi_messaggi_clienti,
-    segna_messaggio_letto
+    segna_messaggio_letto,
+    conta_messaggi_non_letti
 )
 
 from pdf.report_tfr import genera_pdf_tfr
@@ -1656,6 +1657,26 @@ def cliente_invia_messaggio(
         mittente=richiesta.email
     )
 
+    invia_email_generica(
+        destinatario=richiesta.email,
+        oggetto="Abbiamo ricevuto il tuo messaggio - CostoDomestico.it",
+        testo="""
+Gentile Cliente,
+
+abbiamo ricevuto correttamente il tuo messaggio tramite l'area clienti di CostoDomestico.it.
+
+La tua richiesta è stata registrata e sarà presa in carico nel più breve tempo possibile.
+
+Ti risponderemo utilizzando questo indirizzo email.
+
+Grazie per aver utilizzato CostoDomestico.it.
+
+Cordiali saluti
+
+Staff CostoDomestico.it
+"""
+    )
+
     return {
         "ok": True,
         "messaggio": "Messaggio inviato correttamente"
@@ -1691,6 +1712,13 @@ def api_miei_ordini(email: str):
 @app.get("/admin/messaggi-clienti")
 def admin_messaggi_clienti():
     return leggi_messaggi_clienti()
+
+@app.get("/admin/messaggi-non-letti")
+def admin_messaggi_non_letti():
+
+    return {
+        "totale": conta_messaggi_non_letti()
+    }
 
 
 
