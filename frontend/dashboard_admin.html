@@ -1482,29 +1482,25 @@ async function caricaStatisticheClienti() {
 
 async function caricaMessaggiClienti() {
 
-    const tbody =
-        document.getElementById(
-            "messaggi_clienti_admin"
-        );
+    const tbody = document.getElementById("messaggi_clienti_admin");
+
+    tbody.innerHTML = `
+        <tr>
+            <td colspan="4">Caricamento...</td>
+        </tr>
+    `;
 
     try {
 
-        const response = await fetch(
-            "/admin/messaggi-clienti"
-        );
-
+        const response = await fetch("/admin/messaggi-clienti");
         const dati = await response.json();
 
-        if (!dati.length) {
-
+        if (!dati || dati.length === 0) {
             tbody.innerHTML = `
                 <tr>
-                    <td colspan="4">
-                        Nessun messaggio ricevuto
-                    </td>
+                    <td colspan="4">Nessun messaggio ricevuto</td>
                 </tr>
             `;
-
             return;
         }
 
@@ -1512,36 +1508,47 @@ async function caricaMessaggiClienti() {
 
         dati.forEach(msg => {
 
-            tbody.innerHTML += `
-                <tr>
-                    <td>${msg.creato_il}</td>
-                    <td>${msg.mittente}</td>
-                    <td>${msg.oggetto}</td>
+            const tr = document.createElement("tr");
 
-                    <td>
-    <button
-        onclick='apriDettaglioMessaggioCliente(${JSON.stringify(msg)})'
-        style="
-            padding:6px 10px;
-            border:none;
-            border-radius:6px;
-            background:#0b4dbb;
-            color:white;
-            cursor:pointer;
-        "
-    >
-        👁 Visualizza
-    </button>
-</td>
-                </tr>
-            `;
+            const tdData = document.createElement("td");
+            tdData.textContent = formattaDataEmail(msg.creato_il);
+
+            const tdMittente = document.createElement("td");
+            tdMittente.textContent = msg.mittente || "";
+
+            const tdOggetto = document.createElement("td");
+            tdOggetto.textContent = msg.oggetto || "";
+
+            const tdAzioni = document.createElement("td");
+
+            const btn = document.createElement("button");
+            btn.textContent = "👁 Visualizza";
+            btn.style.padding = "6px 10px";
+            btn.style.border = "none";
+            btn.style.borderRadius = "6px";
+            btn.style.background = "#0b4dbb";
+            btn.style.color = "white";
+            btn.style.cursor = "pointer";
+
+            btn.onclick = function () {
+                apriDettaglioMessaggioCliente(msg);
+            };
+
+            tdAzioni.appendChild(btn);
+
+            tr.appendChild(tdData);
+            tr.appendChild(tdMittente);
+            tr.appendChild(tdOggetto);
+            tr.appendChild(tdAzioni);
+
+            tbody.appendChild(tr);
         });
 
     } catch (errore) {
 
         tbody.innerHTML = `
             <tr>
-                <td colspan="4">
+                <td colspan="4" style="color:red;">
                     Errore caricamento messaggi
                 </td>
             </tr>
