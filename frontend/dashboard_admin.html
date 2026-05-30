@@ -1600,10 +1600,10 @@ function preparaRispostaCliente(msg) {
         "\n\n--- Messaggio originale ---\n" +
         (msg.testo || "");
 
-    window.scrollTo({
-        top: 0,
-        behavior: "smooth"
-    });
+    document.querySelector(".mail-box").scrollIntoView({
+    behavior: "smooth",
+    block: "start"
+});
 
     document.getElementById("email_esito").innerHTML =
         `<span style="color:#0b4dbb;">
