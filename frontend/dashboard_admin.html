@@ -1535,6 +1535,21 @@ async function caricaMessaggiClienti() {
             };
 
             tdAzioni.appendChild(btn);
+            const btnRispondi = document.createElement("button");
+btnRispondi.textContent = "📧 Rispondi";
+btnRispondi.style.padding = "6px 10px";
+btnRispondi.style.border = "none";
+btnRispondi.style.borderRadius = "6px";
+btnRispondi.style.background = "#16a34a";
+btnRispondi.style.color = "white";
+btnRispondi.style.cursor = "pointer";
+btnRispondi.style.marginLeft = "6px";
+
+btnRispondi.onclick = function () {
+    preparaRispostaCliente(msg);
+};
+
+tdAzioni.appendChild(btnRispondi);
 
             tr.appendChild(tdData);
             tr.appendChild(tdMittente);
@@ -1572,6 +1587,30 @@ function apriDettaglioMessaggioCliente(msg) {
 
     document.getElementById("modal_email").style.display = "flex";
 }
+
+function preparaRispostaCliente(msg) {
+
+    document.getElementById("email_destinatario").value =
+        msg.mittente || "";
+
+    document.getElementById("email_oggetto").value =
+        "RE: " + (msg.oggetto || "");
+
+    document.getElementById("email_testo").value =
+        "\n\n--- Messaggio originale ---\n" +
+        (msg.testo || "");
+
+    window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+    });
+
+    document.getElementById("email_esito").innerHTML =
+        `<span style="color:#0b4dbb;">
+            Risposta pronta. Completa il testo e clicca su Invia Email.
+        </span>`;
+}
+
 </script>
 
 <div class="card-admin">
