@@ -1152,25 +1152,39 @@ async def gestisci_webhook_stripe(request: Request):
         )
 
     except Exception as errore:
+        print("Errore firma webhook Stripe:", errore)
+
         return {
-            "errore": str(errore)
+            "success": True,
+            "errore": "firma_webhook_non_valida"
         }
 
-    if evento["type"] == "checkout.session.completed":
-        sessione = evento["data"]["object"]
+    try:
+        if evento["type"] == "checkout.session.completed":
+            sessione = evento["data"]["object"]
 
-        aggiorna_stato_ordine(
-            sessione_stripe=sessione["id"],
-            stato="pagato"
-        )
+            try:
+                aggiorna_stato_ordine(
+                    sessione_stripe=sessione["id"],
+                    stato="pagato"
+                )
+            except Exception as errore:
+                print("Errore aggiorna_stato_ordine webhook:", errore)
 
-        metadata = sessione.get("metadata", {})
-        prodotto = metadata.get("prodotto", "").lower()
+            try:
+                metadata = sessione.get("metadata", {})
+                prodotto = metadata.get("prodotto", "").lower()
 
-        if "tfr" in prodotto:
-            salva_evento_funnel("purchase_tfr")
-        else:
-            salva_evento_funnel("purchase")
+                if "tfr" in prodotto:
+                    salva_evento_funnel("purchase_tfr")
+                else:
+                    salva_evento_funnel("purchase")
+
+            except Exception as errore:
+                print("Errore salva_evento_funnel webhook:", errore)
+
+    except Exception as errore:
+        print("Errore generale webhook Stripe:", errore)
 
     return {
         "success": True
