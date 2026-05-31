@@ -1136,6 +1136,7 @@ def clienti():
     return risultato
 
 
+@app.post("/webhook")
 async def gestisci_webhook_stripe(request: Request):
     payload = await request.body()
 
