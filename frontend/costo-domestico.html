@@ -472,6 +472,12 @@
       color: #16a34a;
     }
 
+    .brand-logo-link{
+  text-decoration:none;
+  color:inherit;
+  display:inline-block;
+}
+
     @media (max-width: 520px) {
       .brand-logo {
         gap: 8px;
@@ -638,18 +644,23 @@ box-shadow:0 2px 8px rgba(0,0,0,0.05);
 </head>
 <body>
   <section class="hero">
+<a href="/" class="brand-logo-link" aria-label="Torna alla Home">
 <div class="brand-logo" aria-label="CostoDomestico.it">
   <svg viewBox="0 0 64 64" role="img" aria-hidden="true">
-    <path d="M32 4 L56 13 V29 C56 45 45 57 32 61 C19 57 8 45 8 29 V13 Z" fill="#ffffff" stroke="#0b4dbb" stroke-width="4"/>
-    <path d="M18 31 L32 20 L46 31 V45 H18 Z" fill="#0b4dbb"/>
-    <path d="M24 36 H30 V42 H24 Z M34 36 H40 V42 H34 Z" fill="#ffffff"/>
-    <path d="M17 50 C29 48 42 39 52 25" fill="none" stroke="#16a34a" stroke-width="5" stroke-linecap="round"/>
-    <path d="M48 24 L57 19 L55 30 Z" fill="#16a34a"/>
-    <rect x="20" y="46" width="7" height="8" fill="#16a34a"/>
-    <rect x="30" y="43" width="7" height="11" fill="#16a34a"/>
-    <rect x="40" y="38" width="7" height="16" fill="#16a34a"/>
+    ...
   </svg>
   <span class="brand-name">CostoDomestico<span class="brand-it">.it</span></span>
+</div>
+</a>
+<div style="text-align:center;margin-top:10px;">
+  <a href="/" style="
+    color:#dbeafe;
+    text-decoration:none;
+    font-size:14px;
+    font-weight:600;
+  ">
+    ← Torna alla Home
+  </a>
 </div>
     <h1>Scopri il costo reale di una colf o badante</h1>
     <p>
