@@ -8,14 +8,15 @@ def converti_netto_in_lordo(
     anno: int,
     livello: str,
     ore_settimanali: float,
-    convivente: bool
+    convivente: bool,
+    mesi_utili: int = 12
 ) -> float:
 
     if netto_annuo <= 0:
         return 0
 
-    settimane_annue = 52
-    ore_annue = ore_settimanali * settimane_annue
+    settimane_periodo = 52 / 12 * mesi_utili
+    ore_annue = ore_settimanali * settimane_periodo
 
     if ore_annue <= 0:
         return float(f"{netto_annuo:.2f}")

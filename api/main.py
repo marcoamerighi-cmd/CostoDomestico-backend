@@ -183,7 +183,8 @@ def elabora_tfr(richiesta: RichiestaTFR) -> dict:
             anno=riga.anno,
             livello=richiesta.livello,
             ore_settimanali=richiesta.ore_settimanali,
-            convivente=richiesta.convivente
+            convivente=richiesta.convivente,
+            mesi_utili=riga.mesi_utili
         )
 
         annualita_lorde.append({

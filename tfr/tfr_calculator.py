@@ -211,9 +211,7 @@ def calcola_tfr_annualita_lorde(
         retribuzione_lorda = riga["retribuzione_lorda"]
         mesi_utili = riga["mesi_utili"]
 
-        retribuzione_utile = (
-            retribuzione_lorda / 12
-        ) * mesi_utili
+        retribuzione_utile = retribuzione_lorda
 
         quota_tfr = round(
             retribuzione_utile / 13.5,
