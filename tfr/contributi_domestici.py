@@ -111,19 +111,45 @@ def contributo_lavoratore_orario(
     ore_settimanali: float,
     tempo_determinato: bool = False
 ) -> float:
+
     tabella = get_contributi_domestici(anno)
 
+    tipo_contratto = (
+        "tempo_determinato"
+        if tempo_determinato
+        else "tempo_indeterminato"
+    )
+
+    if tipo_contratto in tabella:
+        tabella = tabella[tipo_contratto]
+
     if ore_settimanali > 24:
-        return tabella["oltre_24_ore"]["quota_lavoratore"]
+        return tabella["oltre_24_ore"]["lavoratore"]
 
     for fascia in tabella["fino_24_ore"]:
-        if (
-            retribuzione_oraria_lorda >= fascia["min"]
-            and retribuzione_oraria_lorda <= fascia["max"]
-        ):
-            return fascia["quota_lavoratore"]
+        minimo = fascia.get("min", fascia.get("da", 0))
+        massimo = fascia.get("max", fascia.get("a", 999999))
 
-    return tabella["fino_24_ore"][-1]["quota_lavoratore"]
+        if massimo is None:
+            massimo = 999999
+
+        quota = fascia.get(
+            "quota_lavoratore",
+            fascia.get("lavoratore")
+        )
+
+        if (
+            retribuzione_oraria_lorda >= minimo
+            and retribuzione_oraria_lorda <= massimo
+        ):
+            return quota
+
+    ultima_fascia = tabella["fino_24_ore"][-1]
+
+    return ultima_fascia.get(
+        "quota_lavoratore",
+        ultima_fascia.get("lavoratore")
+    )
 
 def get_anno_contributi_disponibile(anno: int) -> int:
     anni_disponibili = sorted(CONTRIBUTI_DOMESTICI.keys())
