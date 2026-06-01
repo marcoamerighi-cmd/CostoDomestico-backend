@@ -1294,6 +1294,56 @@ support@costodomestico.it
 
 </footer>
 
+<div id="cookieBanner" class="cookie-banner">
+    <p>
+      Usiamo cookie tecnici e, previo consenso, Google Analytics per capire come viene utilizzato il sito.
+      Puoi accettare o rifiutare i cookie statistici. Leggi la
+      <a href="/cookie-policy.html">Cookie Policy</a> e la
+      <a href="/privacy-policy.html">Privacy Policy</a>.
+    </p>
+    <div class="cookie-actions">
+      <button class="cookie-accept" onclick="accettaCookie()">Accetta</button>
+      <button class="cookie-reject" onclick="rifiutaCookie()">Rifiuta</button>
+    </div>
+</div>
+
+<script>
+  function mostraCookieBanner() {
+    if (!localStorage.getItem('cookieConsent')) {
+      const banner = document.getElementById('cookieBanner');
+      if (banner) banner.classList.add('show');
+    }
+  }
+
+  function accettaCookie() {
+    localStorage.setItem('cookieConsent', 'accepted');
+
+    if (typeof gtag === 'function') {
+      gtag('consent', 'update', {
+        'analytics_storage': 'granted'
+      });
+    }
+
+    const banner = document.getElementById('cookieBanner');
+    if (banner) banner.classList.remove('show');
+  }
+
+  function rifiutaCookie() {
+    localStorage.setItem('cookieConsent', 'rejected');
+
+    if (typeof gtag === 'function') {
+      gtag('consent', 'update', {
+        'analytics_storage': 'denied'
+      });
+    }
+
+    const banner = document.getElementById('cookieBanner');
+    if (banner) banner.classList.remove('show');
+  }
+
+  document.addEventListener('DOMContentLoaded', mostraCookieBanner);
+</script>
+
 <script>
 async function tracciaEventoBackend(evento) {
 
