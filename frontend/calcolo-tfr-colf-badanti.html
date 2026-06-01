@@ -1226,6 +1226,10 @@ localStorage.setItem(
             dati.dettaglio_tfr.quota_tfr;
         document.getElementById("totale_da_liquidare").textContent =
             dati.liquidazione.totale_da_liquidare;
+        document.getElementById("risultato").scrollIntoView({
+            behavior: "smooth",
+            block: "start"
+        });
     }
 
     async function scaricaPDF() {
