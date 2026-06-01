@@ -124,7 +124,10 @@ def contributo_lavoratore_orario(
         tabella = tabella[tipo_contratto]
 
     if ore_settimanali > 24:
-        return tabella["oltre_24_ore"]["lavoratore"]
+        return tabella["oltre_24_ore"].get(
+        "quota_lavoratore",
+        tabella["oltre_24_ore"].get("lavoratore")
+    )
 
     for fascia in tabella["fino_24_ore"]:
         minimo = fascia.get("min", fascia.get("da", 0))
