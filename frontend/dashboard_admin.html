@@ -192,6 +192,10 @@
             max-height: 320px;
         }
 
+        #graficoFunnel {
+         max-height: 250px !important;
+        }
+
         @media (max-width: 768px) {
             body {
                 padding: 14px;
@@ -332,30 +336,15 @@
     <div class="card"><strong>✅ Conversioni reali</strong><span id="conv_convertiti">0</span></div>
     <div class="card"><strong>💰 Ricavi reali</strong><span id="conv_ricavi">€ 0,00</span></div>
     <div class="card"><strong>📈 Conversione reale</strong><span id="conv_percentuale">0%</span></div>
-<div class="card"><strong>📊 Ordini tracciati</strong><span id="conv_totale_ordini">0</span></div>
-<div class="card"><strong>✅ Conversioni reali</strong><span id="conv_convertiti">0</span></div>
-<div class="card"><strong>💰 Ricavi reali</strong><span id="conv_ricavi">€ 0,00</span></div>
-<div class="card"><strong>📈 Conversione reale</strong><span id="conv_percentuale">0%</span></div>
-
-<div class="card">
-    <strong>🟡 Checkout creati</strong>
-    <span id="checkout_reali">0</span>
-</div>
-
-<div class="card">
-    <strong>🟢 Pagamenti reali</strong>
-    <span id="pagamenti_reali">0</span>
-</div>
-
-<div class="card">
-    <strong>💰 Ricavi verificati</strong>
-    <span id="ricavi_verificati">€ 0,00</span>
-</div>
-
-<div class="card">
-    <strong>📈 Checkout → Pagamento</strong>
-    <span id="conversione_checkout_reale">0%</span>
-</div>
+    <div class="card"><strong>📄 Pagine SEO pubblicate</strong><span id="seo_pubblicate">60</span></div>
+    <div class="card"><strong>🔎 Pagine SEO indicizzate</strong><span id="seo_indicizzate">14</span></div>
+    <div class="card"><strong>👥 Visitatori oggi</strong><span id="visitatori_oggi">0</span></div>
+    <div class="card"><strong>🌍 Visitatori ultimi 30 giorni</strong><span id="visitatori_30">0</span></div>
+    <div class="card"><strong>🏆 Migliore pagina SEO</strong><span id="migliore_seo">In attesa dati</span></div>
+    <div class="card"><strong>🟡 Checkout creati</strong><span id="checkout_reali">0</span></div>
+    <div class="card"><strong>🟢 Pagamenti reali</strong><span id="pagamenti_reali">0</span></div>
+    <div class="card"><strong>💰 Ricavi verificati</strong><span id="ricavi_verificati">€ 0,00</span></div>
+    <div class="card"><strong>📈 Checkout → Pagamento</strong><span id="conversione_checkout_reale">0%</span></div>
 
 </div>
 </div>
@@ -422,21 +411,6 @@
     <tbody id="tabella_ordini"></tbody>
 </table>
 
-<h2>Clienti Registrati</h2>
-
-<table>
-    <thead>
-        <tr>
-            <th>ID</th>
-            <th>Email</th>
-            <th>Nome</th>
-            <th>Cognome</th>
-            <th>Data Creazione</th>
-        </tr>
-    </thead>
-    <tbody id="tabella-clienti"></tbody>
-</table>
-
 <h2>Top prodotti venduti</h2>
 
 <table>
@@ -448,6 +422,24 @@
         </tr>
     </thead>
     <tbody id="tabella_top_prodotti"></tbody>
+</table>
+
+<h2>Clienti Registrati</h2>
+
+<table>
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Email</th>
+            <th>Nome</th>
+            <th>Cognome</th>
+            <th>Data Creazione</th>
+            <th>Acquisti</th>
+            <th>Totale Speso</th>
+            <th>Ultimo Acquisto</th>
+        </tr>
+    </thead>
+    <tbody id="tabella-clienti"></tbody>
 </table>
 
 <div class="section-box">
@@ -540,13 +532,14 @@
                     }]
                 },
                 options: {
-                    responsive: true,
-                    plugins: {
-                        legend: {
-                            display: false
-                        }
-                    }
-                }
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+        legend: {
+            display: false
+        }
+    }
+}
             }
         );
     }
