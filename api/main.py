@@ -1736,6 +1736,11 @@ def admin_messaggi_non_letti():
         "totale": conta_messaggi_non_letti()
     }
 
+@app.get("/immagini/scudo.png")
+def immagine_scudo():
+    return FileResponse("frontend/immagini/scudo.png")
+
+
 
 
 
