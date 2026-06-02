@@ -154,6 +154,7 @@ def invia_email_generica(
         oggetto: str,
         testo: str
     ):
+
         resend.Emails.send({
             "from": EMAIL_MITTENTE,
             "to": destinatario,
@@ -165,20 +166,64 @@ def invia_email_generica(
                 margin:auto;
                 padding:20px;
                 color:#374151;
-                line-height:1.5;
+                line-height:1.6;
             ">
-                <h2 style="color:#0b4dbb;">
-                CostoDomestico.it
-                </h2>
 
                 <p>{testo}</p>
 
-                <hr>
+                <br>
+                <hr style="border:none;border-top:1px solid #e5e7eb;">
+                <br>
 
-                <p style="font-size:12px;color:#9ca3af;">
-                    Email inviata da CostoDomestico.it<br>
-                    support@costodomestico.it
-                </p>
+                <table cellpadding="0" cellspacing="0" border="0" style="font-family:Segoe UI,Arial,sans-serif;">
+
+                <tr>
+
+                <td style="vertical-align:middle;padding-right:14px;">
+
+                <img src="https://costodomestico.it/immagini/scudo.png"
+                     alt="CostoDomestico"
+                     width="75">
+
+                </td>
+
+                <td style="vertical-align:middle;">
+
+                <div style="font-size:20px;font-weight:700;">
+                    <span style="color:#0b4dbb;">CostoDomestico</span><span style="color:#16a34a;">.it</span>
+                </div>
+
+                <div style="font-size:14px;font-weight:600;color:#16a34a;margin-top:2px;margin-bottom:5px;">
+                    Supporto Clienti
+                </div>
+
+                <div style="font-size:12px;color:#334155;line-height:1.4;">
+                    Calcolo costo colf, badanti e babysitter<br>
+                    Calcolo TFR lavoro domestico
+                </div>
+
+                <div style="margin-top:6px;font-size:12px;">
+                    🌐
+                    <a href="https://www.costodomestico.it"
+                       style="color:#0b4dbb;text-decoration:none;">
+                       www.costodomestico.it
+                    </a>
+                </div>
+
+                <div style="font-size:12px;">
+                    📧
+                    <a href="mailto:support@costodomestico.it"
+                       style="color:#0b4dbb;text-decoration:none;">
+                       support@costodomestico.it
+                    </a>
+                </div>
+
+                </td>
+
+                </tr>
+
+                </table>
+
             </div>
             """
-    })
+        })
