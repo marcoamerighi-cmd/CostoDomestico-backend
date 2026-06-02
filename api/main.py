@@ -1740,6 +1740,10 @@ def admin_messaggi_non_letti():
 def immagine_scudo():
     return FileResponse("frontend/immagini/scudo.png")
 
+@app.get("/immagini/og-image.jpg")
+def serve_og_image():
+    return FileResponse("frontend/immagini/og-image.jpg")
+
 
 
 
