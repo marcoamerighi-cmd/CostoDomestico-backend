@@ -183,7 +183,8 @@ def invia_email_generica(
 
                 <img src="https://costodomestico.it/immagini/scudo.png"
                      alt="CostoDomestico"
-                     width="75">
+                     width="75"
+                     height="50">
 
                 </td>
 
