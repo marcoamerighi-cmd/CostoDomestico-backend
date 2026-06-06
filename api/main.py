@@ -1744,6 +1744,10 @@ def immagine_scudo():
 def serve_og_image():
     return FileResponse("frontend/immagini/og-image.jpg")
 
+@app.get("/immagini/marco-amerighi.jpeg")
+def immagine_marco_amerighi():
+    return FileResponse("frontend/immagini/marco-amerighi.jpeg")
+
 
 
 
