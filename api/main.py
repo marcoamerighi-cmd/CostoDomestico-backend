@@ -29,7 +29,8 @@ from api.email_service import (
     invia_report_tfr_email,
     invia_report_costo_domestico_email,
     invia_magic_link_email,
-    invia_email_generica
+    invia_email_generica,
+    invia_email_benvenuto_newsletter
 )
 from api.stripe_webhook_config import STRIPE_WEBHOOK_SECRET
 
