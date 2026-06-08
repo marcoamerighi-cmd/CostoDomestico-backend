@@ -463,6 +463,24 @@
         }).format(valore || 0);
     }
 
+    async function caricaStatisticheNewsletter(){
+
+    const risposta =
+        await fetch("/admin/statistiche-newsletter");
+
+    const dati =
+        await risposta.json();
+
+    document.getElementById("newsletter_totale").textContent =
+        dati.totale;
+
+    document.getElementById("newsletter_7_giorni").textContent =
+        dati.ultimi_7_giorni;
+
+    document.getElementById("newsletter_30_giorni").textContent =
+        dati.ultimi_30_giorni;
+}
+
     async function caricaDashboard() {
         const risposta = await fetch(
             "/storico-ordini"
@@ -1490,6 +1508,11 @@ async function caricaNewsletter() {
     const tbody =
         document.getElementById("tabella_newsletter");
 
+    if (!tbody) {
+        console.error("tabella_newsletter non trovata");
+        return;
+    }
+
     tbody.innerHTML = `
         <tr>
             <td colspan="4">Caricamento...</td>
@@ -1507,10 +1530,12 @@ async function caricaNewsletter() {
         if (!dati || dati.length === 0) {
 
             document.getElementById("newsletter_totale").textContent = "0";
-            document.getElementById("kpi_newsletter").textContent = "0";
+
+            if (document.getElementById("kpi_newsletter")) {
+                document.getElementById("kpi_newsletter").textContent = "0";
+            }
 
             tbody.innerHTML = `
-
                 <tr>
                     <td colspan="4">Nessun iscritto newsletter</td>
                 </tr>
@@ -1522,8 +1547,10 @@ async function caricaNewsletter() {
         document.getElementById("newsletter_totale").textContent =
             dati.length;
 
+        if (document.getElementById("kpi_newsletter")) {
             document.getElementById("kpi_newsletter").textContent =
-    dati.length;
+                dati.length;
+        }
 
         tbody.innerHTML = "";
 
@@ -1531,8 +1558,8 @@ async function caricaNewsletter() {
 
             tbody.innerHTML += `
                 <tr>
-                    <td>${iscritto.id}</td>
-                    <td>${iscritto.email}</td>
+                    <td>${iscritto.id || ""}</td>
+                    <td>${iscritto.email || ""}</td>
                     <td>${iscritto.origine || ""}</td>
                     <td>${formattaDataEmail(iscritto.data_iscrizione)}</td>
                 </tr>
@@ -1540,7 +1567,9 @@ async function caricaNewsletter() {
 
         });
 
-    } catch (errore) {
+        } catch (errore) {
+
+        console.error(errore);
 
         tbody.innerHTML = `
             <tr>
@@ -1551,27 +1580,6 @@ async function caricaNewsletter() {
         `;
 
     }
-
-    async function caricaStatisticheNewsletter(){
-
-    const risposta = await fetch(
-        "/admin/statistiche-newsletter"
-    );
-
-    const dati = await risposta.json();
-
-    document.getElementById(
-        "newsletter_totale"
-    ).innerText = dati.totale;
-
-    document.getElementById(
-        "newsletter_7_giorni"
-    ).innerText = dati.ultimi_7_giorni;
-
-    document.getElementById(
-        "newsletter_30_giorni"
-    ).innerText = dati.ultimi_30_giorni;
-}
 }
 
 function esportaNewsletter(){
