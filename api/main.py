@@ -1731,6 +1731,10 @@ def iscrizione_newsletter(richiesta: NewsletterRequest):
         origine=richiesta.origine
     )
 
+    invia_email_benvenuto_newsletter(
+        email
+    )
+
     return {
         "success": True,
         "message": "Iscrizione completata"

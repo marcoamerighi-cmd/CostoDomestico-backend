@@ -228,3 +228,36 @@ def invia_email_generica(
             </div>
             """
         })
+
+def invia_email_benvenuto_newsletter(
+    destinatario: str
+):
+
+    testo = """
+Grazie per esserti iscritto alla newsletter di CostoDomestico.it.
+
+Puoi scaricare gratuitamente la Guida 2026 al Lavoro Domestico da questo link:
+
+https://costodomestico.it/guida-lavoro-domestico-2026.pdf
+
+Nella guida trovi informazioni utili su colf, badanti, babysitter, contributi INPS, tredicesima, TFR e costo reale del rapporto domestico.
+
+Puoi utilizzare anche i simulatori gratuiti:
+
+• Simulatore Costo Domestico
+https://costodomestico.it
+
+• Simulatore TFR
+https://costodomestico.it/calcolo-tfr-colf-badanti.html
+
+Grazie per la fiducia.
+
+Marco Amerighi
+Fondatore di CostoDomestico.it
+"""
+
+    invia_email_generica(
+        destinatario=destinatario,
+        oggetto="Scarica la Guida Gratuita 2026 al Lavoro Domestico",
+        testo=testo
+    )

@@ -317,6 +317,7 @@
 
 <div class="stats">
     <div class="card"><strong>📦 Ordini totali</strong><span id="totale_ordini">0</span></div>
+    <div class="card"><strong>📬 Iscritti Newsletter</strong><span id="kpi_newsletter">0</span></div>
     <div class="card"><strong>💰 Incasso totale</strong><span id="incasso_totale">€ 0,00</span></div>
     <div class="card"><strong>📅 Ordini oggi</strong><span id="ordini_oggi">0</span></div>
     <div class="card"><strong>📆 Ordini ultimi 7 giorni</strong><span id="ordini_7_giorni">0</span></div>
@@ -473,6 +474,7 @@
         creaGrafico(tuttiOrdini);
         await caricaClienti();
         await caricaFunnelInterno();
+        await caricaNewsletter();
     }
 
     async function caricaFunnelInterno() {
@@ -1469,8 +1471,10 @@ async function caricaNewsletter() {
         if (!dati || dati.length === 0) {
 
             document.getElementById("newsletter_totale").textContent = "0";
+            document.getElementById("kpi_newsletter").textContent = "0";
 
             tbody.innerHTML = `
+
                 <tr>
                     <td colspan="4">Nessun iscritto newsletter</td>
                 </tr>
@@ -1481,6 +1485,9 @@ async function caricaNewsletter() {
 
         document.getElementById("newsletter_totale").textContent =
             dati.length;
+
+            document.getElementById("kpi_newsletter").textContent =
+    dati.length;
 
         tbody.innerHTML = "";
 
