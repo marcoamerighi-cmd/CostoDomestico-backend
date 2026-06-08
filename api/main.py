@@ -1670,6 +1670,45 @@ def admin_invia_email_clienti(richiesta: RichiestaEmailMassivaAdmin):
         "risultati": risultati
     }
 
+@app.post("/admin/invia-email-newsletter")
+def admin_invia_email_newsletter(
+    richiesta: RichiestaEmailMassivaAdmin
+):
+
+    iscritti = leggi_iscritti_newsletter()
+
+    risultati = []
+
+    for iscritto in iscritti:
+
+        email = iscritto[1]
+
+        try:
+
+            invia_email_generica(
+                destinatario=email,
+                oggetto=richiesta.oggetto,
+                testo=richiesta.testo
+            )
+
+            risultati.append({
+                "email": email,
+                "stato": "inviata"
+            })
+
+        except Exception as e:
+
+            risultati.append({
+                "email": email,
+                "stato": "errore",
+                "errore": str(e)
+            })
+
+    return {
+        "totale_newsletter": len(iscritti),
+        "risultati": risultati
+    }
+
 @app.post("/cliente/invia-messaggio")
 def cliente_invia_messaggio(
     richiesta: RichiestaMessaggioCliente

@@ -1449,6 +1449,41 @@ async function inviaEmailTuttiClienti() {
     }
 }
 
+async function inviaEmailNewsletter(){
+
+    const oggetto =
+        document.getElementById("email_oggetto").value;
+
+    const testo =
+        document.getElementById("email_testo").value;
+
+    if(!oggetto || !testo){
+        alert("Inserisci oggetto e messaggio.");
+        return;
+    }
+
+    const risposta = await fetch(
+        "/admin/invia-email-newsletter",
+        {
+            method:"POST",
+            headers:{
+                "Content-Type":"application/json"
+            },
+            body:JSON.stringify({
+                oggetto:oggetto,
+                testo:testo
+            })
+        }
+    );
+
+    const dati = await risposta.json();
+
+    alert(
+        "Email inviata agli iscritti newsletter: " +
+        dati.totale_newsletter
+    );
+}
+
 async function caricaNewsletter() {
 
     const tbody =
@@ -1828,6 +1863,13 @@ function preparaRispostaCliente(msg) {
     margin-left:10px;
 ">
     Invia a tutti i clienti
+</button>
+
+<button onclick="inviaEmailNewsletter()" style="
+    background:#16a34a;
+    margin-left:10px;
+">
+    Invia a tutti gli iscritti newsletter
 </button>
 
     </div>
