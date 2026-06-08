@@ -1795,6 +1795,15 @@ def admin_newsletter():
         for r in iscritti
     ]
 
+@app.get("/guida-lavoro-domestico-2026.pdf")
+def guida_pdf():
+
+    return FileResponse(
+        "frontend/guida-lavoro-domestico-2026.pdf",
+        media_type="application/pdf",
+        filename="guida-lavoro-domestico-2026.pdf"
+    )
+
 
 
 
