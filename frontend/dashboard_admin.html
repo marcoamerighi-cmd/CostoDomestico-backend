@@ -1854,25 +1854,30 @@ function preparaRispostaCliente(msg) {
             rows="7"
         ></textarea>
 
-        <button onclick="inviaEmailAdmin()">
-    Invia Email
-</button>
-
-<button onclick="inviaEmailNewsletter()" style="
-    background:#f59e0b;
-    margin-left:10px;
+        <div style="
+    display:flex;
+    gap:12px;
+    align-items:center;
+    margin-top:15px;
 ">
-    Invia a tutti gli iscritti
-</button>
 
-<button onclick="inviaEmailTuttiClienti()" style="
-    background:#0b4dbb;
-    margin-left:10px;
-">
-    Invia a tutti i clienti
-</button>
+    <button onclick="inviaEmailAdmin()">
+        Invia Email
+    </button>
 
-    </div>
+    <button onclick="inviaEmailNewsletter()" style="
+        background:#f59e0b;
+    ">
+        Invia a tutti gli iscritti
+    </button>
+
+    <button onclick="inviaEmailTuttiClienti()" style="
+        background:#0b4dbb;
+    ">
+        Invia a tutti i clienti
+    </button>
+
+</div>
 
     <div id="email_esito"></div>
 
