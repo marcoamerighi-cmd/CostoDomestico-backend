@@ -1777,6 +1777,20 @@ def serve_og_image():
 def immagine_marco_amerighi():
     return FileResponse("frontend/immagini/marco-amerighi.jpeg")
 
+@app.get("/admin/newsletter")
+def admin_newsletter():
+    iscritti = leggi_iscritti_newsletter()
+
+    return [
+        {
+            "id": r[0],
+            "email": r[1],
+            "origine": r[2],
+            "data_iscrizione": r[3]
+        }
+        for r in iscritti
+    ]
+
 
 
 

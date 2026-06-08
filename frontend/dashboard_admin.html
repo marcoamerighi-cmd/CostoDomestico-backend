@@ -1447,6 +1447,69 @@ async function inviaEmailTuttiClienti() {
     }
 }
 
+async function caricaNewsletter() {
+
+    const tbody =
+        document.getElementById("tabella_newsletter");
+
+    tbody.innerHTML = `
+        <tr>
+            <td colspan="4">Caricamento...</td>
+        </tr>
+    `;
+
+    try {
+
+        const response =
+            await fetch("/admin/newsletter");
+
+        const dati =
+            await response.json();
+
+        if (!dati || dati.length === 0) {
+
+            document.getElementById("newsletter_totale").textContent = "0";
+
+            tbody.innerHTML = `
+                <tr>
+                    <td colspan="4">Nessun iscritto newsletter</td>
+                </tr>
+            `;
+
+            return;
+        }
+
+        document.getElementById("newsletter_totale").textContent =
+            dati.length;
+
+        tbody.innerHTML = "";
+
+        dati.forEach(iscritto => {
+
+            tbody.innerHTML += `
+                <tr>
+                    <td>${iscritto.id}</td>
+                    <td>${iscritto.email}</td>
+                    <td>${iscritto.origine || ""}</td>
+                    <td>${formattaDataEmail(iscritto.data_iscrizione)}</td>
+                </tr>
+            `;
+
+        });
+
+    } catch (errore) {
+
+        tbody.innerHTML = `
+            <tr>
+                <td colspan="4" style="color:red;">
+                    Errore caricamento newsletter
+                </td>
+            </tr>
+        `;
+
+    }
+}
+
 async function caricaStatisticheClienti() {
 
     try {
@@ -1676,6 +1739,38 @@ function preparaRispostaCliente(msg) {
     <button onclick="caricaStatisticheClienti()">
         Aggiorna statistiche clienti
     </button>
+</div>
+
+<div class="card-admin">
+
+    <h2>📬 Iscritti Newsletter</h2>
+
+    <p>
+        Totale iscritti:
+        <strong id="newsletter_totale">-</strong>
+    </p>
+
+    <button onclick="caricaNewsletter()">
+        Aggiorna iscritti newsletter
+    </button>
+
+    <table style="width:100%; margin-top:15px;">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Email</th>
+                <th>Origine</th>
+                <th>Data iscrizione</th>
+            </tr>
+        </thead>
+
+        <tbody id="tabella_newsletter">
+            <tr>
+                <td colspan="4">Nessun iscritto caricato</td>
+            </tr>
+        </tbody>
+    </table>
+
 </div>
 
 <div class="card-admin mail-box">
