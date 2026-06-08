@@ -1517,6 +1517,15 @@ async function caricaNewsletter() {
     }
 }
 
+function esportaNewsletter(){
+
+    window.open(
+        "/admin/newsletter/export",
+        "_blank"
+    );
+
+}
+
 async function caricaStatisticheClienti() {
 
     try {
@@ -1760,6 +1769,13 @@ function preparaRispostaCliente(msg) {
     <button onclick="caricaNewsletter()">
         Aggiorna iscritti newsletter
     </button>
+
+    <button
+    onclick="esportaNewsletter()"
+    class="btn-blue"
+>
+    📥 Esporta CSV Newsletter
+</button>
 
     <table style="width:100%; margin-top:15px;">
         <thead>

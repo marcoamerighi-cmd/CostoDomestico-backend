@@ -5,6 +5,8 @@ import os
 from dotenv import load_dotenv
 load_dotenv()
 import json
+import io
+import csv
 
 from google.analytics.data_v1beta import BetaAnalyticsDataClient
 from google.analytics.data_v1beta.types import (
@@ -20,7 +22,7 @@ import stripe
 
 from fastapi import FastAPI, Request, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse, StreamingResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 
@@ -1795,6 +1797,41 @@ def admin_newsletter():
         }
         for r in iscritti
     ]
+
+@app.get("/admin/newsletter/export")
+def esporta_newsletter():
+
+    iscritti = leggi_iscritti_newsletter()
+
+    output = io.StringIO()
+
+    writer = csv.writer(output)
+
+    writer.writerow([
+        "ID",
+        "Email",
+        "Origine",
+        "Data iscrizione"
+    ])
+
+    for r in iscritti:
+        writer.writerow([
+            r[0],
+            r[1],
+            r[2],
+            r[3]
+        ])
+
+    output.seek(0)
+
+    return StreamingResponse(
+        iter([output.getvalue()]),
+        media_type="text/csv",
+        headers={
+            "Content-Disposition":
+            "attachment; filename=newsletter.csv"
+        }
+    )
 
 @app.get("/guida-lavoro-domestico-2026.pdf")
 def guida_pdf():
