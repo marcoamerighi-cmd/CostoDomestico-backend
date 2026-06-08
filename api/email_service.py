@@ -245,7 +245,7 @@ Nella guida trovi informazioni utili su colf, badanti, babysitter, contributi IN
 Puoi utilizzare anche i simulatori gratuiti:
 
 • Simulatore Costo Domestico
-https://costodomestico.it
+https://costodomestico.it/costo-domestico.html
 
 • Simulatore TFR
 https://costodomestico.it/calcolo-tfr-colf-badanti.html
