@@ -278,6 +278,49 @@ padding:30px 15px;
   font-weight: bold;
 }
 
+.newsletter-box{
+    max-width:1000px;
+    margin:60px auto;
+    padding:35px;
+    background:#ecfdf5;
+    border:1px solid #86efac;
+    border-radius:20px;
+    text-align:center;
+}
+
+.newsletter-box h2{
+    color:#166534;
+    margin-bottom:15px;
+}
+
+.newsletter-box input{
+    width:100%;
+    max-width:420px;
+    padding:15px;
+    border:1px solid #d1d5db;
+    border-radius:10px;
+    font-size:16px;
+    margin-top:15px;
+}
+
+.newsletter-box button{
+    display:block;
+    margin:18px auto 0;
+    background:#16a34a;
+    color:white;
+    border:none;
+    padding:15px 24px;
+    border-radius:12px;
+    font-weight:bold;
+    cursor:pointer;
+}
+
+#messaggio_newsletter{
+    margin-top:15px;
+    font-weight:bold;
+    color:#166534;
+}
+
     </style>
 
     <!-- Google tag (gtag.js) -->
@@ -444,6 +487,52 @@ gtag('config', 'G-XXXXXXXXXX');
     </div>
 </section>
 
+<section class="newsletter-box">
+
+<h2>
+📘 Guida Gratuita 2026 al Lavoro Domestico
+</h2>
+
+<p>
+
+Ricevi gratuitamente la guida completa su:
+
+<br><br>
+
+✓ Assunzione colf e badanti
+
+<br>
+
+✓ Contributi INPS
+
+<br>
+
+✓ Tredicesima
+
+<br>
+
+✓ TFR
+
+<br>
+
+✓ Ferie e cessazione rapporto
+
+</p>
+
+<input
+    type="email"
+    id="email_newsletter"
+    placeholder="Inserisci la tua email"
+>
+
+<button onclick="iscrivitiNewsletter()">
+    Scarica la guida gratuita
+</button>
+
+<p id="messaggio_newsletter"></p>
+
+</section>
+
 <section class="cta">
     <h2>Inizia subito il tuo calcolo</h2>
 
@@ -502,6 +591,67 @@ Cookie Policy
 </div>
 
 </footer>
+
+<script>
+
+async function iscrivitiNewsletter(){
+
+    const email =
+        document.getElementById(
+            "email_newsletter"
+        ).value.trim();
+
+    const messaggio =
+        document.getElementById(
+            "messaggio_newsletter"
+        );
+
+    if(
+        !email ||
+        !email.includes("@")
+    ){
+        messaggio.innerText =
+            "Inserisci una email valida.";
+        return;
+    }
+
+    const risposta =
+        await fetch(
+            "/iscrizione-newsletter",
+            {
+                method:"POST",
+                headers:{
+                    "Content-Type":"application/json"
+                },
+                body:JSON.stringify({
+                    email:email,
+                    origine:"homepage"
+                })
+            }
+        );
+
+    const dati =
+        await risposta.json();
+
+    if(dati.success){
+
+        messaggio.innerText =
+            "Grazie! Iscrizione completata.";
+
+        document.getElementById(
+            "email_newsletter"
+        ).value = "";
+
+    }else{
+
+        messaggio.innerText =
+            dati.message;
+
+    }
+
+}
+
+</script>
 
 </body>
 </html>

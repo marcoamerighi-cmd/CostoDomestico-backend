@@ -59,6 +59,10 @@ from database.ordini_repository import (
     statistiche_conversione,
     statistiche_ordini,
     leggi_ordini_cliente,
+
+    crea_tabella_newsletter,
+    salva_iscrizione_newsletter,
+    leggi_iscritti_newsletter,
 )
 from database.clienti_repository import (
     crea_tabella_clienti,
@@ -98,6 +102,7 @@ crea_database()
 crea_tabella_ordini()
 crea_tabella_clienti()
 crea_tabella_email()
+crea_tabella_newsletter()
 
 BASE_DIR = Path(__file__).resolve().parents[1]
 FRONTEND_DIR = BASE_DIR / "frontend"
@@ -1550,6 +1555,9 @@ class RichiestaMessaggioCliente(BaseModel):
     oggetto: str
     testo: str
 
+class NewsletterRequest(BaseModel):
+    email: str
+    origine: str = "homepage"
 @app.post("/admin/invia-email")
 def admin_invia_email(richiesta: RichiestaEmailAdmin):
 
@@ -1705,6 +1713,27 @@ def admin_messaggio_letto(id_messaggio: int):
     return {
         "ok": True,
         "messaggio": "Messaggio segnato come letto"
+    }
+
+@app.post("/iscrizione-newsletter")
+def iscrizione_newsletter(richiesta: NewsletterRequest):
+
+    email = (richiesta.email or "").lower().strip()
+
+    if not email or "@" not in email:
+        return {
+            "success": False,
+            "message": "Email non valida"
+        }
+
+    salva_iscrizione_newsletter(
+        email=email,
+        origine=richiesta.origine
+    )
+
+    return {
+        "success": True,
+        "message": "Iscrizione completata"
     }
 
 @app.get("/api/miei-ordini")

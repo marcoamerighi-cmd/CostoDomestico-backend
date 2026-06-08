@@ -484,3 +484,76 @@ def statistiche_conversione():
         "ricavi": round(float(ricavi), 2),
         "conversione": conversione
     }
+
+def crea_tabella_newsletter():
+
+    conn = get_connessione()
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS newsletter (
+            id SERIAL PRIMARY KEY,
+            email TEXT UNIQUE NOT NULL,
+            origine TEXT,
+            data_iscrizione TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        )
+    """)
+
+    conn.commit()
+    cursor.close()
+    conn.close()
+
+
+def salva_iscrizione_newsletter(
+    email: str,
+    origine: str = "homepage"
+):
+
+    conn = get_connessione()
+    cursor = conn.cursor()
+
+    email_pulita = (
+        email or ""
+    ).lower().strip()
+
+    cursor.execute("""
+        INSERT INTO newsletter (
+            email,
+            origine
+        )
+        VALUES (%s,%s)
+        ON CONFLICT (email)
+        DO NOTHING
+    """, (
+        email_pulita,
+        origine
+    ))
+
+    conn.commit()
+    cursor.close()
+    conn.close()
+
+    return True
+
+
+def leggi_iscritti_newsletter():
+
+    conn = get_connessione()
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        SELECT
+            id,
+            email,
+            origine,
+            data_iscrizione
+        FROM newsletter
+        ORDER BY id DESC
+    """)
+
+    risultati = cursor.fetchall()
+
+    cursor.close()
+    conn.close()
+
+    return risultati
