@@ -1881,6 +1881,44 @@ def guida_pdf():
         filename="guida-lavoro-domestico-2026.pdf"
     )
 
+@app.get("/admin/statistiche-newsletter")
+def statistiche_newsletter():
+
+    conn = get_connessione()
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        SELECT COUNT(*)
+        FROM newsletter
+    """)
+
+    totale = cursor.fetchone()[0]
+
+    cursor.execute("""
+        SELECT COUNT(*)
+        FROM newsletter
+        WHERE data_iscrizione >= NOW() - INTERVAL '7 days'
+    """)
+
+    ultimi_7_giorni = cursor.fetchone()[0]
+
+    cursor.execute("""
+        SELECT COUNT(*)
+        FROM newsletter
+        WHERE data_iscrizione >= NOW() - INTERVAL '30 days'
+    """)
+
+    ultimi_30_giorni = cursor.fetchone()[0]
+
+    cursor.close()
+    conn.close()
+
+    return {
+        "totale": totale,
+        "ultimi_7_giorni": ultimi_7_giorni,
+        "ultimi_30_giorni": ultimi_30_giorni
+    }
+
 
 
 

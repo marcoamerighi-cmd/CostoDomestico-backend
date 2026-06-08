@@ -475,6 +475,7 @@
         await caricaClienti();
         await caricaFunnelInterno();
         await caricaNewsletter();
+        await caricaStatisticheNewsletter();
     }
 
     async function caricaFunnelInterno() {
@@ -1550,6 +1551,27 @@ async function caricaNewsletter() {
         `;
 
     }
+
+    async function caricaStatisticheNewsletter(){
+
+    const risposta = await fetch(
+        "/admin/statistiche-newsletter"
+    );
+
+    const dati = await risposta.json();
+
+    document.getElementById(
+        "newsletter_totale"
+    ).innerText = dati.totale;
+
+    document.getElementById(
+        "newsletter_7_giorni"
+    ).innerText = dati.ultimi_7_giorni;
+
+    document.getElementById(
+        "newsletter_30_giorni"
+    ).innerText = dati.ultimi_30_giorni;
+}
 }
 
 function esportaNewsletter(){
@@ -1800,6 +1822,25 @@ function preparaRispostaCliente(msg) {
         Totale iscritti:
         <strong id="newsletter_totale">-</strong>
     </p>
+
+    <div class="kpi-newsletter">
+
+    <div>
+        Totale iscritti:
+        <strong id="totale_newsletter">-</strong>
+    </div>
+
+    <div>
+        Ultimi 7 giorni:
+        <strong id="newsletter_7_giorni">-</strong>
+    </div>
+
+    <div>
+        Ultimi 30 giorni:
+        <strong id="newsletter_30_giorni">-</strong>
+    </div>
+
+</div>
 
     <button onclick="caricaNewsletter()">
         Aggiorna iscritti newsletter
