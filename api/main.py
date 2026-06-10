@@ -66,6 +66,7 @@ from database.ordini_repository import (
     crea_tabella_newsletter,
     salva_iscrizione_newsletter,
     leggi_iscritti_newsletter,
+    elimina_iscritto_newsletter,
 )
 from database.clienti_repository import (
     crea_tabella_clienti,
@@ -1918,6 +1919,15 @@ def statistiche_newsletter():
         "ultimi_7_giorni": ultimi_7_giorni,
         "ultimi_30_giorni": ultimi_30_giorni
     }
+
+@app.get("/disiscrizione-newsletter")
+def disiscrizione_newsletter(email: str):
+
+    elimina_iscritto_newsletter(email)
+
+    return FileResponse(
+        "frontend/disiscrizione-newsletter.html"
+    )
 
 
 

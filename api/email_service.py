@@ -233,7 +233,7 @@ def invia_email_benvenuto_newsletter(
     destinatario: str
 ):
 
-    testo = """
+    testo = f"""
 Grazie per esserti iscritto alla newsletter di CostoDomestico.it.
 
 Puoi scaricare gratuitamente la Guida 2026 al Lavoro Domestico da questo link:
@@ -254,7 +254,17 @@ Grazie per la fiducia.
 
 Marco Amerighi
 Fondatore di CostoDomestico.it
+
+---
+
+Ricevi questa email perché ti sei iscritto alla newsletter di CostoDomestico.it.
+
+Per cancellarti dalla newsletter:
+
+https://costodomestico.it/disiscrizione-newsletter?email={destinatario}
+
 """
+
 
     invia_email_generica(
         destinatario=destinatario,

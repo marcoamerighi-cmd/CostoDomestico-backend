@@ -557,3 +557,22 @@ def leggi_iscritti_newsletter():
     conn.close()
 
     return risultati
+
+def elimina_iscritto_newsletter(email):
+
+    conn = get_connessione()
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        DELETE FROM newsletter
+        WHERE email = %s
+    """, (email,))
+
+    conn.commit()
+
+    eliminati = cursor.rowcount
+
+    cursor.close()
+    conn.close()
+
+    return eliminati
