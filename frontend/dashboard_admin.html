@@ -319,6 +319,20 @@
     <div class="card"><strong>📦 Ordini totali</strong><span id="totale_ordini">0</span></div>
     <div class="card"><strong>📬 Iscritti Newsletter</strong><span id="kpi_newsletter">0</span></div>
     <div class="card"><strong>💰 Incasso totale</strong><span id="incasso_totale">€ 0,00</span></div>
+    <div class="kpi-card">
+    <div class="kpi-title">📬 Iscritti Newsletter</div>
+    <div class="kpi-value" id="kpi_newsletter">0</div>
+</div>
+
+<div class="kpi-card">
+    <div class="kpi-title">📈 Iscritti 7 giorni</div>
+    <div class="kpi-value" id="kpi_newsletter_7">0</div>
+</div>
+
+<div class="kpi-card">
+    <div class="kpi-title">🎯 Conv. Newsletter</div>
+    <div class="kpi-value" id="kpi_conversione_newsletter">0%</div>
+</div>
     <div class="card"><strong>📅 Ordini oggi</strong><span id="ordini_oggi">0</span></div>
     <div class="card"><strong>📆 Ordini ultimi 7 giorni</strong><span id="ordini_7_giorni">0</span></div>
     <div class="card"><strong>💶 Fatturato oggi</strong><span id="fatturato_oggi">€ 0,00</span></div>
@@ -470,6 +484,31 @@
 
     const dati =
         await risposta.json();
+
+        document.getElementById(
+    "kpi_newsletter"
+).textContent =
+    dati.totale;
+
+document.getElementById(
+    "kpi_newsletter_7"
+).textContent =
+    dati.ultimi_7_giorni;
+
+const calcoli =
+    parseInt(
+        document.getElementById("kpi_calcoli").textContent
+    ) || 0;
+
+const conversione =
+    calcoli > 0
+        ? ((dati.totale / calcoli) * 100).toFixed(2)
+        : "0.00";
+
+document.getElementById(
+    "kpi_conversione_newsletter"
+).textContent =
+    conversione + "%";
 
     document.getElementById("newsletter_totale").textContent =
         dati.totale;
