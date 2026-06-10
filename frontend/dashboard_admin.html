@@ -463,45 +463,62 @@
 
     async function caricaStatisticheNewsletter(){
 
-    const risposta =
-        await fetch("/admin/statistiche-newsletter");
+    try {
 
-    const dati =
-        await risposta.json();
+        const risposta =
+            await fetch("/admin/statistiche-newsletter");
 
-        document.getElementById(
-    "kpi_newsletter"
-).textContent =
-    dati.totale;
+        const dati =
+            await risposta.json();
 
-document.getElementById(
-    "kpi_newsletter_7"
-).textContent =
-    dati.ultimi_7_giorni;
+        if (document.getElementById("kpi_newsletter")) {
+            document.getElementById("kpi_newsletter").textContent =
+                dati.totale || 0;
+        }
 
-const calcoli =
-    parseInt(
-        document.getElementById("kpi_calcoli").textContent
-    ) || 0;
+        if (document.getElementById("kpi_newsletter_7")) {
+            document.getElementById("kpi_newsletter_7").textContent =
+                dati.ultimi_7_giorni || 0;
+        }
 
-const conversione =
-    calcoli > 0
-        ? ((dati.totale / calcoli) * 100).toFixed(2)
-        : "0.00";
+        if (document.getElementById("newsletter_totale")) {
+            document.getElementById("newsletter_totale").textContent =
+                dati.totale || 0;
+        }
 
-document.getElementById(
-    "kpi_conversione_newsletter"
-).textContent =
-    conversione + "%";
+        if (document.getElementById("newsletter_7_giorni")) {
+            document.getElementById("newsletter_7_giorni").textContent =
+                dati.ultimi_7_giorni || 0;
+        }
 
-    document.getElementById("newsletter_totale").textContent =
-        dati.totale;
+        if (document.getElementById("newsletter_30_giorni")) {
+            document.getElementById("newsletter_30_giorni").textContent =
+                dati.ultimi_30_giorni || 0;
+        }
 
-    document.getElementById("newsletter_7_giorni").textContent =
-        dati.ultimi_7_giorni;
+        const calcoli =
+            parseInt(
+                document.getElementById("kpi_calcoli")?.textContent || "0"
+            ) || 0;
 
-    document.getElementById("newsletter_30_giorni").textContent =
-        dati.ultimi_30_giorni;
+        const conversione =
+            calcoli > 0
+                ? ((Number(dati.totale || 0) / calcoli) * 100).toFixed(2)
+                : "0.00";
+
+        if (document.getElementById("kpi_conversione_newsletter")) {
+            document.getElementById("kpi_conversione_newsletter").textContent =
+                conversione + "%";
+        }
+
+    } catch (errore) {
+
+        console.error(
+            "Errore statistiche newsletter:",
+            errore
+        );
+
+    }
 }
 
     async function caricaDashboard() {
