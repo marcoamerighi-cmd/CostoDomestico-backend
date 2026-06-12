@@ -415,6 +415,60 @@ gtag('config', 'G-XXXXXXXXXX');
 
 </section>
 
+<section class="newsletter-box">
+
+<h2>
+🚀 Prossimamente su CostoDomestico.it
+</h2>
+
+<p>
+
+La prima piattaforma pensata per le famiglie che gestiscono colf, badanti e babysitter.
+
+<br><br>
+
+✓ Cedolini automatici
+
+<br>
+
+✓ Ferie e permessi
+
+<br>
+
+✓ Contributi INPS
+
+<br>
+
+✓ Certificazione Unica (CU)
+
+<br>
+
+✓ Tredicesima e TFR
+
+<br>
+
+✓ Conteggi di cessazione
+
+<br><br>
+
+Gli iscritti riceveranno l'accesso anticipato al lancio della piattaforma.
+
+</p>
+
+<input
+    type="email"
+    id="email_piattaforma"
+    placeholder="Inserisci la tua email"
+>
+
+<button onclick="interessePiattaforma()">
+    Richiedi accesso anticipato
+</button>
+
+<p id="messaggio_piattaforma"></p>
+
+</section>
+
   <section class="seo-guides">
 
   <h2>Guide utili sul lavoro domestico</h2>
@@ -646,6 +700,63 @@ async function iscrivitiNewsletter(){
     "/guida-lavoro-domestico-2026.pdf",
     "_blank"
 );
+
+    }else{
+
+        messaggio.innerText =
+            dati.message;
+
+    }
+
+}
+
+async function interessePiattaforma(){
+
+    const email =
+        document.getElementById(
+            "email_piattaforma"
+        ).value.trim();
+
+    const messaggio =
+        document.getElementById(
+            "messaggio_piattaforma"
+        );
+
+    if(
+        !email ||
+        !email.includes("@")
+    ){
+        messaggio.innerText =
+            "Inserisci una email valida.";
+        return;
+    }
+
+    const risposta =
+        await fetch(
+            "/iscrizione-newsletter",
+            {
+                method:"POST",
+                headers:{
+                    "Content-Type":"application/json"
+                },
+                body:JSON.stringify({
+                    email:email,
+                    origine:"piattaforma_paghe"
+                })
+            }
+        );
+
+    const dati =
+        await risposta.json();
+
+    if(dati.success){
+
+        messaggio.innerText =
+            "Grazie! Ti avviseremo al lancio.";
+
+        document.getElementById(
+            "email_piattaforma"
+        ).value = "";
 
     }else{
 
