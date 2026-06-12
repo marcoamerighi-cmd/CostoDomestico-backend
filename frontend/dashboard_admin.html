@@ -318,6 +318,7 @@
 <div class="stats">
     <div class="card"><strong>📦 Ordini totali</strong><span id="totale_ordini">0</span></div>
     <div class="card"><strong>📬 Iscritti Newsletter</strong><span id="kpi_newsletter">0</span></div>
+    <div class="card"><strong>🚀 Lead Piattaforma</strong><span id="kpi_piattaforma_paghe">0</span></div>
     <div class="card"><strong>📈 Iscritti 7 giorni</strong><span id="kpi_newsletter_7">0</span></div>
     <div class="card"><strong>🎯 Conv. Newsletter</strong><span id="kpi_conversione_newsletter">0%</span></div>
     <div class="card"><strong>💰 Incasso totale</strong><span id="incasso_totale">€ 0,00</span></div>
@@ -1591,6 +1592,14 @@ async function caricaNewsletter() {
         if (document.getElementById("kpi_newsletter")) {
             document.getElementById("kpi_newsletter").textContent =
                 dati.length;
+                const leadPiattaforma = dati.filter(
+    x => x.origine === "piattaforma_paghe"
+).length;
+
+if (document.getElementById("kpi_piattaforma_paghe")) {
+    document.getElementById("kpi_piattaforma_paghe").textContent =
+        leadPiattaforma;
+}
         }
 
         tbody.innerHTML = "";
