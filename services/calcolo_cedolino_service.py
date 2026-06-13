@@ -4,6 +4,8 @@ from database.paghe_rapporti_repository import leggi_rapporto
 from database.paghe_eventi_repository import leggi_eventi_mese
 from database.paghe_cedolini_repository import crea_cedolino
 
+from services.calcolo_eventi_cedolino import elabora_eventi_cedolino
+
 
 def euro(valore):
     return Decimal(str(valore or 0)).quantize(
@@ -12,10 +14,7 @@ def euro(valore):
     )
 
 
-def contributo_lavoratore_orario(
-    paga_oraria,
-    ore_settimanali
-):
+def contributo_lavoratore_orario(paga_oraria, ore_settimanali):
     paga_oraria = Decimal(str(paga_oraria or 0))
     ore_settimanali = Decimal(str(ore_settimanali or 0))
 
@@ -50,49 +49,50 @@ def calcola_cedolino_da_eventi(
     paga_pattuita_tipo = rapporto[16]
 
     eventi = leggi_eventi_mese(mese_id)
+    risultato_eventi = elabora_eventi_cedolino(eventi)
 
-    ore_ordinarie = Decimal("0")
-    importo_ordinarie = Decimal("0")
-    altri_importi = Decimal("0")
-
-    for evento in eventi:
-        tipo_evento = evento[3]
-        ore = Decimal(str(evento[6] or 0))
-        importo = Decimal(str(evento[8] or 0))
-
-        if tipo_evento == "lavoro_ordinario":
-            ore_ordinarie += ore
-            importo_ordinarie += importo
-        else:
-            altri_importi += importo
+    ore_retribuite = Decimal(str(risultato_eventi["ore_retribuite"] or 0))
+    totale_competenze = euro(risultato_eventi["totale_competenze"])
+    totale_trattenute = euro(risultato_eventi["totale_trattenute"])
 
     if paga_pattuita_tipo == "mensile" and paga_mensile:
-        lordo = euro(paga_mensile + altri_importi)
+        lordo_base = euro(paga_mensile)
 
-        if ore_ordinarie == 0:
-            ore_ordinarie = euro(ore_settimanali * Decimal("52") / Decimal("12"))
+        if ore_retribuite == 0:
+            ore_retribuite = euro(
+                ore_settimanali * Decimal("52") / Decimal("12")
+            )
 
-        paga_oraria_calcolo = euro(lordo / ore_ordinarie) if ore_ordinarie else Decimal("0")
+        paga_oraria_calcolo = (
+            euro(lordo_base / ore_retribuite)
+            if ore_retribuite
+            else Decimal("0")
+        )
+
+        lordo = euro(lordo_base + totale_competenze - totale_trattenute)
 
     else:
         paga_oraria_calcolo = euro(paga_oraria or 0)
 
-        if importo_ordinarie == 0:
-            importo_ordinarie = euro(ore_ordinarie * paga_oraria_calcolo)
+        if totale_competenze == 0 and ore_retribuite:
+            totale_competenze = euro(
+                ore_retribuite * paga_oraria_calcolo
+            )
 
-        lordo = euro(importo_ordinarie + altri_importi)
+        lordo = euro(totale_competenze - totale_trattenute)
 
     quota_contributo_lavoratore = contributo_lavoratore_orario(
         paga_oraria=paga_oraria_calcolo,
         ore_settimanali=ore_settimanali
     )
 
-    contributi_lavoratore = euro(ore_ordinarie * quota_contributo_lavoratore)
+    contributi_lavoratore = euro(
+        ore_retribuite * quota_contributo_lavoratore
+    )
 
     netto = euro(lordo - contributi_lavoratore)
 
     tfr_maturato = euro(lordo / Decimal("13.5"))
-
     tredicesima_maturata = euro(lordo / Decimal("12"))
 
     if not numero_cedolino:
@@ -101,10 +101,19 @@ def calcola_cedolino_da_eventi(
     dati_calcolo = {
         "livello": livello,
         "ore_settimanali": float(ore_settimanali),
-        "ore_ordinarie": float(ore_ordinarie),
+        "ore_retribuite": float(ore_retribuite),
         "paga_oraria_calcolo": float(paga_oraria_calcolo),
         "quota_contributo_lavoratore": float(quota_contributo_lavoratore),
-        "nota_fiscale": "Il datore domestico non è sostituto d'imposta: il netto è calcolato sottraendo solo i contributi a carico lavoratore."
+        "totale_competenze": float(totale_competenze),
+        "totale_trattenute": float(totale_trattenute),
+        "competenze": risultato_eventi["competenze"],
+        "trattenute": risultato_eventi["trattenute"],
+        "riepilogo": risultato_eventi["riepilogo"],
+        "nota_fiscale": (
+            "Il datore domestico non è sostituto d'imposta: "
+            "il netto è calcolato sottraendo solo i contributi "
+            "a carico lavoratore."
+        )
     }
 
     cedolino_id = crea_cedolino(
