@@ -1,0 +1,131 @@
+from decimal import Decimal, ROUND_HALF_UP
+
+from database.paghe_rapporti_repository import leggi_rapporto
+from database.paghe_eventi_repository import leggi_eventi_mese
+from database.paghe_cedolini_repository import crea_cedolino
+
+
+def euro(valore):
+    return Decimal(str(valore or 0)).quantize(
+        Decimal("0.01"),
+        rounding=ROUND_HALF_UP
+    )
+
+
+def contributo_lavoratore_orario(
+    paga_oraria,
+    ore_settimanali
+):
+    paga_oraria = Decimal(str(paga_oraria or 0))
+    ore_settimanali = Decimal(str(ore_settimanali or 0))
+
+    if ore_settimanali > 24:
+        return Decimal("0.25")
+
+    if paga_oraria <= Decimal("9.61"):
+        return Decimal("0.43")
+
+    if paga_oraria <= Decimal("11.70"):
+        return Decimal("0.48")
+
+    return Decimal("0.59")
+
+
+def calcola_cedolino_da_eventi(
+    mese_id,
+    rapporto_id,
+    anno,
+    mese,
+    numero_cedolino=None
+):
+    rapporto = leggi_rapporto(rapporto_id)
+
+    if not rapporto:
+        raise ValueError("Rapporto non trovato")
+
+    livello = rapporto[9]
+    ore_settimanali = Decimal(str(rapporto[11] or 0))
+    paga_oraria = rapporto[14]
+    paga_mensile = rapporto[15]
+    paga_pattuita_tipo = rapporto[16]
+
+    eventi = leggi_eventi_mese(mese_id)
+
+    ore_ordinarie = Decimal("0")
+    importo_ordinarie = Decimal("0")
+    altri_importi = Decimal("0")
+
+    for evento in eventi:
+        tipo_evento = evento[3]
+        ore = Decimal(str(evento[6] or 0))
+        importo = Decimal(str(evento[8] or 0))
+
+        if tipo_evento == "lavoro_ordinario":
+            ore_ordinarie += ore
+            importo_ordinarie += importo
+        else:
+            altri_importi += importo
+
+    if paga_pattuita_tipo == "mensile" and paga_mensile:
+        lordo = euro(paga_mensile + altri_importi)
+
+        if ore_ordinarie == 0:
+            ore_ordinarie = euro(ore_settimanali * Decimal("52") / Decimal("12"))
+
+        paga_oraria_calcolo = euro(lordo / ore_ordinarie) if ore_ordinarie else Decimal("0")
+
+    else:
+        paga_oraria_calcolo = euro(paga_oraria or 0)
+
+        if importo_ordinarie == 0:
+            importo_ordinarie = euro(ore_ordinarie * paga_oraria_calcolo)
+
+        lordo = euro(importo_ordinarie + altri_importi)
+
+    quota_contributo_lavoratore = contributo_lavoratore_orario(
+        paga_oraria=paga_oraria_calcolo,
+        ore_settimanali=ore_settimanali
+    )
+
+    contributi_lavoratore = euro(ore_ordinarie * quota_contributo_lavoratore)
+
+    netto = euro(lordo - contributi_lavoratore)
+
+    tfr_maturato = euro(lordo / Decimal("13.5"))
+
+    tredicesima_maturata = euro(lordo / Decimal("12"))
+
+    if not numero_cedolino:
+        numero_cedolino = f"{anno}-{str(mese).zfill(2)}"
+
+    dati_calcolo = {
+        "livello": livello,
+        "ore_settimanali": float(ore_settimanali),
+        "ore_ordinarie": float(ore_ordinarie),
+        "paga_oraria_calcolo": float(paga_oraria_calcolo),
+        "quota_contributo_lavoratore": float(quota_contributo_lavoratore),
+        "nota_fiscale": "Il datore domestico non è sostituto d'imposta: il netto è calcolato sottraendo solo i contributi a carico lavoratore."
+    }
+
+    cedolino_id = crea_cedolino(
+        mese_id=mese_id,
+        rapporto_id=rapporto_id,
+        numero_cedolino=numero_cedolino,
+        lordo=lordo,
+        contributi_lavoratore=contributi_lavoratore,
+        netto=netto,
+        tfr_maturato=tfr_maturato,
+        tredicesima_maturata=tredicesima_maturata,
+        dati_calcolo=dati_calcolo,
+        stato="bozza"
+    )
+
+    return {
+        "cedolino_id": cedolino_id,
+        "lordo": float(lordo),
+        "contributi_lavoratore": float(contributi_lavoratore),
+        "netto": float(netto),
+        "tfr_maturato": float(tfr_maturato),
+        "tredicesima_maturata": float(tredicesima_maturata),
+        "dati_calcolo": dati_calcolo
+    }
